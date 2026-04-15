@@ -1,0 +1,339 @@
+{
+  "research_date": "2026-04-11",
+  "campaigns": [
+    {
+      "campaign": "חנויות ילדים - ארה\"ב",
+      "businesses_scored": [
+        {"name": "My Little Shop", "location": "Glendale, CA", "website": "my-littleshop.com", "score": 7, "is_candidate": false},
+        {"name": "Juvenile Shop", "location": "Los Angeles, CA", "website": "juvenileshop.com", "score": 7.5, "is_candidate": false},
+        {"name": "Little Love San Diego", "location": "La Jolla, CA", "website": "littlelovesandiego.com", "score": 7.5, "is_candidate": false},
+        {"name": "Ideal Baby & Kids", "location": "Miami, FL", "website": "idealbaby.com", "score": 7, "is_candidate": false},
+        {"name": "Pekiboo Kids Fashion", "location": "Miami, FL", "website": "pekiboo.com", "score": 7, "is_candidate": false},
+        {"name": "NINI and LOLI", "location": "Miami, FL", "website": "niniandloli.com", "score": 7, "is_candidate": false},
+        {"name": "Little Owly", "location": "Miami, FL", "website": "mylittleowly.com", "score": 7, "is_candidate": false},
+        {"name": "Jam Baby Shop", "location": "Sacramento, CA", "website": "shopjambaby.com", "score": 7.5, "is_candidate": false},
+        {"name": "La Canastilla Cubana", "location": "Miami, FL", "website": "canastilla.com", "score": 4, "is_candidate": true, "notes": "Legacy ASP.NET site, not mobile-friendly, shipping communication issues, in business since 1987"},
+        {"name": "Little Royals Boutique", "location": "Miami, FL", "website": "littleroyalsboutique.com", "score": 3, "is_candidate": true, "notes": "Placeholder 'Launching Soon' page, active on Instagram/Facebook, real physical store"},
+        {"name": "The Moppet Shoppe", "location": "Sacramento, CA", "website": "kidsclothingstoresacramento.com", "score": 6.5, "is_candidate": true, "notes": "Dated 2015 design, e-commerce on separate subdomain, no live chat, 4.9 stars"}
+      ],
+      "top_candidates": ["La Canastilla Cubana", "Little Royals Boutique", "The Moppet Shoppe"]
+    },
+    {
+      "campaign": "צלמים מקצועיים - תל אביב",
+      "research_date": "2026-04-11",
+      "businesses_scored": [
+        {"name": "עודד לוי צילום", "website": "odedlevyphotographer.co.il", "score": 7, "is_candidate": false, "notes": "מודרני, mobile-friendly, תוכן מ-2026"},
+        {"name": "סטודיו איריס", "website": "studio-iris.co.il", "score": 6, "is_candidate": true, "notes": "Joomla 2019, אין ביקורות בפלטפורמות גדולות, עסק בן 40 שנה"},
+        {"name": "עופר מתיתיהו", "website": "oferm.co.il", "score": 7.5, "is_candidate": false},
+        {"name": "אביב קורט", "website": "avivkurt.co.il", "score": 8, "is_candidate": false},
+        {"name": "קובי בן שמעון", "website": "jacobensimon.com", "score": 6.5, "is_candidate": false},
+        {"name": "Studio Israel", "website": "studioisrael.com", "score": 7, "is_candidate": false},
+        {"name": "סטודיו תומאס", "website": "studio-thomas.co.il", "score": 7, "is_candidate": false},
+        {"name": "רן כהן סטודיו", "website": "rancohen.co.il", "score": 5, "is_candidate": true, "notes": "אתר 2017, 355 ביקורות 4.7⭐, הכל דרך טלפון"},
+        {"name": "Alex Art", "website": "alexart.co.il", "score": 5, "is_candidate": true, "notes": "Wix בסיסי, חתונות מ-5,990₪, אין AI chatbot"},
+        {"name": "סטודיו כותרת", "website": "studiokoteret.co.il", "score": 6, "is_candidate": false},
+        {"name": "פלורין קאלין", "website": "florincalin.com", "score": 9, "is_candidate": false},
+        {"name": "מולי נאים", "website": "mulinaim.com", "score": 8, "is_candidate": false},
+        {"name": "ענבל בצר", "website": "inbalbetzer.com", "score": 7, "is_candidate": false}
+      ],
+      "top_candidates": [
+        {
+          "name": "סטודיו איריס",
+          "contact": "אלדד נמדר",
+          "address": "בן יהודה 28, תל אביב",
+          "phone": "03-5236058 / 050-5586812",
+          "email": "studioiris@inter.net.il",
+          "website": "studio-iris.co.il",
+          "pain_points": ["אפס ביקורות בגוגל/mit4mit למרות 40 שנה", "אתר Joomla מ-2019", "אין הזמנות אונליין", "אין chatbot", "אין מחירים"],
+          "outreach_page": "pages/studio-iris/index.html"
+        },
+        {
+          "name": "רן כהן סטודיו",
+          "contact": "רן כהן",
+          "address": "היסוד 5, תל אביב יפו",
+          "phone": "052-4444160 / 03-6124482",
+          "email": "contact@rancohen.co.il",
+          "website": "rancohen.co.il",
+          "instagram": "rancohenstudio",
+          "reviews": {"count": 355, "avg": 4.7},
+          "pain_points": ["אתר PHP מ-2017", "הכל דרך טלפון", "אין הזמנה עצמאית", "אין AI לסגירת לידים"],
+          "outreach_page": "pages/ran-cohen/index.html"
+        },
+        {
+          "name": "Alex Art",
+          "contact": "אלכס",
+          "phone": "052-2802-386",
+          "website": "alexart.co.il",
+          "instagram": "alexart.co.il",
+          "starting_price_ils": 5990,
+          "pain_points": ["Wix בסיסי", "אין AI chatbot", "שוק תחרותי — מי שעונה ראשון סוגר", "אין follow-up אוטומטי"],
+          "outreach_page": "pages/alex-art/index.html"
+        }
+      ]
+    }
+  ,
+    {
+      "campaign": "מעצבי שיער / סלוני יופי - גוש דן",
+      "research_date": "2026-04-15",
+      "scoring_model": {
+        "ux_design": "0-25",
+        "mobile_speed": "0-20",
+        "conversion_lead": "0-25",
+        "content_trust": "0-15",
+        "automation_service": "0-15",
+        "candidate_zone": "35-70"
+      },
+      "businesses_scored": [
+        {
+          "name": "שרלי הררי SH",
+          "location": "רמת גן (בורסה)",
+          "website": "sharli-harri.com",
+          "phone": "03-5758008 / 03-5757955",
+          "email": "info@sharli-harri.com",
+          "score": 41,
+          "score_breakdown": {"ux": 9, "mobile": 10, "conversion": 10, "content": 10, "automation": 2},
+          "is_candidate": true,
+          "notes": "עיצוב 2010s מיושן, אין WhatsApp, אין הזמנה אונליין, אין chatbot, רק פייסבוק. מחירים חלקיים בלבד (Happy Hour 50₪). טלפון ואימייל בלבד."
+        },
+        {
+          "name": "דיאנה מספרה",
+          "location": "תל אביב",
+          "website": "diana.co.il",
+          "phone": "073-7755045",
+          "score": 43,
+          "score_breakdown": {"ux": 8, "mobile": 10, "conversion": 10, "content": 12, "automation": 3},
+          "is_candidate": true,
+          "notes": "עיצוב בסיסי ומיושן, יש WhatsApp widget, יש מחירון (תספורת 45-55₪), אין הזמנה אונליין אמיתית — רק טופס בקשת ביצוע חזרה. אין chatbot."
+        },
+        {
+          "name": "ניר אליאס",
+          "location": "תל אביב",
+          "website": "nirelias.com",
+          "phone": "050-2249151",
+          "score": 46,
+          "score_breakdown": {"ux": 10, "mobile": 12, "conversion": 12, "content": 10, "automation": 2},
+          "is_candidate": true,
+          "notes": "עיצוב מיושן, תוכן עשיר על מוצרים ושירותים, CTA לטלפון/WhatsApp, אין הזמנה אונליין, אין chatbot. מוצרים למכירה אבל אין e-commerce מלא."
+        },
+        {
+          "name": "קובי ואלי בורוכוב",
+          "location": "תל אביב",
+          "website": "borochov-ke.co.il",
+          "phone": "03-5235761",
+          "score": 52,
+          "score_breakdown": {"ux": 14, "mobile": 13, "conversion": 10, "content": 12, "automation": 3},
+          "is_candidate": true,
+          "notes": "עיצוב מודרני חלקית, יש WhatsApp, אין הזמנה אונליין, אין מחירים, אין chatbot. שירותים מפורטים אך ללא מחירים."
+        },
+        {
+          "name": "עופר בן חגי",
+          "location": "רמת גן",
+          "website": "ofer-hairstyle.co.il",
+          "phone": "077-2308998",
+          "score": 56,
+          "score_breakdown": {"ux": 15, "mobile": 13, "conversion": 12, "content": 13, "automation": 3},
+          "is_candidate": true,
+          "notes": "עיצוב מודרני, תמונות לפני/אחרי, FAQ, אין הזמנה אונליין, אין מחירים, אין chatbot. מתמחה בתוספות שיער ומילוי."
+        },
+        {
+          "name": "מירו וניסו",
+          "location": "תל אביב",
+          "website": "miro-niso.co.il",
+          "phone": "03-6953829 / 03-6956878",
+          "score": 57,
+          "score_breakdown": {"ux": 14, "mobile": 13, "conversion": 15, "content": 12, "automation": 3},
+          "is_candidate": true,
+          "notes": "יש הזמנה ב-Optimus, יש WhatsApp, עיצוב מיושן חלקית, מוצרים עם מחירים. תוספות שיער מתמחה. אין chatbot. ניתן לשפר משמעותית."
+        },
+        {
+          "name": "Salon TLV",
+          "location": "תל אביב",
+          "website": "salontlv.com",
+          "score": 67,
+          "score_breakdown": {"ux": 18, "mobile": 15, "conversion": 17, "content": 12, "automation": 5},
+          "is_candidate": false,
+          "notes": "עיצוב מודרני, טופס הזמנה מפורט, בילינגוואל, רשתות חברתיות. גבולי — קרוב מדי ל-70."
+        },
+        {
+          "name": "100ממת",
+          "location": "תל אביב (3 סניפים)",
+          "website": "100memet.co.il",
+          "score": 68,
+          "score_breakdown": {"ux": 18, "mobile": 15, "conversion": 17, "content": 13, "automation": 5},
+          "is_candidate": false,
+          "notes": "3 סניפים, הזמנה ב-Calmark, מבנה מקצועי. גבולי גבוה — לא מומלץ לפנייה."
+        },
+        {
+          "name": "חיים אשכנזי",
+          "location": "תל אביב, בוגרשוב 100",
+          "website": "haimas.weebly.com",
+          "phone": "052-566-9100",
+          "score": 14,
+          "score_breakdown": {"ux": 3, "mobile": 3, "conversion": 3, "content": 5, "automation": 0},
+          "is_candidate": false,
+          "notes": "אתר Weebly — לא עולה (ECONNREFUSED). כנראה נטוש. יש נוכחות בדירקטוריות בלבד. נמוך מדי — צריך בנייה מאפס."
+        },
+        {
+          "name": "אנדריי מלישקו ברברשופ",
+          "location": "פתח תקווה",
+          "website": "andreymaleshko.com",
+          "score": 75,
+          "score_breakdown": {"ux": 20, "mobile": 16, "conversion": 19, "content": 15, "automation": 5},
+          "is_candidate": false,
+          "notes": "מדורג מספר 1 בפ\"ת, DIBS booking, WhatsApp, מחירים ברורים, ביקורות מצוינות. לא מתאים לפנייה."
+        },
+        {
+          "name": "אלי אביב ברברשופ",
+          "location": "רמת גן",
+          "website": "eliaviv-barbershop.co.il",
+          "phone": "077-5012534",
+          "score": 70,
+          "score_breakdown": {"ux": 19, "mobile": 16, "conversion": 19, "content": 13, "automation": 3},
+          "is_candidate": false,
+          "notes": "עיצוב מודרני, cal.mk booking, מחירים ברורים, 9.6 ב-Easy. לא מתאים לפנייה."
+        },
+        {
+          "name": "דניאל סטייל",
+          "location": "פתח תקווה, זאב אורלוב 86",
+          "website": null,
+          "phone": "054-2112823",
+          "social": "facebook.com/hair.danielstyle",
+          "score": 25,
+          "score_breakdown": {"ux": 5, "mobile": 5, "conversion": 8, "content": 5, "automation": 2},
+          "is_candidate": false,
+          "notes": "אין אתר עצמאי — רק פייסבוק + קישור zmantov לקביעת תור. נמוך מדי."
+        },
+        {
+          "name": "מספרת ווייט",
+          "location": "פתח תקווה, חיה פינשטיין 11",
+          "website": null,
+          "phone": "03-547-7027",
+          "score": 16,
+          "score_breakdown": {"ux": 3, "mobile": 3, "conversion": 5, "content": 5, "automation": 0},
+          "is_candidate": false,
+          "notes": "אין אתר — נוכחות בדפי זהב ודירקטוריות בלבד. נמוך מדי."
+        },
+        {
+          "name": "ראש שובב",
+          "location": "פתח תקווה, ההסתדרות 16",
+          "website": null,
+          "phone": "03-934-4962",
+          "score": 16,
+          "score_breakdown": {"ux": 3, "mobile": 3, "conversion": 5, "content": 5, "automation": 0},
+          "is_candidate": false,
+          "notes": "מספרת ילדים. אין אתר — נדחה."
+        },
+        {
+          "name": "סטודיו חפיף",
+          "location": "תל אביב, קהילת סלוניקי 9",
+          "website": null,
+          "phone": "052-2497851",
+          "score": 16,
+          "score_breakdown": {"ux": 3, "mobile": 3, "conversion": 5, "content": 5, "automation": 0},
+          "is_candidate": false,
+          "notes": "אין אתר — נוכחות בדירקטוריות בלבד. נדחה."
+        },
+        {
+          "name": "תומר ברדה סלון בוטיק",
+          "location": "תל אביב, בן יהודה 180",
+          "website": null,
+          "phone": null,
+          "score": 17,
+          "score_breakdown": {"ux": 3, "mobile": 3, "conversion": 5, "content": 6, "automation": 0},
+          "is_candidate": false,
+          "notes": "נוכחות ב-glamz.com בלבד. אין אתר עצמאי. נדחה."
+        }
+      ],
+      "top_candidates": [
+        {
+          "name": "שרלי הררי SH",
+          "contact": "שרלי הררי",
+          "address": "דב פרידמן 21, רמת גן (מתחם הבורסה)",
+          "phone": "03-5758008 / 03-5757955",
+          "email": "info@sharli-harri.com",
+          "website": "sharli-harri.com",
+          "instagram": "@sharliharri",
+          "facebook": "שרלי הררי עיצוב שיער",
+          "score": 41,
+          "hours": "א-ה 9:00-20:00 | שישי 9:00-15:00 | שני 9:00-14:00",
+          "services": ["תספורות", "עיצוב", "צביעה", "החלקה", "תוספות שיער", "שיקום שיער", "תסרוקות כלה ואירועים", "עיסוי", "פדיקור/מניקור", "הסרת שיער IPL"],
+          "pricing_available": "חלקי — Happy Hour פן 50₪ בלבד",
+          "pain_points": [
+            "אין WhatsApp — רק טלפון ואימייל. לקוחות צריכים להתקשר בשעות פתיחה",
+            "אין הזמנה אונליין — פנייה ידנית בלבד",
+            "אין מחירון מלא — לקוח לא יודע כמה לשלם לפני שמגיע",
+            "עיצוב אתר מ-2010s — לא תואם תדמית מספרה מקצועית בבורסה",
+            "אין תצלומי לפני/אחרי מסודרים באתר",
+            "אין testimonials/ביקורות גלויות באתר"
+          ],
+          "opportunities": [
+            "סוכן וואטסאפ: עונה מיד, מסנן שירות, קובע תור — בלי להעמיס על הטלפון",
+            "מחירון דיגיטלי שקוף שמביא לקוחות מוכנים יותר",
+            "אוטומציית כלות: follow-up לבקשות אירוע, הצעת מחיר ראשונית אוטומטית"
+          ],
+          "outreach_angle": "ראיתי שיש לכם אינסטגרם פעיל (@sharliharri) עם עבודות מרשימות — אבל לקוחות שמגיעים לאתר לא מוצאים WhatsApp, מחירים או אפשרות להזמין תור. בניתי עמוד שמראה איך סוכן וואטסאפ יכול לסגור תורים בלי שתרימו טלפון.",
+          "outreach_page": "pages/sharli-harri/index.html"
+        },
+        {
+          "name": "ניר אליאס",
+          "contact": "ניר אליאס",
+          "address": "אשרמן 32, תל אביב יפו",
+          "phone": "050-2249151",
+          "website": "nirelias.com",
+          "score": 46,
+          "hours": "א-ה 9:00-19:00 | שישי 8:00-15:00",
+          "services": ["תספורות נשים/גברים/ילדים", "החלקה אורגנית", "החלקה יפנית", "צביעה ובליאז'", "תסרוקות ערב/כלה", "ציורי פנים", "איפור אירועים", "מכירת מוצרי שיער מקצועיים"],
+          "pricing_available": "מוצרים בלבד (שמפו 69₪, מסכות 99-219₪) — אין מחירי שירותים",
+          "pain_points": [
+            "אין הזמנה אונליין — רק טלפון/WhatsApp בסיסי",
+            "אין מחירי שירותי מספרה — לקוח חייב להתקשר לברר",
+            "אתר copyright 2020 — לא עדכני, חסר תוכן טרי",
+            "שילוב מוצרים + שירותי ספרה מבלבל — לא ברור מה הכתובת",
+            "אין ביקורות גלויות באתר",
+            "לקוחות שקנו מוצרים — אין follow-up חכם להחזירם לתור"
+          ],
+          "opportunities": [
+            "chatbot שמוכר גם תורים וגם מוצרים — לקוח ישאל 'מה טוב לשיער יבש?' וייסגר על מוצר + תור",
+            "קביעת תורים אוטומטית 24/7 — בלי להחמיץ פניות מחוץ לשעות",
+            "follow-up אחרי קניית מוצר: 'איך השיער? מעוניין בטיפול משלים?'"
+          ],
+          "outreach_angle": "ראיתי שיש לכם חנות מוצרים + מספרה בתל אביב — שילוב חזק. אבל אין דרך להזמין תור אונליין, ולקוחות שקנו מוצרים לא מקבלים follow-up. בניתי עמוד שמראה איך סוכן אחד מטפל בשני הערוצים.",
+          "outreach_page": "pages/nir-elias/index.html"
+        },
+        {
+          "name": "קובי ואלי בורוכוב",
+          "contact": "קובי / אלי בורוכוב",
+          "address": "בן יהודה 71, תל אביב",
+          "phone": "03-5235761 / 052-3000067",
+          "whatsapp": "050-970-7075",
+          "email": "borochov.ke@gmail.com",
+          "website": "borochov-ke.co.il",
+          "score": 52,
+          "reviews": {"rating": "9/10", "source": "zips.co.il"},
+          "hours": "א-ה 9:30-18:00 | שישי 9:00-15:00",
+          "services": ["עיצוב שיער", "שיקום שיער", "צביעה", "תוספות", "הבהרה", "אומבר", "בליאז'", "החלקת קראטין", "החלקת מאז'ס טיק", "קורסי הכשרה מקצועיים"],
+          "pricing_available": "אין — לקוח חייב לפנות לברר",
+          "pain_points": [
+            "אין מחירים באתר — לקוח מתקשר רק לברר מחיר, לא קונה",
+            "אין הזמנה אונליין — רק contact form כללי",
+            "WhatsApp קיים (050-970-7075) אבל לא בולט ולא מחובר לתהליך",
+            "ביקורות מצוינות (9/10) אבל לא מוצגות באתר",
+            "שעות פתיחה קצרות יחסית (עד 18:00) — הזמנות אחרי שעות אובדות"
+          ],
+          "review_highlights": [
+            "תודה על החלקה מהממת ויחס מקסים",
+            "one of the best blowouts I've ever had! Eli did an amazing job",
+            "שיקמו שיער שרוף ונושר — מקצוענים, אדיבים"
+          ],
+          "opportunities": [
+            "WhatsApp bot שעונה אחרי 18:00 ובשישי בצהריים — כשהם סגורים",
+            "הצגת הביקורות הקיימות (9/10) בצורה בולטת — סוס עבודה שלא מנוצל",
+            "follow-up אוטומטי לאחר טיפול: בקשת ביקורת + הצעה לתור הבא"
+          ],
+          "outreach_angle": "ראיתי שיש לכם דירוג 9/10 וביקורות שמציינות שיקום שיער מדהים — אבל מי שמגיע לאתר אחרי 18:00 לא יכול להזמין תור ולא רואה את הביקורות. בניתי עמוד שמראה איך פותרים את זה.",
+          "outreach_page": "pages/borochov/index.html"
+        }
+      ]
+    }
+  ]
+}

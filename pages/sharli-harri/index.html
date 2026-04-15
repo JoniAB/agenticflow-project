@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>יוני אלוני × שרלי הררי SH — הדגמה</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --dark: #0d0d0d;
+      --rose: #be185d;
+      --rose-light: #fbcfe8;
+      --gold: #d97706;
+      --gold-light: #fef3c7;
+      --teal: #0d9488;
+      --light: #fdf2f8;
+      --text: #1e1b1e;
+      --muted: #6b6b6b;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--light); color: var(--text); direction: rtl; }
+
+    nav { background: var(--dark); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    nav .logo { color: white; font-weight: 700; font-size: 1.1rem; }
+    nav .logo span { color: #f9a8d4; }
+    nav .badge { background: var(--rose); color: white; font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 600; }
+
+    .hero { background: linear-gradient(135deg, #1a0720 0%, #3b0764 60%, #1a0720 100%); color: white; padding: 5rem 2rem 4rem; text-align: center; }
+    .hero .tag { display: inline-block; background: rgba(190,24,93,0.2); border: 1px solid var(--rose); color: #f9a8d4; font-size: 0.8rem; padding: 0.3rem 1rem; border-radius: 999px; margin-bottom: 1.5rem; font-weight: 600; }
+    .hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; line-height: 1.3; max-width: 750px; margin: 0 auto 1.5rem; }
+    .hero h1 span { color: #f9a8d4; }
+    .hero p { font-size: 1.05rem; color: #d8b4fe; max-width: 580px; margin: 0 auto; line-height: 1.8; }
+
+    .location-banner { background: linear-gradient(90deg, var(--rose), #9333ea); padding: 0.9rem 2rem; text-align: center; color: white; font-weight: 600; font-size: 0.9rem; }
+
+    .section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
+    .section-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--rose); margin-bottom: 0.75rem; }
+    .section h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; margin-bottom: 1rem; color: var(--dark); }
+    .section .subtitle { color: var(--muted); font-size: 1rem; line-height: 1.8; max-width: 680px; margin-bottom: 2.5rem; }
+
+    .pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .pain-card { background: white; border-radius: 16px; padding: 1.75rem; border-right: 4px solid #ef4444; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .pain-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .pain-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--dark); }
+    .pain-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+    .divider { text-align: center; padding: 1.5rem; font-size: 2rem; color: #d8b4fe; }
+
+    .solutions { background: var(--dark); padding: 4rem 2rem; }
+    .solutions-inner { max-width: 900px; margin: 0 auto; }
+    .solutions-inner .section-label { color: #f9a8d4; }
+    .solutions-inner h2 { color: white; font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; margin-bottom: 1rem; }
+    .solutions-inner .subtitle { color: #94a3b8; font-size: 1rem; line-height: 1.8; max-width: 680px; margin-bottom: 2.5rem; }
+
+    .solution-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .solution-card { background: rgba(249,168,212,0.06); border: 1px solid rgba(249,168,212,0.15); border-radius: 16px; padding: 1.75rem; }
+    .solution-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .solution-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: white; }
+    .solution-card p { font-size: 0.88rem; color: #94a3b8; line-height: 1.65; }
+    .solution-card .check { color: #f9a8d4; font-weight: 700; font-size: 0.85rem; margin-top: 0.75rem; }
+
+    /* WhatsApp Mockup */
+    .mockup-section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
+    .mockup-section .section-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--rose); margin-bottom: 0.75rem; }
+    .mockup-section h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; color: var(--dark); margin-bottom: 0.5rem; }
+    .mockup-section .subtitle { color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem; line-height: 1.8; }
+
+    .wa-phone { max-width: 380px; margin: 0 auto; background: #e5ddd5; border-radius: 20px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.18); }
+    .wa-header { background: #075e54; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; }
+    .wa-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--rose), #9333ea); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.1rem; }
+    .wa-info .name { color: white; font-weight: 600; font-size: 0.95rem; }
+    .wa-info .status { color: #b2dfdb; font-size: 0.75rem; }
+    .wa-messages { padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; min-height: 320px; }
+    .msg { max-width: 80%; padding: 0.6rem 0.9rem; border-radius: 10px; font-size: 0.82rem; line-height: 1.5; }
+    .msg.incoming { background: white; align-self: flex-start; border-bottom-right-radius: 2px; color: #111; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .msg.outgoing { background: #dcf8c6; align-self: flex-end; border-bottom-left-radius: 2px; color: #111; direction: rtl; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .msg .time { font-size: 0.68rem; color: #999; margin-top: 0.25rem; text-align: left; direction: ltr; }
+    .msg.typing { background: white; align-self: flex-start; }
+    .typing-dots { display: flex; gap: 4px; align-items: center; padding: 2px 0; }
+    .typing-dots span { width: 7px; height: 7px; border-radius: 50%; background: #aaa; animation: bounce 1.2s infinite; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+    .wa-input { background: #f0f0f0; padding: 0.75rem 1rem; display: flex; gap: 0.5rem; align-items: center; }
+    .wa-input input { flex: 1; background: white; border: none; border-radius: 20px; padding: 0.5rem 1rem; font-size: 0.82rem; outline: none; }
+    .wa-send { width: 36px; height: 36px; border-radius: 50%; background: #075e54; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem; }
+
+    .stats { background: var(--rose-light); padding: 3rem 2rem; }
+    .stats-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; text-align: center; }
+    .stat-num { font-size: 2.5rem; font-weight: 800; color: var(--dark); }
+    .stat-num span { color: var(--rose); }
+    .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
+
+    .cta-section { background: linear-gradient(135deg, #1a0720, #3b0764); padding: 5rem 2rem; text-align: center; color: white; }
+    .cta-section h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 1rem; }
+    .cta-section p { color: #d8b4fe; font-size: 1rem; max-width: 560px; margin: 0 auto 2.5rem; line-height: 1.8; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: linear-gradient(90deg, var(--rose), #9333ea); color: white; padding: 0.9rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; display: inline-block; }
+    .btn-secondary { background: transparent; color: white; padding: 0.9rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; border: 2px solid rgba(255,255,255,0.3); text-decoration: none; display: inline-block; }
+
+    footer { background: #0d0d0d; color: #555; text-align: center; padding: 2rem; font-size: 0.85rem; }
+    footer span { color: #f9a8d4; }
+
+    @media (max-width: 600px) {
+      .wa-phone { max-width: 100%; border-radius: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">יוני אלוני <span>אוטומציה ו-AI</span></div>
+  <div class="badge">נבנה במיוחד עבורכם · חינם</div>
+</nav>
+
+<div class="location-banner">
+  מספרת SH שרלי הררי · מתחם הבורסה, רמת גן · ניסיון של שנים · שירותי יופי מקצועיים
+</div>
+
+<div class="hero">
+  <div class="tag">הדגמה מותאמת אישית — שרלי הררי SH</div>
+  <h1>מספרה מקצועית בלב הבורסה.<br/>ועדיין <span>אין דרך להזמין תור בלי להתקשר.</span></h1>
+  <p>בנינו את העמוד הזה כדי להראות לכם בדיוק מה קורה כשמספרה כמו שלכם פוגשת אוטומציה חכמה — פחות עומס, יותר לקוחות.</p>
+</div>
+
+<div class="section">
+  <div class="section-label">מה שמצאנו</div>
+  <h2>הסלון שלכם מצוין. הנוכחות הדיגיטלית — מאחורה.</h2>
+  <p class="subtitle">ראינו את האינסטגרם שלכם (@sharliharri) — עבודות מרשימות. אבל לקוח שמגיע לאתר פוגש מציאות אחרת לגמרי. זה מה שמצאנו:</p>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="icon">📵</div>
+      <h3>אין WhatsApp — רק טלפון ואימייל</h3>
+      <p>בשנת 2026 לקוחות ישראלים מצפים לוואטסאפ. מי שמחפש "מספרה בבורסה" ב-20:30 ולא מוצא כפתור כחול — ממשיך הלאה.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">🗓️</div>
+      <h3>אין הזמנת תור אונליין</h3>
+      <p>כל קביעת תור עוברת דרך שיחת טלפון בשעות פתיחה. כל שיחה גוזלת 3–5 דקות. כפול 10 שיחות ביום = שעה שנשרפת על תיאום.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">💰</div>
+      <h3>אין מחירון גלוי באתר</h3>
+      <p>לקוח פוטנציאלי לא יודע כמה עולה תספורת, צביעה או החלקה אצלכם. הוא עוזב לחפש מספרה שמציגה מחירים — ולא חוזר.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">🖥️</div>
+      <h3>עיצוב אתר מ-2010 — לא הולם את הסלון</h3>
+      <p>הסלון שלכם נמצא בבורסה ומשרת לקוחות מהשורה הראשונה. האתר לא מספר את הסיפור הזה ולא מתאים לתדמית שבניתם.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider">↓</div>
+
+<div class="solutions">
+  <div class="solutions-inner">
+    <div class="section-label">מה שנוכל לבנות</div>
+    <h2 style="color:white;">שלושה כלים שיחסכו לכם שעה ביום ויביאו יותר לקוחות.</h2>
+    <p class="subtitle">אנחנו לא ממציאים את הגלגל — אנחנו מאפשרים לסלון שלכם לעבוד גם כשאתם לא ליד הטלפון.</p>
+
+    <div class="solution-grid">
+      <div class="solution-card">
+        <div class="icon">💬</div>
+        <h3>סוכן וואטסאפ שעונה מיידית</h3>
+        <p>לקוח שולח "כמה עולה צביעה?" — מקבל תשובה תוך 30 שניות עם מחירים, זמינות וקישור להזמנה. אתם לא מרימים אצבע.</p>
+        <div class="check">✓ עונה גם ב-22:00</div>
+      </div>
+      <div class="solution-card">
+        <div class="icon">📅</div>
+        <h3>קביעת תורים חכמה 24/7</h3>
+        <p>לקוחות בוחרים שירות, תאריך ושעה בעצמם — הכל מסתנכרן עם היומן שלכם. תזכורות אוטומטיות מפחיתות no-shows ב-60%.</p>
+        <div class="check">✓ עוד 5–8 תורים בשבוע</div>
+      </div>
+      <div class="solution-card">
+        <div class="icon">💍</div>
+        <h3>אוטומציה לתסרוקות כלות ואירועים</h3>
+        <p>מי ששולחת הודעה על תסרוקת כלה מקבלת שאלון קצר, הצעת מחיר ראשונית ותור לייעוץ — בלי שיחת טלפון ארוכה.</p>
+        <div class="check">✓ פחות זמן על לידים קרים</div>
+      </div>
+      <div class="solution-card">
+        <div class="icon">⭐</div>
+        <h3>follow-up אוטומטי לביקורות</h3>
+        <p>יום אחרי ביקור — לקוחה מרוצה מקבלת הודעה עם קישור לביקורת בגוגל. בינוי מוניטין אוטומטי לחלוטין.</p>
+        <div class="check">✓ יותר ביקורות, יותר לקוחות חדשים</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mockup-section">
+  <div class="section-label">הדגמה חיה</div>
+  <h2>כך נראה השיחה עם הסוכן שלכם</h2>
+  <p class="subtitle">לקוח שולח הודעה בשעה 21:00 — הסוכן עונה מיד, בודק זמינות, וסוגר תור. הכל בלי שאתם מרגישים.</p>
+
+  <div class="wa-phone">
+    <div class="wa-header">
+      <div class="wa-avatar">SH</div>
+      <div class="wa-info">
+        <div class="name">SH שרלי הררי — מספרה</div>
+        <div class="status">מחובר · עונה תוך דקה</div>
+      </div>
+    </div>
+    <div class="wa-messages">
+      <div class="msg outgoing">
+        שלום, כמה עולה אצלכם החלקה יפנית?
+        <div class="time">21:03</div>
+      </div>
+      <div class="msg incoming">
+        שלום! אני הסוכן של סלון SH 💇‍♀️<br/>החלקה יפנית אצלנו מתחילה מ-400₪ בהתאם לאורך השיער.<br/>לאיזה סוג שיער מדובר?
+        <div class="time">21:03</div>
+      </div>
+      <div class="msg outgoing">
+        שיער ארוך בינוני, כתף
+        <div class="time">21:04</div>
+      </div>
+      <div class="msg incoming">
+        מעולה! לשיער כתף — כ-500–600₪, טיפול שאורך כ-2.5 שעות.<br/>יש לנו זמינות מחר רביעי ב-10:00 או חמישי ב-14:30.<br/>איזה יום מתאים לך? 📅
+        <div class="time">21:04</div>
+      </div>
+      <div class="msg outgoing">
+        חמישי 14:30 מעולה
+        <div class="time">21:05</div>
+      </div>
+      <div class="msg incoming">
+        נהדר! 🎉 אישרתי עבורך תור לחמישי 17/4 בשעה 14:30 לשרלי.<br/>שלחתי לך הודעת אישור + תזכורת יום לפני.<br/>שם מלא ומספר טלפון לאישור?
+        <div class="time">21:05</div>
+      </div>
+      <div class="msg typing">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+    <div class="wa-input">
+      <input type="text" placeholder="הקלד הודעה..." readonly />
+      <div class="wa-send">➤</div>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stats-inner">
+    <div>
+      <div class="stat-num">30<span>שניות</span></div>
+      <div class="stat-label">זמן מענה ממוצע של הסוכן</div>
+    </div>
+    <div>
+      <div class="stat-num">60<span>%</span></div>
+      <div class="stat-label">פחות no-shows עם תזכורות</div>
+    </div>
+    <div>
+      <div class="stat-num">8<span>+</span></div>
+      <div class="stat-label">תורים נוספים בשבוע בממוצע</div>
+    </div>
+    <div>
+      <div class="stat-num">24<span>/7</span></div>
+      <div class="stat-label">סוכן שעובד גם כשאתם לא</div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <h2>רוצים לראות איך זה עובד אצלכם?</h2>
+  <p>10 דקות שיחה — ואני מראה לכם הדגמה חיה של הסוכן עם הפרטים של הסלון שלכם. בלי התחייבות.</p>
+  <div class="cta-buttons">
+    <a href="https://wa.me/972537002404?text=היי+יוני,+ראיתי+את+ההדגמה+של+שרלי+הררי+ואני+רוצה+לשמוע+עוד" class="btn-primary">שלחו לי הודעה בוואטסאפ</a>
+    <a href="mailto:yoniautomation@gmail.com?subject=הדגמה - שרלי הררי SH" class="btn-secondary">שלחו מייל</a>
+  </div>
+</div>
+
+<footer>
+  נבנה במיוחד עבור <span>שרלי הררי SH</span> · יוני אלוני אוטומציה ו-AI
+</footer>
+
+</body>
+</html>
