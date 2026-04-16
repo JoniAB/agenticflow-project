@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>מנגל עצמאות 78 🇮🇱🔥</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <style>
+    * { font-family: 'Heebo', sans-serif; box-sizing: border-box; }
+    body {
+      min-height: 100vh; margin: 0; overflow-x: hidden;
+      background:
+        linear-gradient(180deg,
+          rgba(0,56,184,0.18) 0%, rgba(0,56,184,0.18) 7%,
+          transparent 7%, transparent 16%,
+          transparent 82%, transparent 88%,
+          rgba(0,56,184,0.18) 88%, rgba(0,56,184,0.18) 95%, transparent 95%),
+        linear-gradient(155deg,#dde8ff 0%,#b8cff7 18%,#7aaae8 38%,#3565d4 58%,#1040b5 78%,#0a2880 100%);
+    }
+    .glass { background:rgba(255,255,255,0.13); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid rgba(255,255,255,0.22); }
+    .glass-orange { background:rgba(255,80,0,0.18); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid rgba(255,100,0,0.4); }
+    .glass-green  { background:rgba(22,163,74,0.18); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border:1px solid rgba(34,197,94,0.4); }
+    @keyframes floatStar { 0%,100%{transform:translate(var(--px,0px),0px) rotate(0deg);opacity:var(--op,.07)} 50%{transform:translate(var(--px,0px),-14px) rotate(180deg);opacity:calc(var(--op,.07)*1.6)} }
+    .star-bg { animation:floatStar var(--dur,8s) ease-in-out infinite var(--delay,0s); will-change:transform; }
+    @keyframes smoke { 0%{transform:translateY(0) scale(1);opacity:.6} 50%{transform:translateY(-55px) translateX(6px) scale(2.2);opacity:.3} 100%{transform:translateY(-130px) translateX(-4px) scale(4);opacity:0} }
+    .smoke-p { animation:smoke var(--dur,2.8s) ease-out infinite var(--delay,0s); }
+    @keyframes smokeBurst { 0%{transform:translateY(0) scale(.6);opacity:.85} 100%{transform:translateY(-70px) scale(3.5);opacity:0} }
+    .smoke-burst { animation:smokeBurst .85s ease-out forwards; }
+    @keyframes popIn { 0%{transform:scale(.2) rotate(-10deg);opacity:0} 65%{transform:scale(1.08) rotate(3deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
+    .pop-in { animation:popIn .45s cubic-bezier(.34,1.56,.64,1) forwards; }
+    @keyframes slideUp   { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
+    @keyframes slideLeft { from{transform:translateX(32px);opacity:0} to{transform:translateX(0);opacity:1} }
+    .slide-up   { animation:slideUp   .28s ease-out forwards; }
+    .slide-left { animation:slideLeft .26s ease-out forwards; }
+    @keyframes flipPulse { 0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,69,0,.6)} 50%{transform:scale(1.03);box-shadow:0 0 0 8px rgba(255,69,0,0)} }
+    .flip-pulse { animation:flipPulse 1s ease-in-out infinite; }
+    @keyframes donePulse { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.6)} 50%{box-shadow:0 0 0 10px rgba(34,197,94,0)} }
+    .done-pulse { animation:donePulse 1.2s ease-in-out infinite; }
+    .ring-arc { transition:stroke-dashoffset .8s linear; }
+    .meat-card { transition:transform .12s ease,box-shadow .12s ease; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+    .meat-card:hover  { transform:scale(1.025); box-shadow:0 10px 36px rgba(0,40,180,.45); }
+    .meat-card:active { transform:scale(.95); }
+    .sel-btn { transition:all .18s ease; -webkit-tap-highlight-color:transparent; }
+    input[type=range] { -webkit-appearance:none; appearance:none; height:4px; border-radius:2px; outline:none; cursor:pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:#fff; cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,.3); }
+    .btn { -webkit-tap-highlight-color:transparent; transition:transform .1s ease,opacity .1s ease; }
+    .btn:active { transform:scale(.94); opacity:.85; }
+    .timer-card { min-width:0; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module">
+import { html, render, useState, useEffect, useRef, useMemo } from 'https://cdn.jsdelivr.net/npm/htm@3/preact/standalone.module.js';
+
+/* ══ DATA ══ */
+const MEATS = [
+  { id:'entrecote', name:'סטייק אנטריקוט', subtitle:'הקלאסיק של המנגל',   emoji:'🥩', grad:'linear-gradient(140deg,#7f1d1d,#b91c1c,#ef4444)', times:{rare:2.5,medium:4,wellDone:6},     tip:'תן לסטייק לנוח 5 דקות לפני חיתוך — הנוזלים יחזרו ויהיה הרבה יותר עסיסי.' },
+  { id:'sirloin',   name:'סטייק סינטה',    subtitle:'רזה ועסיסי',           emoji:'🥩', grad:'linear-gradient(140deg,#831843,#be185d,#f472b6)', times:{rare:2,medium:3.5,wellDone:5.5},   tip:'הסינטה אוהבת גריל רותח מאוד — ודא שהמשטח לוהט לפני שמניחים.' },
+  { id:'fillet',    name:'פילה בקר',        subtitle:'הנתח המלכותי',         emoji:'🍖', grad:'linear-gradient(140deg,#78350f,#d97706,#fbbf24)', times:{rare:3,medium:4.5,wellDone:6},     tip:'פילה Well Done הוא כמעט פשע קולינרי — נסה Medium לפחות פעם!' },
+  { id:'lamb',      name:'צלעות כבש',       subtitle:'ניחוח של חג אמיתי',   emoji:'🍖', grad:'linear-gradient(140deg,#14532d,#16a34a,#4ade80)', times:{rare:2,medium:3,wellDone:5},       tip:'הוסף ענפי רוזמרין ישירות על הגחלים — הניחוח ישגע את השכנים.' },
+  { id:'burger',    name:'המבורגר',          subtitle:'פייבוריט של כולם',    emoji:'🍔', grad:'linear-gradient(140deg,#451a03,#b45309,#f59e0b)', times:{rare:null,medium:4,wellDone:6},    tip:'לחץ פעם אחת בלבד — לחץ חוזר שופך את כל המיצים.' },
+];
+const DONENESS  = [
+  {id:'rare',     label:'Rare',      sub:'אדום ועסיסי', color:'#dc2626'},
+  {id:'medium',   label:'Medium',    sub:'ורוד מושלם',  color:'#b45309'},
+  {id:'wellDone', label:'Well Done', sub:'עשוי לגמרי',  color:'#44403c'},
+];
+const THICKNESS = [
+  {id:'thin',    label:'דק',    sub:'~1 ס"מ',  mult:.65},
+  {id:'normal',  label:'רגיל',  sub:'~2 ס"מ',  mult:1.0},
+  {id:'thick',   label:'עבה',   sub:'~3 ס"מ',  mult:1.4},
+  {id:'premium', label:'פרימיום',sub:'~4+ ס"מ', mult:1.85},
+];
+const FIRE = [
+  {id:'low',    label:'אש חלשה',    sub:'גחלים עדינות', mult:1.35, icon:'🪨'},
+  {id:'medium', label:'אש בינונית', sub:'גריל רגיל',    mult:1.0,  icon:'🔥'},
+  {id:'high',   label:'אש חזקה',    sub:'שלהבת גבוהה',  mult:.75,  icon:'🔥🔥'},
+];
+const TRACKS = [
+  {name:'הבה נגילה – Remix', emoji:'🕺', color:'#1d4ed8', bpm:128, vol:.11,
+   notes:[[330,.5],[370,.5],[415,.5],[440,1.5],[494,.5],[494,.5],[494,.5],[523,1.5],[523,.5],[494,.5],[523,.5],[494,.5],[440,2],[440,.5],[415,.5],[440,.5],[415,.5],[370,2],[330,.5],[370,.5],[415,.5],[440,1.5],[659,.5],[622,.5],[587,.5],[523,2.5],[0,.5]]},
+  {name:'ירושלים של זהב', emoji:'🏛️', color:'#7c3aed', bpm:88, vol:.09,
+   notes:[[392,.75],[0,.25],[330,.5],[294,.5],[330,.5],[392,.5],[440,.5],[494,2],[0,.5],[494,.75],[0,.25],[392,.5],[370,.5],[392,.5],[440,.5],[392,2],[0,.5],[392,.5],[392,.5],[523,.5],[494,.5],[440,.5],[392,.5],[330,.5],[294,2],[0,.5],[294,.5],[294,.5],[392,.5],[370,.5],[330,.5],[294,.5],[440,2],[0,1]]},
+  {name:'על כל אלה – Beat', emoji:'🌿', color:'#047857', bpm:108, vol:.10,
+   notes:[[294,.5],[392,1],[440,.5],[466,.5],[523,1],[587,2],[523,.5],[494,.5],[440,.5],[392,.5],[330,2],[0,.5],[294,.5],[392,1],[440,.5],[466,.5],[523,.5],[587,.5],[698,.5],[659,.5],[587,.5],[523,2],[0,1]]},
+  {name:'ריקוד עם ישראל 🔥', emoji:'💃', color:'#b91c1c', bpm:145, vol:.10,
+   notes:[[330,.5],[330,.5],[370,.5],[415,.5],[440,1],[494,1],[440,.5],[415,.5],[330,.5],[370,2],[0,.5],[494,.5],[494,.5],[523,.5],[494,.5],[440,.5],[415,1.5],[330,.5],[370,.5],[415,.5],[440,.5],[494,1],[659,1.5],[0,.5],[659,.5],[587,.5],[523,.5],[494,.5],[440,.5],[415,.5],[370,.5],[330,2],[0,1]]},
+];
+const D_LABEL = {rare:'Rare',medium:'Medium',wellDone:'Well Done'};
+const LS_KEY  = 'mangal78_v3';
+
+/* ══ UTILS ══ */
+const fmt    = s  => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+const uid    = () => Math.random().toString(36).slice(2,9);
+const saveLS = d  => { try{localStorage.setItem(LS_KEY,JSON.stringify(d))}catch{} };
+const loadLS = () => { try{const r=localStorage.getItem(LS_KEY);return r?JSON.parse(r):null}catch{return null} };
+const vibe   = p  => { if('vibrate' in navigator) try{navigator.vibrate(p)}catch{} };
+const calcSideTime = (meat,don,th,fi) => (meat.times[don]??4) * (THICKNESS.find(t=>t.id===th)?.mult??1) * (FIRE.find(f=>f.id===fi)?.mult??1);
+
+/* ══ AUDIO ══ */
+let _ctx=null, _mg=null, _musicOn=false, _musicTrack=0, _musicTimer=null, _loopStartMs=null, _loopDurMs=0;
+const getCtx = () => { if(!_ctx) _ctx=new (window.AudioContext||window.webkitAudioContext)(); return _ctx; };
+const getMG  = () => { if(!_mg){const c=getCtx();_mg=c.createGain();_mg.gain.value=.55;_mg.connect(c.destination);}return _mg; };
+function tone(freq,start,dur,vol=.18,type='triangle',master=false){
+  try{const c=getCtx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(master?getMG():c.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,start);g.gain.exponentialRampToValueAtTime(.001,start+dur);o.start(start);o.stop(start+dur+.02);}catch{}
+}
+function playSizzle(){
+  try{const c=getCtx(),dur=1.1,buf=c.createBuffer(1,c.sampleRate*dur,c.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const src=c.createBufferSource();src.buffer=buf;const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=3200;bp.Q.value=.7;const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=1400;const g=c.createGain(),t=c.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.52,t+.03);g.gain.setValueAtTime(.42,t+.09);g.gain.exponentialRampToValueAtTime(.001,t+dur);src.connect(bp);bp.connect(hp);hp.connect(g);g.connect(c.destination);src.start(t);src.stop(t+dur);}catch{}
+}
+function playFlipSound(){try{const c=getCtx(),t=c.currentTime;[880,1100,880,1100,1320].forEach((f,i)=>tone(f,t+i*.14,.22,.17,'sine'));}catch{}}
+function playCelebSound(){try{const c=getCtx(),t=c.currentTime;[523,587,659,698,784,880,784,698,659,784,1047].forEach((f,i)=>tone(f,t+i*.16,.2,.14,'triangle'));}catch{}}
+function playSelectSound(){try{const c=getCtx(),t=c.currentTime;tone(440,t,.1,.12,'sine');tone(550,t+.08,.12,.1,'sine');}catch{}}
+function scheduleTrack(idx){
+  const tr=TRACKS[idx],beat=60/tr.bpm,c=getCtx();let t=c.currentTime+.05;
+  tr.notes.forEach(([f,b])=>{if(f>0)tone(f,t,b*beat*.88,tr.vol,'triangle',true);t+=b*beat;});
+  const dur=tr.notes.reduce((s,[,b])=>s+b,0)*beat;
+  _loopStartMs=Date.now()+50;_loopDurMs=dur*1000;
+  if(_musicTimer)clearTimeout(_musicTimer);
+  _musicTimer=setTimeout(()=>{if(_musicOn)scheduleTrack(_musicTrack);},dur*1000+120);
+}
+function startTrack(i){_musicOn=true;_musicTrack=i;scheduleTrack(i);}
+function stopTrack(){_musicOn=false;if(_musicTimer){clearTimeout(_musicTimer);_musicTimer=null;}}
+function setMusicVol(v){getMG().gain.value=v;}
+function getMusicProgress(){if(!_musicOn||!_loopStartMs)return 0;return((Date.now()-_loopStartMs)%_loopDurMs)/_loopDurMs;}
+
+/* ══ BACKGROUND ══ */
+const BG_STARS = Array.from({length:24},(_,i)=>({id:i,x:(i*17+5)%94,y:(i*29+7)%88,size:12+(i%5)*10,depth:.2+(i%4)*.28,dur:`${5.5+i*1.1}s`,delay:`${(i*.55)%4.5}s`,op:.055+(i%4)*.022,dark:i%3===0}));
+function FestiveBG(){
+  const [mx,setMx]=useState(0),[my,setMy]=useState(0);
+  const mobile=useMemo(()=>window.matchMedia('(max-width:768px)').matches,[]);
+  useEffect(()=>{
+    if(mobile)return;
+    const h=e=>{setMx((e.clientX/window.innerWidth-.5)*2);setMy((e.clientY/window.innerHeight-.5)*2);};
+    window.addEventListener('mousemove',h,{passive:true});
+    return()=>window.removeEventListener('mousemove',h);
+  },[mobile]);
+  return html`<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
+    ${BG_STARS.map(s=>{const px=mobile?0:mx*s.depth*22,py=mobile?0:my*s.depth*16;return html`<div key=${s.id} class="star-bg absolute" style=${{left:`${s.x}%`,top:`${s.y}%`,fontSize:s.size,color:`rgba(${s.dark?'0,20,100':'0,40,160'},${s.op})`,transform:`translate(${px}px,${py}px)`,transition:mobile?'none':'transform 0.5s ease-out','--dur':s.dur,'--delay':s.delay}}>✡</div>`;})}
+  </div>`;
+}
+
+/* ══ SMOKE ══ */
+function Smoke(){
+  return html`<div class="pointer-events-none fixed bottom-0 inset-x-0 h-52 overflow-hidden z-10">
+    ${Array.from({length:8},(_,i)=>html`<div key=${i} class="smoke-p absolute bottom-1 rounded-full" style=${{left:`${8+i*11}%`,width:26+i*8,height:26+i*8,background:`rgba(210,210,210,${.06+i*.015})`,filter:'blur(10px)','--dur':`${2.3+i*.3}s`,'--delay':`${i*.4}s`}}/>`)}`
+    </div>`;
+}
+
+/* ══ MUSIC PLAYER ══ */
+function MusicPlayer(){
+  const [playing,setPlaying]=useState(false),[trackIdx,setTrackIdx]=useState(0),[vol,setVol]=useState(.55),[progress,setProgress]=useState(0);
+  useEffect(()=>{if(!playing)return;const iv=setInterval(()=>setProgress(getMusicProgress()),120);return()=>clearInterval(iv);},[playing,trackIdx]);
+  const toggle=()=>{try{getCtx().resume();}catch{}if(playing){stopTrack();setPlaying(false);setProgress(0);}else{startTrack(trackIdx);setPlaying(true);}};
+  const changeTrack=i=>{setTrackIdx(i);if(playing){stopTrack();setTimeout(()=>startTrack(i),60);}};
+  const tr=TRACKS[trackIdx];
+  return html`<div class="glass rounded-2xl p-3 slide-up">
+    <div class="flex gap-1.5 mb-2.5 overflow-x-auto pb-0.5" style=${{scrollbarWidth:'none'}}>
+      ${TRACKS.map((t,i)=>html`<button key=${i} onClick=${()=>changeTrack(i)} class="btn flex-shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap" style=${trackIdx===i?{background:t.color,color:'#fff'}:{color:'rgba(255,255,255,0.4)'}}>${t.emoji} ${t.name}</button>`)}
+    </div>
+    <div class="flex items-center gap-2.5">
+      <button onClick=${toggle} class="btn text-2xl flex-shrink-0 w-9 h-9 flex items-center justify-center">${playing?'⏸':'▶️'}</button>
+      <div class="flex-1 min-w-0" dir="ltr">
+        <div class="h-2 rounded-full overflow-hidden" style=${{background:'rgba(255,255,255,0.15)'}}>
+          <div class="h-full rounded-full transition-all duration-100" style=${{width:`${progress*100}%`,background:tr.color}}/>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 flex-shrink-0" dir="ltr">
+        <span class="text-white/40 text-xs">🔈</span>
+        <input type="range" min="0" max="1" step="0.05" value=${vol} onInput=${e=>{const v=parseFloat(e.target.value);setVol(v);setMusicVol(v);}} class="w-16" style=${{background:`linear-gradient(to right,${tr.color} ${vol*100}%,rgba(255,255,255,0.2) ${vol*100}%)`}}/>
+        <span class="text-white/40 text-xs">🔊</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ══ MINI RING ══ */
+function MiniRing({remaining,total,size=60}){
+  const R=size/2-5,C=2*Math.PI*R,pct=total>0?Math.max(0,remaining/total):0,offset=C*(1-pct);
+  const color=pct>.5?'#3b82f6':pct>.22?'#f97316':'#ef4444';
+  return html`<svg width=${size} height=${size} style=${{transform:'rotate(-90deg)',flexShrink:0}}>
+    <circle cx=${size/2} cy=${size/2} r=${R} fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="5"/>
+    <circle cx=${size/2} cy=${size/2} r=${R} fill="none" stroke=${color} stroke-width="5" stroke-linecap="round" stroke-dasharray=${C} stroke-dashoffset=${offset} class="ring-arc"/>
+  </svg>`;
+}
+
+/* ══ TIMER CARD ══ */
+function TimerCard({timer,onFlip,onRemove,onCelebrate}){
+  const meat=MEATS.find(m=>m.id===timer.meatId);if(!meat)return null;
+  const thick=THICKNESS.find(t=>t.id===timer.thickness),fire=FIRE.find(f=>f.id===timer.fire);
+  const meatBg={rare:'radial-gradient(ellipse at 45% 40%,#b91c1c,#7f1d1d,#450a0a)',medium:'radial-gradient(ellipse at 45% 40%,#d97706,#92400e,#451a03)',wellDone:'radial-gradient(ellipse at 45% 40%,#57534e,#292524,#0c0a09)'}[timer.doneness];
+  const isDone=timer.phase==='done',isFlip=timer.phase==='flipReady',isSecond=timer.phase==='second';
+  const phaseLabel=isFlip?'⚡ הפוך עכשיו!':isDone?'✅ מוכן!':isSecond?'🔥 צד שני':'🔥 צד ראשון';
+  return html`<div class=${`timer-card glass rounded-2xl overflow-hidden relative ${isFlip?'flip-pulse':''} ${isDone?'done-pulse glass-green':''}`}>
+    <div class="flex items-center gap-3 p-3">
+      <div class="relative flex-shrink-0">
+        <div class="w-16 h-16 rounded-xl flex items-center justify-center text-4xl" style=${{background:meatBg,filter:isDone?'brightness(1.1) saturate(1.3)':'none',transition:'filter 0.5s'}}>${meat.emoji}</div>
+        ${!isDone?html`<div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white/20" style=${{background:isFlip?'#FF4500':isSecond?'#22c55e':'#3b82f6'}}/>`:null}
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-white font-black text-sm leading-tight truncate">${meat.name}</div>
+        <div class="text-white/55 text-xs mt-0.5 truncate">${D_LABEL[timer.doneness]} · ${thick?.label} · ${fire?.icon}</div>
+        <div class=${`text-xs font-bold mt-0.5 ${isFlip?'text-orange-300':isDone?'text-green-300':'text-blue-200'}`}>${phaseLabel}</div>
+      </div>
+      <div class="flex flex-col items-center gap-0.5 flex-shrink-0">
+        <${MiniRing} remaining=${timer.remaining??0} total=${timer.totalSecs} size=${56}/>
+        <div class="text-white font-black text-xs" style=${{marginTop:-2}}>${isDone?'🎉':fmt(Math.ceil(timer.remaining??0))}</div>
+      </div>
+    </div>
+    ${(isFlip||isDone)?html`<div class="px-3 pb-3 flex gap-2">
+      ${isFlip?html`<button onClick=${()=>onFlip(timer.id)} class="btn flex-1 py-2.5 rounded-xl font-black text-white text-sm" style=${{background:'linear-gradient(135deg,#FF4500,#ff7700)'}}>הפכתי! 🔄</button>`:null}
+      ${isDone?html`<button onClick=${()=>onCelebrate(timer)} class="btn flex-1 py-2.5 rounded-xl font-black text-white text-sm" style=${{background:'linear-gradient(135deg,#16a34a,#22c55e)'}}>🎉 חגוג!</button>`:null}
+      <button onClick=${()=>onRemove(timer.id)} class="btn glass px-4 py-2.5 rounded-xl text-white/60 text-sm font-bold">✕</button>
+    </div>`:html`<button onClick=${()=>onRemove(timer.id)} class="absolute top-2 left-2 btn glass w-6 h-6 rounded-full flex items-center justify-center text-white/30 text-xs">✕</button>`}
+  </div>`;
+}
+
+/* ══ CELEBRATION ══ */
+function Celebration({timer,onClose}){
+  const meat=MEATS.find(m=>m.id===timer.meatId);
+  const canvasRef=useRef(null);
+  useEffect(()=>{
+    playCelebSound();vibe([300,120,300,120,600]);
+    const el=canvasRef.current;if(!el||!window.confetti)return;
+    const fire=confetti.create(el,{resize:true,useWorker:false});
+    const colors=['#0038B8','#FFFFFF','#1e40af','#93c5fd','#eff6ff'];
+    const shoot=x=>fire({particleCount:70,spread:88,origin:{x,y:.65},colors,gravity:.88});
+    shoot(.25);shoot(.75);
+    const t1=setTimeout(()=>{shoot(.2);shoot(.8);},430);
+    const t2=setTimeout(()=>{shoot(.5);},870);
+    return()=>{clearTimeout(t1);clearTimeout(t2);};
+  },[]);
+  return html`<div class="fixed inset-0 z-50 flex items-center justify-center" style=${{background:'rgba(0,12,60,0.93)'}}>
+    <canvas ref=${canvasRef} class="fixed inset-0 w-full h-full pointer-events-none"/>
+    <div class="glass rounded-3xl p-8 text-center mx-5 max-w-xs w-full relative z-10 slide-up">
+      <div class="text-6xl mb-3">🎉</div>
+      <div class="text-4xl font-black text-white mb-2">מוכן!</div>
+      <div class="text-xl font-bold text-blue-200 mb-1">${meat?.name}</div>
+      <div class="text-white/55 text-sm mb-3">${D_LABEL[timer.doneness]}</div>
+      <div class="text-4xl my-4">🇮🇱</div>
+      <div class="text-white/65 text-sm mb-6">חג עצמאות שמח! בתיאבון 🥩🔥</div>
+      <button onClick=${onClose} class="btn w-full py-4 rounded-2xl font-black text-white text-lg" style=${{background:'linear-gradient(135deg,#0038B8,#0055ff)'}}>אחלה, המשך! 🔥</button>
+    </div>
+  </div>`;
+}
+
+/* ══ HOME SCREEN ══ */
+function HomeScreen({timers,onAdd,onFlip,onRemove,onCelebrate,showMusic,onToggleMusic}){
+  const shareWA=t=>{const meat=MEATS.find(m=>m.id===t.meatId);window.open(`https://wa.me/?text=${encodeURIComponent(`ה${meat?.name} מוכן! בואו לאכול 🥩🔥 (${D_LABEL[t.doneness]})`)}}`,'_blank');};
+  return html`<div class="min-h-screen flex flex-col max-w-md mx-auto">
+    <div class="flex items-center justify-between px-4 pt-6 pb-3">
+      <div>
+        <div class="text-2xl font-black text-white leading-tight">מנגל עצמאות 78</div>
+        <div class="text-blue-200 text-xs mt-0.5">🇮🇱 חג עצמאות שמח</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onClick=${onToggleMusic} class=${`btn glass w-9 h-9 rounded-full flex items-center justify-center text-lg ${showMusic?'ring-2 ring-yellow-400':''}`}>🎶</button>
+        <button onClick=${onAdd} class="btn px-4 py-2 rounded-xl font-black text-white text-sm" style=${{background:'linear-gradient(135deg,#FF4500,#ff7700)',boxShadow:'0 4px 16px rgba(255,69,0,0.4)'}}>+ הוסף בשר</button>
+      </div>
+    </div>
+    ${showMusic?html`<div class="px-4 mb-3"><${MusicPlayer}/></div>`:null}
+    <div class="flex-1 px-4 pb-8">
+      ${timers.length===0?html`<div class="flex flex-col items-center justify-center pt-20 pb-10 text-center slide-up">
+        <div class="text-8xl mb-4">🔥</div>
+        <div class="text-2xl font-black text-white mb-2">הגריל מחכה לך!</div>
+        <div class="text-blue-200 text-sm mb-8">לחץ "+ הוסף בשר" כדי להתחיל</div>
+        <div class="text-6xl">🇮🇱</div>
+        <div class="text-white/30 text-xs mt-4 tracking-widest">✡ חג עצמאות שמח ✡</div>
+      </div>`:html`<div class=${`grid gap-3 ${timers.length>1?'grid-cols-1 sm:grid-cols-2':'grid-cols-1'}`}>
+        ${timers.map(t=>html`<div key=${t.id}>
+          <${TimerCard} timer=${t} onFlip=${onFlip} onRemove=${onRemove} onCelebrate=${onCelebrate}/>
+          ${t.phase==='done'?html`<button onClick=${()=>shareWA(t)} class="btn glass w-full mt-1.5 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-bold text-white" style=${{borderColor:'rgba(37,211,102,0.4)',background:'rgba(37,211,102,0.1)'}}>📱 שלח לחבר'ה שמוכן</button>`:null}
+        </div>`)}
+      </div>`}
+    </div>
+  </div>`;
+}
+
+/* ══ MEAT SELECTION ══ */
+function MeatScreen({onSelect,onBack}){
+  const [smokingId,setSmokingId]=useState(null);
+  const handleClick=meat=>{try{getCtx().resume();}catch{}playSizzle();playSelectSound();setSmokingId(meat.id);setTimeout(()=>{setSmokingId(null);onSelect(meat);},260);};
+  const perSide=m=>DONENESS.filter(d=>m.times[d.id]!==null).map(d=>`${d.label}:${m.times[d.id]}'`).join(' · ');
+  return html`<div class="min-h-screen p-4 pb-10 max-w-md mx-auto slide-left">
+    <button onClick=${onBack} class="btn text-white/55 text-sm flex items-center gap-1 mt-4 mb-5">← חזרה</button>
+    <div class="text-center mb-6">
+      <div class="text-4xl mb-2">🥩</div>
+      <h2 class="text-2xl font-black text-white">בחר את הבשר</h2>
+      <p class="text-blue-200 text-sm mt-1">לחיצה תפתח הגדרות צלייה</p>
+    </div>
+    <div class="space-y-3">
+      ${MEATS.map(meat=>html`<button key=${meat.id} onClick=${()=>handleClick(meat)} class="meat-card w-full glass rounded-2xl text-right overflow-hidden relative" style=${{boxShadow:'0 5px 24px rgba(0,0,0,0.28)'}}>
+        ${smokingId===meat.id?html`<div class="absolute inset-0 pointer-events-none z-10 overflow-hidden rounded-2xl">
+          ${[0,1,2,3,4,5].map(i=>html`<div key=${i} class="smoke-burst absolute bottom-2 rounded-full" style=${{left:`${12+i*14}%`,width:18,height:18,background:'rgba(220,220,200,0.75)',filter:'blur(5px)',animationDelay:`${i*.055}s`}}/>`)}
+        </div>`:null}
+        <div class="flex items-center gap-3 p-4">
+          <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0" style=${{background:meat.grad}}>${meat.emoji}</div>
+          <div class="flex-1 min-w-0">
+            <div class="text-white font-black text-base leading-tight">${meat.name}</div>
+            <div class="text-blue-200 text-sm">${meat.subtitle}</div>
+            <div class="text-white/30 text-xs mt-1 truncate">${perSide(meat)}</div>
+          </div>
+          <div class="text-white/35 text-lg flex-shrink-0">◀</div>
+        </div>
+      </button>`)}
+    </div>
+  </div>`;
+}
+
+/* ══ CONFIG SCREEN ══ */
+function ConfigScreen({meat,onBack,onStart}){
+  const [doneness,setDoneness]=useState('medium'),[thickness,setThickness]=useState('normal'),[fire,setFire]=useState('medium');
+  const avail=DONENESS.filter(d=>!(meat.id==='burger'&&d.id==='rare'));
+  const selDon=avail.find(d=>d.id===doneness)||avail[0];
+  const sideMin=meat.times[doneness]?calcSideTime(meat,doneness,thickness,fire):null;
+  const previewBg={rare:'radial-gradient(ellipse at 45% 40%,#b91c1c,#7f1d1d,#450a0a)',medium:'radial-gradient(ellipse at 45% 40%,#d97706,#92400e,#451a03)',wellDone:'radial-gradient(ellipse at 45% 40%,#57534e,#292524,#0c0a09)'}[doneness];
+  const SelRow=({options,value,onChange,label})=>html`<div class="mb-4">
+    <div class="text-white/60 text-xs font-bold mb-2 uppercase tracking-wider">${label}</div>
+    <div class="glass rounded-xl p-1 flex gap-1">
+      ${options.map(opt=>html`<button key=${opt.id} onClick=${()=>onChange(opt.id)} class="sel-btn flex-1 py-2 px-1 rounded-lg text-center text-xs font-bold ${value===opt.id?'text-white':'text-white/38'}" style=${value===opt.id?{background:selDon.color,boxShadow:`0 2px 10px ${selDon.color}88`}:{}}>
+        <div>${opt.label}</div><div class="font-normal opacity-75 mt-0.5 text-xs">${opt.sub}</div>
+      </button>`)}
+    </div>
+  </div>`;
+  return html`<div class="min-h-screen p-4 max-w-md mx-auto flex flex-col slide-left">
+    <button onClick=${onBack} class="btn text-white/55 text-sm flex items-center gap-1 mt-4 mb-4">← ${meat.name}</button>
+    <div class="glass rounded-2xl p-5 text-center mb-5 transition-all duration-500" style=${{background:previewBg}}>
+      <div class="text-6xl mb-2 transition-all duration-500" style=${{filter:doneness==='wellDone'?'brightness(0.55) saturate(0.25)':'none'}}>${meat.emoji}</div>
+      ${sideMin?html`<div>
+        <div class="text-white font-bold">${selDon.sub}</div>
+        <div class="text-white/60 text-sm mt-1"><span class="font-black text-white text-lg">${sideMin.toFixed(1)}'</span> לכל צד · <span class="font-black text-white">${(sideMin*2).toFixed(1)}'</span> סה"כ</div>
+      </div>`:html`<div class="text-orange-300 font-bold text-sm">⚠️ לא מומלץ מבחינת בטיחות מזון</div>`}
+    </div>
+    <${SelRow} options=${avail}      value=${doneness}  onChange=${setDoneness}  label="מידת עשייה"/>
+    <${SelRow} options=${THICKNESS}  value=${thickness} onChange=${setThickness} label="עובי הנתח"/>
+    <${SelRow} options=${FIRE}       value=${fire}      onChange=${setFire}      label="עוצמת האש"/>
+    <div class="glass rounded-xl p-3 mb-5 flex gap-3 items-start">
+      <span class="text-xl flex-shrink-0">👨‍🍳</span>
+      <div class="text-white/50 text-sm leading-relaxed">${meat.tip}</div>
+    </div>
+    <button disabled=${!sideMin} onClick=${()=>{if(sideMin){playSelectSound();onStart(meat,doneness,thickness,fire,sideMin);}}} class="btn py-5 rounded-2xl font-black text-xl text-white mt-auto" style=${sideMin?{background:'linear-gradient(135deg,#FF4500,#ff7700)',boxShadow:'0 8px 28px rgba(255,69,0,0.42)'}:{background:'#555',opacity:.45}}>
+      ${sideMin?`🔥 הצת! (${(sideMin*2).toFixed(1)} דק')`:'🚫 לא זמין'}
+    </button>
+  </div>`;
+}
+
+/* ══ APP ══ */
+function App(){
+  const [screen,setScreen]=useState('home');
+  const [activeTimers,setActiveTimers]=useState([]);
+  const [pendingMeat,setPendingMeat]=useState(null);
+  const [showMusic,setShowMusic]=useState(false);
+  const [celebration,setCelebration]=useState(null);
+  const flipTriggered=useRef(new Set());
+  const doneTriggered=useRef(new Set());
+
+  // Restore
+  useEffect(()=>{
+    const s=loadLS();if(!s||!s.timers)return;
+    const restored=s.timers.map(t=>{
+      const elapsed=(Date.now()-t.sideStartMs)/1000,rem=Math.max(0,t.totalSecs-elapsed);
+      if(t.phase==='flipReady')return{...t,remaining:0};
+      if(t.phase==='second'&&rem<=0)return{...t,remaining:0,phase:'done'};
+      return{...t,remaining:rem};
+    });
+    setActiveTimers(restored);
+    restored.forEach(t=>{if(t.phase==='flipReady'||t.phase==='second'||t.phase==='done')flipTriggered.current.add(t.id);if(t.phase==='done')doneTriggered.current.add(t.id);});
+  },[]);
+
+  // Master tick
+  useEffect(()=>{
+    const iv=setInterval(()=>{
+      setActiveTimers(prev=>{
+        let changed=false;
+        const next=prev.map(t=>{
+          if(t.phase==='done'||t.phase==='flipReady')return t;
+          const elapsed=(Date.now()-t.sideStartMs)/1000,rem=Math.max(0,t.totalSecs-elapsed);
+          if(rem<=0&&t.phase==='first'&&!flipTriggered.current.has(t.id)){flipTriggered.current.add(t.id);playFlipSound();vibe([500,150,500]);changed=true;return{...t,remaining:0,phase:'flipReady'};}
+          if(rem<=0&&t.phase==='second'&&!doneTriggered.current.has(t.id)){doneTriggered.current.add(t.id);changed=true;return{...t,remaining:0,phase:'done'};}
+          if(Math.abs((t.remaining??0)-rem)>.08)changed=true;
+          return{...t,remaining:rem};
+        });
+        if(changed)saveLS({timers:next.map(({remaining:_,...r})=>r)});
+        return changed?next:prev;
+      });
+    },220);
+    return()=>clearInterval(iv);
+  },[]);
+
+  const handleStart=(meat,don,th,fi,sideMin)=>{
+    const totalSecs=sideMin*60,now=Date.now();
+    const t={id:uid(),meatId:meat.id,doneness:don,thickness:th,fire:fi,phase:'first',sideStartMs:now,totalSecs,remaining:totalSecs};
+    setActiveTimers(prev=>{const next=[...prev,t];saveLS({timers:next.map(({remaining:_,...r})=>r)});return next;});
+    setScreen('home');
+  };
+  const handleFlip=id=>{
+    const now=Date.now();flipTriggered.current.delete(id);
+    setActiveTimers(prev=>{const next=prev.map(t=>t.id===id?{...t,phase:'second',sideStartMs:now,remaining:t.totalSecs}:t);saveLS({timers:next.map(({remaining:_,...r})=>r)});return next;});
+  };
+  const handleRemove=id=>{
+    flipTriggered.current.delete(id);doneTriggered.current.delete(id);
+    setActiveTimers(prev=>{const next=prev.filter(t=>t.id!==id);saveLS({timers:next.map(({remaining:_,...r})=>r)});return next;});
+  };
+  const handleCelebrate=timer=>{setCelebration(timer);handleRemove(timer.id);};
+
+  return html`<div>
+    <${FestiveBG}/>
+    <div class="relative z-10">
+      ${screen==='home'?html`<${HomeScreen} timers=${activeTimers} onAdd=${()=>setScreen('addMeat')} onFlip=${handleFlip} onRemove=${handleRemove} onCelebrate=${handleCelebrate} showMusic=${showMusic} onToggleMusic=${()=>setShowMusic(p=>!p)}/>`:null}
+      ${screen==='addMeat'?html`<${MeatScreen} onSelect=${m=>{setPendingMeat(m);setScreen('configure');}} onBack=${()=>setScreen('home')}/>`:null}
+      ${screen==='configure'&&pendingMeat?html`<${ConfigScreen} meat=${pendingMeat} onBack=${()=>setScreen('addMeat')} onStart=${handleStart}/>`:null}
+    </div>
+    ${celebration?html`<${Celebration} timer=${celebration} onClose=${()=>setCelebration(null)}/>`:null}
+  </div>`;
+}
+
+render(html`<${App}/>`, document.getElementById('root'));
+</script>
+</body>
+</html>
