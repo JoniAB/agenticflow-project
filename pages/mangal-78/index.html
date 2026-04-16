@@ -50,6 +50,10 @@
     .btn { -webkit-tap-highlight-color:transparent; transition:transform .1s ease,opacity .1s ease; }
     .btn:active { transform:scale(.94); opacity:.85; }
     .timer-card { min-width:0; }
+    .meat-img{position:relative;overflow:hidden;box-shadow:inset 0 0 22px rgba(0,0,0,.8),inset 0 0 6px rgba(255,70,0,.25);}
+    .meat-img::before{content:'';position:absolute;inset:0;z-index:1;background:repeating-linear-gradient(-44deg,transparent,transparent 8px,rgba(0,0,0,.72) 8px,rgba(0,0,0,.72) 11px);}
+    .meat-img::after{content:'';position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at 33% 28%,rgba(255,195,55,.26) 0%,transparent 48%),linear-gradient(to bottom,rgba(0,0,0,.38) 0%,transparent 30%,transparent 68%,rgba(0,0,0,.62) 100%);}
+    .meat-emoji{position:relative;z-index:3;}
   </style>
 </head>
 <body>
@@ -63,11 +67,11 @@ import { html, render, useState, useEffect, useRef, useMemo } from 'https://cdn.
 
 /* ══ DATA ══ */
 const MEATS = [
-  { id:'entrecote', name:'סטייק אנטריקוט', subtitle:'הקלאסיק של המנגל',   emoji:'🥩', grad:'linear-gradient(140deg,#7f1d1d,#b91c1c,#ef4444)', times:{rare:2.5,medium:4,wellDone:6},     tip:'תן לסטייק לנוח 5 דקות לפני חיתוך — הנוזלים יחזרו ויהיה הרבה יותר עסיסי.' },
-  { id:'sirloin',   name:'סטייק סינטה',    subtitle:'רזה ועסיסי',           emoji:'🥩', grad:'linear-gradient(140deg,#831843,#be185d,#f472b6)', times:{rare:2,medium:3.5,wellDone:5.5},   tip:'הסינטה אוהבת גריל רותח מאוד — ודא שהמשטח לוהט לפני שמניחים.' },
-  { id:'fillet',    name:'פילה בקר',        subtitle:'הנתח המלכותי',         emoji:'🍖', grad:'linear-gradient(140deg,#78350f,#d97706,#fbbf24)', times:{rare:3,medium:4.5,wellDone:6},     tip:'פילה Well Done הוא כמעט פשע קולינרי — נסה Medium לפחות פעם!' },
-  { id:'lamb',      name:'צלעות כבש',       subtitle:'ניחוח של חג אמיתי',   emoji:'🍖', grad:'linear-gradient(140deg,#14532d,#16a34a,#4ade80)', times:{rare:2,medium:3,wellDone:5},       tip:'הוסף ענפי רוזמרין ישירות על הגחלים — הניחוח ישגע את השכנים.' },
-  { id:'burger',    name:'המבורגר',          subtitle:'פייבוריט של כולם',    emoji:'🍔', grad:'linear-gradient(140deg,#451a03,#b45309,#f59e0b)', times:{rare:null,medium:4,wellDone:6},    tip:'לחץ פעם אחת בלבד — לחץ חוזר שופך את כל המיצים.' },
+  { id:'entrecote', name:'סטייק אנטריקוט', subtitle:'הקלאסיק של המנגל', emoji:'🥩', grad:'linear-gradient(140deg,#7f1d1d,#b91c1c,#ef4444)', img:'radial-gradient(ellipse at 42% 32%,#e53e3e,#b91c1c,#7f1d1d,#4a0e0e)', times:{rare:2.5,medium:4,wellDone:6},   tip:'תן לסטייק לנוח 5 דקות לפני חיתוך — הנוזלים יחזרו ויהיה הרבה יותר עסיסי.' },
+  { id:'sirloin',   name:'סטייק סינטה',    subtitle:'רזה ועסיסי',         emoji:'🥩', grad:'linear-gradient(140deg,#831843,#be185d,#f472b6)', img:'radial-gradient(ellipse at 42% 32%,#c0392b,#9b2226,#6e1414,#3d0808)', times:{rare:2,medium:3.5,wellDone:5.5}, tip:'הסינטה אוהבת גריל רותח מאוד — ודא שהמשטח לוהט לפני שמניחים.' },
+  { id:'fillet',    name:'פילה בקר',        subtitle:'הנתח המלכותי',       emoji:'🍖', grad:'linear-gradient(140deg,#78350f,#d97706,#fbbf24)', img:'radial-gradient(ellipse at 42% 32%,#a93226,#7d1f18,#52100e,#2e0606)', times:{rare:3,medium:4.5,wellDone:6},   tip:'פילה Well Done הוא כמעט פשע קולינרי — נסה Medium לפחות פעם!' },
+  { id:'lamb',      name:'צלעות כבש',       subtitle:'ניחוח של חג אמיתי', emoji:'🍖', grad:'linear-gradient(140deg,#14532d,#16a34a,#4ade80)', img:'radial-gradient(ellipse at 42% 32%,#9b4218,#73300e,#4a1e06,#280e02)', times:{rare:2,medium:3,wellDone:5},     tip:'הוסף ענפי רוזמרין ישירות על הגחלים — הניחוח ישגע את השכנים.' },
+  { id:'burger',    name:'המבורגר',          subtitle:'פייבוריט של כולם',  emoji:'🍔', grad:'linear-gradient(140deg,#451a03,#b45309,#f59e0b)', img:'radial-gradient(ellipse at 42% 32%,#8b4513,#6b3010,#431c06,#220d02)', times:{rare:null,medium:4,wellDone:6},  tip:'לחץ פעם אחת בלבד — לחץ חוזר שופך את כל המיצים.' },
 ];
 const DONENESS  = [
   {id:'rare',     label:'Rare',      sub:'אדום ועסיסי', color:'#dc2626'},
@@ -107,11 +111,70 @@ const vibe   = p  => { if('vibrate' in navigator) try{navigator.vibrate(p)}catch
 const calcSideTime = (meat,don,th,fi) => (meat.times[don]??4) * (THICKNESS.find(t=>t.id===th)?.mult??1) * (FIRE.find(f=>f.id===fi)?.mult??1);
 
 /* ══ AUDIO ══ */
-let _ctx=null, _mg=null, _musicOn=false, _musicTrack=0, _musicTimer=null, _loopStartMs=null, _loopDurMs=0;
-const getCtx = () => { if(!_ctx) _ctx=new (window.AudioContext||window.webkitAudioContext)(); return _ctx; };
-const getMG  = () => { if(!_mg){const c=getCtx();_mg=c.createGain();_mg.gain.value=.55;_mg.connect(c.destination);}return _mg; };
+let _ctx=null,_mg=null,_rev=null,_musicOn=false,_musicTrack=0,_musicTimer=null,_loopStartMs=null,_loopDurMs=0;
+const getCtx=()=>{if(!_ctx)_ctx=new(window.AudioContext||window.webkitAudioContext)();return _ctx;};
+const getMG=()=>{if(!_mg){const c=getCtx();_mg=c.createGain();_mg.gain.value=.55;_mg.connect(c.destination);}return _mg;};
+const getRev=()=>{
+  if(!_rev){const c=getCtx(),len=Math.round(c.sampleRate*1.3),buf=c.createBuffer(2,len,c.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4);}
+    const conv=c.createConvolver();conv.buffer=buf;
+    const g=c.createGain();g.gain.value=.16;conv.connect(g);g.connect(getMG());_rev=conv;}
+  return _rev;};
 function tone(freq,start,dur,vol=.18,type='triangle',master=false){
   try{const c=getCtx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(master?getMG():c.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,start);g.gain.exponentialRampToValueAtTime(.001,start+dur);o.start(start);o.stop(start+dur+.02);}catch{}
+}
+function richNote(freq,start,dur,vol){
+  try{const c=getCtx();
+    [0,5,-5].forEach((det,i)=>{
+      const o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();
+      f.type='lowpass';f.frequency.setValueAtTime(800,start);f.frequency.linearRampToValueAtTime(3400,start+.07);
+      o.type='sawtooth';o.detune.value=det;o.frequency.value=freq;
+      const v=i===0?vol:vol*.32;
+      g.gain.setValueAtTime(0,start);g.gain.linearRampToValueAtTime(v,start+.014);
+      g.gain.setValueAtTime(v*.82,start+dur*.62);g.gain.exponentialRampToValueAtTime(.0001,start+dur);
+      o.connect(f);f.connect(g);g.connect(getMG());
+      if(i===0)g.connect(getRev());
+      o.start(start);o.stop(start+dur+.05);
+    });
+  }catch{}
+}
+function bassNote(freq,start,dur,vol){
+  try{const c=getCtx(),o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();
+    f.type='lowpass';f.frequency.value=380;o.type='square';o.frequency.value=freq/2;
+    g.gain.setValueAtTime(0,start);g.gain.linearRampToValueAtTime(vol,start+.01);
+    g.gain.setValueAtTime(vol*.72,start+dur*.5);g.gain.exponentialRampToValueAtTime(.0001,start+dur*.82);
+    o.connect(f);f.connect(g);g.connect(getMG());o.start(start);o.stop(start+dur+.04);
+  }catch{}
+}
+function drumKick(t){
+  try{const c=getCtx(),o=c.createOscillator(),g=c.createGain();
+    o.frequency.setValueAtTime(145,t);o.frequency.exponentialRampToValueAtTime(28,t+.19);
+    g.gain.setValueAtTime(.92,t);g.gain.exponentialRampToValueAtTime(.001,t+.28);
+    o.connect(g);g.connect(getMG());o.start(t);o.stop(t+.3);
+  }catch{}
+}
+function drumSnare(t){
+  try{const c=getCtx(),dur=.13;
+    const buf=c.createBuffer(1,Math.round(c.sampleRate*dur),c.sampleRate);
+    const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    const src=c.createBufferSource();src.buffer=buf;
+    const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=1100;bp.Q.value=.85;
+    const g=c.createGain();g.gain.setValueAtTime(.38,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+    const o=c.createOscillator(),og=c.createGain();o.frequency.value=210;
+    og.gain.setValueAtTime(.22,t);og.gain.exponentialRampToValueAtTime(.001,t+.055);
+    src.connect(bp);bp.connect(g);g.connect(getMG());o.connect(og);og.connect(getMG());
+    src.start(t);src.stop(t+dur+.01);o.start(t);o.stop(t+.07);
+  }catch{}
+}
+function drumHihat(t){
+  try{const c=getCtx(),dur=.044;
+    const buf=c.createBuffer(1,Math.round(c.sampleRate*.08),c.sampleRate);
+    const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    const src=c.createBufferSource();src.buffer=buf;
+    const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=9200;
+    const g=c.createGain();g.gain.setValueAtTime(.11,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+    src.connect(hp);hp.connect(g);g.connect(getMG());src.start(t);src.stop(t+dur+.01);
+  }catch{}
 }
 function playSizzle(){
   try{const c=getCtx(),dur=1.1,buf=c.createBuffer(1,c.sampleRate*dur,c.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const src=c.createBufferSource();src.buffer=buf;const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=3200;bp.Q.value=.7;const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=1400;const g=c.createGain(),t=c.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.52,t+.03);g.gain.setValueAtTime(.42,t+.09);g.gain.exponentialRampToValueAtTime(.001,t+dur);src.connect(bp);bp.connect(hp);hp.connect(g);g.connect(c.destination);src.start(t);src.stop(t+dur);}catch{}
@@ -120,8 +183,19 @@ function playFlipSound(){try{const c=getCtx(),t=c.currentTime;[880,1100,880,1100
 function playCelebSound(){try{const c=getCtx(),t=c.currentTime;[523,587,659,698,784,880,784,698,659,784,1047].forEach((f,i)=>tone(f,t+i*.16,.2,.14,'triangle'));}catch{}}
 function playSelectSound(){try{const c=getCtx(),t=c.currentTime;tone(440,t,.1,.12,'sine');tone(550,t+.08,.12,.1,'sine');}catch{}}
 function scheduleTrack(idx){
-  const tr=TRACKS[idx],beat=60/tr.bpm,c=getCtx();let t=c.currentTime+.05;
-  tr.notes.forEach(([f,b])=>{if(f>0)tone(f,t,b*beat*.88,tr.vol,'triangle',true);t+=b*beat;});
+  const tr=TRACKS[idx],beat=60/tr.bpm,c=getCtx();
+  let t=c.currentTime+.05,elapsed=0;
+  tr.notes.forEach(([f,b])=>{
+    const dur=b*beat,pos=elapsed%4;
+    if(Math.abs(pos)<.08||Math.abs(pos-2)<.08) drumKick(t);
+    if(Math.abs(pos-1)<.08||Math.abs(pos-3)<.08) drumSnare(t);
+    if(b<=.5) drumHihat(t);
+    if(f>0){
+      richNote(f,t,dur*.87,tr.vol);
+      if(Math.abs(pos)<.08||Math.abs(pos-2)<.08) bassNote(f,t,Math.min(dur*.9,beat*.88),tr.vol*.78);
+    }
+    t+=dur;elapsed+=b;
+  });
   const dur=tr.notes.reduce((s,[,b])=>s+b,0)*beat;
   _loopStartMs=Date.now()+50;_loopDurMs=dur*1000;
   if(_musicTimer)clearTimeout(_musicTimer);
@@ -202,7 +276,9 @@ function TimerCard({timer,onFlip,onRemove,onCelebrate}){
   return html`<div class=${`timer-card glass rounded-2xl overflow-hidden relative ${isFlip?'flip-pulse':''} ${isDone?'done-pulse glass-green':''}`}>
     <div class="flex items-center gap-3 p-3">
       <div class="relative flex-shrink-0">
-        <div class="w-16 h-16 rounded-xl flex items-center justify-center text-4xl" style=${{background:meatBg,filter:isDone?'brightness(1.1) saturate(1.3)':'none',transition:'filter 0.5s'}}>${meat.emoji}</div>
+        <div class="meat-img w-16 h-16 rounded-xl" style=${{background:meat.img||meatBg,transition:'filter 0.5s',filter:isDone?'brightness(1.15)':'none'}}>
+          <div class="meat-emoji h-full flex items-center justify-center text-3xl">${meat.emoji}</div>
+        </div>
         ${!isDone?html`<div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white/20" style=${{background:isFlip?'#FF4500':isSecond?'#22c55e':'#3b82f6'}}/>`:null}
       </div>
       <div class="flex-1 min-w-0">
@@ -253,33 +329,39 @@ function Celebration({timer,onClose}){
 }
 
 /* ══ HOME SCREEN ══ */
-function HomeScreen({timers,onAdd,onFlip,onRemove,onCelebrate,showMusic,onToggleMusic}){
-  const shareWA=t=>{const meat=MEATS.find(m=>m.id===t.meatId);window.open(`https://wa.me/?text=${encodeURIComponent(`ה${meat?.name} מוכן! בואו לאכול 🥩🔥 (${D_LABEL[t.doneness]})`)}}`,'_blank');};
+function HomeScreen({timers,onFlip,onRemove,onCelebrate,showMusic,onToggleMusic,onQuickAdd}){
+  const shareWA=t=>{const meat=MEATS.find(m=>m.id===t.meatId);window.open('https://wa.me/?text='+encodeURIComponent('ה'+(meat?.name)+' מוכן! בואו לאכול 🥩🔥 ('+D_LABEL[t.doneness]+')'),'_blank');};
   return html`<div class="min-h-screen flex flex-col max-w-md mx-auto">
     <div class="flex items-center justify-between px-4 pt-6 pb-3">
       <div>
         <div class="text-2xl font-black text-white leading-tight">מנגל עצמאות 78</div>
         <div class="text-blue-200 text-xs mt-0.5">🇮🇱 חג עצמאות שמח</div>
       </div>
-      <div class="flex items-center gap-2">
-        <button onClick=${onToggleMusic} class=${`btn glass w-9 h-9 rounded-full flex items-center justify-center text-lg ${showMusic?'ring-2 ring-yellow-400':''}`}>🎶</button>
-        <button onClick=${onAdd} class="btn px-4 py-2 rounded-xl font-black text-white text-sm" style=${{background:'linear-gradient(135deg,#FF4500,#ff7700)',boxShadow:'0 4px 16px rgba(255,69,0,0.4)'}}>+ הוסף בשר</button>
-      </div>
+      <button onClick=${onToggleMusic} class=${`btn glass w-9 h-9 rounded-full flex items-center justify-center text-lg ${showMusic?'ring-2 ring-yellow-400':''}`}>🎶</button>
     </div>
     ${showMusic?html`<div class="px-4 mb-3"><${MusicPlayer}/></div>`:null}
-    <div class="flex-1 px-4 pb-8">
-      ${timers.length===0?html`<div class="flex flex-col items-center justify-center pt-20 pb-10 text-center slide-up">
-        <div class="text-8xl mb-4">🔥</div>
-        <div class="text-2xl font-black text-white mb-2">הגריל מחכה לך!</div>
-        <div class="text-blue-200 text-sm mb-8">לחץ "+ הוסף בשר" כדי להתחיל</div>
-        <div class="text-6xl">🇮🇱</div>
-        <div class="text-white/30 text-xs mt-4 tracking-widest">✡ חג עצמאות שמח ✡</div>
-      </div>`:html`<div class=${`grid gap-3 ${timers.length>1?'grid-cols-1 sm:grid-cols-2':'grid-cols-1'}`}>
+    ${timers.length>0?html`<div class="px-4 pb-2">
+      <div class=${`grid gap-3 ${timers.length>1?'grid-cols-1 sm:grid-cols-2':'grid-cols-1'}`}>
         ${timers.map(t=>html`<div key=${t.id}>
           <${TimerCard} timer=${t} onFlip=${onFlip} onRemove=${onRemove} onCelebrate=${onCelebrate}/>
           ${t.phase==='done'?html`<button onClick=${()=>shareWA(t)} class="btn glass w-full mt-1.5 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-bold text-white" style=${{borderColor:'rgba(37,211,102,0.4)',background:'rgba(37,211,102,0.1)'}}>📱 שלח לחבר'ה שמוכן</button>`:null}
         </div>`)}
-      </div>`}
+      </div>
+    </div>`:null}
+    <div class="px-4 pb-8 flex-1">
+      <div class="text-white/35 text-xs font-bold uppercase tracking-widest mb-2 mt-2">🔥 בחר ושים על הגריל</div>
+      <div class="grid grid-cols-3 gap-2">
+        ${MEATS.map(meat=>html`<button key=${meat.id} onClick=${()=>onQuickAdd(meat)}
+          class="meat-card glass rounded-2xl overflow-hidden flex flex-col items-center">
+          <div class="meat-img w-full rounded-t-2xl" style=${{height:'72px',background:meat.img}}>
+            <div class="meat-emoji h-full flex items-center justify-center text-4xl">${meat.emoji}</div>
+          </div>
+          <div class="px-1 py-2 w-full text-center">
+            <div class="text-white text-xs font-bold leading-tight">${meat.name}</div>
+            <div class="text-white/40 text-xs mt-0.5">${meat.subtitle}</div>
+          </div>
+        </button>`)}
+      </div>
     </div>
   </div>`;
 }
@@ -302,7 +384,9 @@ function MeatScreen({onSelect,onBack}){
           ${[0,1,2,3,4,5].map(i=>html`<div key=${i} class="smoke-burst absolute bottom-2 rounded-full" style=${{left:`${12+i*14}%`,width:18,height:18,background:'rgba(220,220,200,0.75)',filter:'blur(5px)',animationDelay:`${i*.055}s`}}/>`)}
         </div>`:null}
         <div class="flex items-center gap-3 p-4">
-          <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0" style=${{background:meat.grad}}>${meat.emoji}</div>
+          <div class="meat-img w-14 h-14 rounded-xl flex-shrink-0" style=${{background:meat.img}}>
+            <div class="meat-emoji h-full flex items-center justify-center text-2xl">${meat.emoji}</div>
+          </div>
           <div class="flex-1 min-w-0">
             <div class="text-white font-black text-base leading-tight">${meat.name}</div>
             <div class="text-blue-200 text-sm">${meat.subtitle}</div>
@@ -410,13 +494,14 @@ function App(){
     setActiveTimers(prev=>{const next=prev.filter(t=>t.id!==id);saveLS({timers:next.map(({remaining:_,...r})=>r)});return next;});
   };
   const handleCelebrate=timer=>{setCelebration(timer);handleRemove(timer.id);};
+  const handleQuickAdd=meat=>{playSelectSound();setPendingMeat(meat);setScreen('configure');};
 
   return html`<div>
     <${FestiveBG}/>
     <div class="relative z-10">
-      ${screen==='home'?html`<${HomeScreen} timers=${activeTimers} onAdd=${()=>setScreen('addMeat')} onFlip=${handleFlip} onRemove=${handleRemove} onCelebrate=${handleCelebrate} showMusic=${showMusic} onToggleMusic=${()=>setShowMusic(p=>!p)}/>`:null}
+      ${screen==='home'?html`<${HomeScreen} timers=${activeTimers} onFlip=${handleFlip} onRemove=${handleRemove} onCelebrate=${handleCelebrate} showMusic=${showMusic} onToggleMusic=${()=>setShowMusic(p=>!p)} onQuickAdd=${handleQuickAdd}/>`:null}
       ${screen==='addMeat'?html`<${MeatScreen} onSelect=${m=>{setPendingMeat(m);setScreen('configure');}} onBack=${()=>setScreen('home')}/>`:null}
-      ${screen==='configure'&&pendingMeat?html`<${ConfigScreen} meat=${pendingMeat} onBack=${()=>setScreen('addMeat')} onStart=${handleStart}/>`:null}
+      ${screen==='configure'&&pendingMeat?html`<${ConfigScreen} meat=${pendingMeat} onBack=${()=>setScreen('home')} onStart=${handleStart}/>`:null}
     </div>
     ${celebration?html`<${Celebration} timer=${celebration} onClose=${()=>setCelebration(null)}/>`:null}
   </div>`;
