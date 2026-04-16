@@ -54,6 +54,10 @@
 </head>
 <body>
 <div id="root"></div>
+<script>
+window.onerror=function(m,s,l,c,e){document.getElementById('root').innerHTML='<div style="color:red;padding:20px;font-family:monospace;font-size:12px;background:#000;position:fixed;top:0;left:0;right:0;z-index:9999">ERROR: '+m+'<br>'+s+':'+l+'</div>';};
+window.addEventListener('unhandledrejection',function(e){document.getElementById('root').innerHTML='<div style="color:orange;padding:20px;font-family:monospace;font-size:12px;background:#000;position:fixed;top:0;left:0;right:0;z-index:9999">MODULE ERROR: '+e.reason+'</div>';});
+</script>
 <script type="module">
 import { html, render, useState, useEffect, useRef, useMemo } from 'https://cdn.jsdelivr.net/npm/htm@3/preact/standalone.module.js';
 
