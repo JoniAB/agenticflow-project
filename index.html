@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>מנגל עצמאות 78 🇮🇱🔥</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <style>
+    * { font-family: 'Heebo', sans-serif; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh; margin: 0; overflow-x: hidden;
+      /* Lighter flag-inspired background */
+      background:
+        linear-gradient(180deg,
+          rgba(0,56,184,0.18) 0%,   rgba(0,56,184,0.18) 7%,
+          transparent 7%,            transparent 16%,
+          transparent 82%,           transparent 88%,
+          rgba(0,56,184,0.18) 88%,  rgba(0,56,184,0.18) 95%,
+          transparent 95%
+        ),
+        linear-gradient(155deg,
+          #dde8ff 0%, #b8cff7 18%, #7aaae8 38%,
+          #3565d4 58%, #1040b5 78%, #0a2880 100%
+        );
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.13);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+    .glass-orange {
+      background: rgba(255,80,0,0.18);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,100,0,0.4);
+    }
+    .glass-green {
+      background: rgba(22,163,74,0.18);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(34,197,94,0.4);
+    }
+    .glass-dark {
+      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    /* ── Animations ── */
+    @keyframes floatStar {
+      0%,100% { transform: translate(var(--px,0px),0px) rotate(0deg);   opacity: var(--op,0.07); }
+      50%      { transform: translate(var(--px,0px),-14px) rotate(180deg); opacity: calc(var(--op,0.07) * 1.6); }
+    }
+    .star-bg { animation: floatStar var(--dur,8s) ease-in-out infinite var(--delay,0s); will-change: transform; }
+
+    @keyframes smoke {
+      0%   { transform: translateY(0) scale(1); opacity: 0.6; }
+      50%  { transform: translateY(-55px) translateX(6px) scale(2.2); opacity: 0.3; }
+      100% { transform: translateY(-130px) translateX(-4px) scale(4); opacity: 0; }
+    }
+    .smoke-p { animation: smoke var(--dur,2.8s) ease-out infinite var(--delay,0s); }
+
+    @keyframes smokeBurst {
+      0%   { transform: translateY(0) scale(0.6); opacity: 0.85; }
+      100% { transform: translateY(-70px) scale(3.5); opacity: 0; }
+    }
+    .smoke-burst { animation: smokeBurst 0.85s ease-out forwards; }
+
+    @keyframes popIn {
+      0%   { transform: scale(0.2) rotate(-10deg); opacity: 0; }
+      65%  { transform: scale(1.08) rotate(3deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .pop-in { animation: popIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+    @keyframes slideUp   { from { transform:translateY(24px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+    @keyframes slideLeft { from { transform:translateX(32px); opacity:0; } to { transform:translateX(0); opacity:1; } }
+    .slide-up   { animation: slideUp   0.28s ease-out forwards; }
+    .slide-left { animation: slideLeft 0.26s ease-out forwards; }
+
+    @keyframes flipPulse {
+      0%,100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(255,69,0,0.6); }
+      50%      { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(255,69,0,0); }
+    }
+    .flip-pulse { animation: flipPulse 1s ease-in-out infinite; }
+
+    @keyframes donePulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+      50%      { box-shadow: 0 0 0 10px rgba(34,197,94,0); }
+    }
+    .done-pulse { animation: donePulse 1.2s ease-in-out infinite; }
+
+    /* Ring progress transitions LTR */
+    .ring-arc { transition: stroke-dashoffset 0.8s linear; }
+
+    /* Meat card */
+    .meat-card { transition: transform 0.12s ease, box-shadow 0.12s ease; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .meat-card:hover  { transform: scale(1.025); box-shadow: 0 10px 36px rgba(0,40,180,0.45); }
+    .meat-card:active { transform: scale(0.95); }
+
+    /* Settings button */
+    .sel-btn { transition: all 0.18s ease; -webkit-tap-highlight-color: transparent; }
+
+    /* Volume range */
+    input[type=range] { -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; outline: none; cursor: pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+
+    .btn { -webkit-tap-highlight-color: transparent; transition: transform 0.1s ease, opacity 0.1s ease; }
+    .btn:active { transform: scale(0.94); opacity: 0.85; }
+
+    /* Timer card overflow protection */
+    .timer-card { min-width: 0; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+/* ══════════════════════════════════════════════════════════
+   DATA
+══════════════════════════════════════════════════════════ */
+const MEATS = [
+  { id:'entrecote', name:'סטייק אנטריקוט', subtitle:'הקלאסיק של המנגל',      emoji:'🥩',
+    grad:'linear-gradient(140deg,#7f1d1d,#b91c1c,#ef4444)',
+    times:{ rare:2.5, medium:4, wellDone:6 },
+    tip:'תן לסטייק לנוח 5 דקות לפני חיתוך — הנוזלים יחזרו ויהיה הרבה יותר עסיסי.' },
+  { id:'sirloin',   name:'סטייק סינטה',    subtitle:'רזה ועסיסי',             emoji:'🥩',
+    grad:'linear-gradient(140deg,#831843,#be185d,#f472b6)',
+    times:{ rare:2, medium:3.5, wellDone:5.5 },
+    tip:'הסינטה אוהבת גריל רותח מאוד — ודא שהמשטח לוהט לפני שמניחים.' },
+  { id:'fillet',    name:'פילה בקר',        subtitle:'הנתח המלכותי',           emoji:'🍖',
+    grad:'linear-gradient(140deg,#78350f,#d97706,#fbbf24)',
+    times:{ rare:3, medium:4.5, wellDone:6 },
+    tip:'פילה Well Done הוא כמעט פשע קולינרי — נסה Medium לפחות פעם!' },
+  { id:'lamb',      name:'צלעות כבש',       subtitle:'ניחוח של חג אמיתי',     emoji:'🍖',
+    grad:'linear-gradient(140deg,#14532d,#16a34a,#4ade80)',
+    times:{ rare:2, medium:3, wellDone:5 },
+    tip:'הוסף ענפי רוזמרין ישירות על הגחלים — הניחוח ישגע את השכנים.' },
+  { id:'burger',    name:'המבורגר',          subtitle:'פייבוריט של כולם',      emoji:'🍔',
+    grad:'linear-gradient(140deg,#451a03,#b45309,#f59e0b)',
+    times:{ rare:null, medium:4, wellDone:6 },
+    tip:'לחץ פעם אחת בלבד — לחץ חוזר שופך את כל המיצים.' },
+];
+
+const DONENESS = [
+  { id:'rare',     label:'Rare',      sub:'אדום ועסיסי',  color:'#dc2626' },
+  { id:'medium',   label:'Medium',    sub:'ורוד מושלם',   color:'#b45309' },
+  { id:'wellDone', label:'Well Done', sub:'עשוי לגמרי',   color:'#44403c' },
+];
+
+const THICKNESS = [
+  { id:'thin',    label:'דק',    sub:'~1 ס"מ',  mult:0.65, icon:'▱' },
+  { id:'normal',  label:'רגיל',  sub:'~2 ס"מ',  mult:1.0,  icon:'▰' },
+  { id:'thick',   label:'עבה',   sub:'~3 ס"מ',  mult:1.4,  icon:'▬' },
+  { id:'premium', label:'פרימיום',sub:'~4+ ס"מ', mult:1.85, icon:'█' },
+];
+
+const FIRE = [
+  { id:'low',    label:'אש חלשה',   sub:'גחלים עדינות', mult:1.35, icon:'🔥', iconSmall:'🪨' },
+  { id:'medium', label:'אש בינונית',sub:'גריל רגיל',    mult:1.0,  icon:'🔥🔥', iconSmall:'🔥' },
+  { id:'high',   label:'אש חזקה',   sub:'שלהבת גבוהה',  mult:0.75, icon:'🔥🔥🔥', iconSmall:'🔥🔥' },
+];
+
+const D_LABEL = { rare:'Rare', medium:'Medium', wellDone:'Well Done' };
+const LS_KEY  = 'mangal78_v3';
+
+/* ══════════════════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════════════════ */
+const fmt    = s  => `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+const uid    = () => Math.random().toString(36).slice(2,9);
+const saveLS = d  => { try { localStorage.setItem(LS_KEY, JSON.stringify(d)); } catch{} }
+const loadLS = () => { try { const r=localStorage.getItem(LS_KEY); return r?JSON.parse(r):null; } catch{ return null; } }
+const vibe   = p  => { if ('vibrate' in navigator) try { navigator.vibrate(p); } catch{} }
+
+function calcSideTime(meat, doneness, thickness, fire) {
+  const base  = meat.times[doneness] ?? 4;
+  const tMult = THICKNESS.find(t=>t.id===thickness)?.mult ?? 1.0;
+  const fMult = FIRE.find(f=>f.id===fire)?.mult ?? 1.0;
+  return base * tMult * fMult; // minutes per side
+}
+
+/* ══════════════════════════════════════════════════════════
+   AUDIO ENGINE
+══════════════════════════════════════════════════════════ */
+let _ctx = null;
+const getCtx = () => { if (!_ctx) _ctx = new (window.AudioContext||window.webkitAudioContext)(); return _ctx; };
+
+let _masterGain = null;
+function getMG() {
+  if (!_masterGain) { const c=getCtx(); _masterGain=c.createGain(); _masterGain.gain.value=0.55; _masterGain.connect(c.destination); }
+  return _masterGain;
+}
+
+function tone(freq, start, dur, vol=0.18, type='triangle', useMaster=false) {
+  try {
+    const c=getCtx(), o=c.createOscillator(), g=c.createGain();
+    o.connect(g); g.connect(useMaster ? getMG() : c.destination);
+    o.type=type; o.frequency.value=freq;
+    g.gain.setValueAtTime(vol,start);
+    g.gain.exponentialRampToValueAtTime(0.001,start+dur);
+    o.start(start); o.stop(start+dur+0.02);
+  } catch{}
+}
+
+function playSizzle() {
+  try {
+    const c=getCtx(), dur=1.1;
+    const buf=c.createBuffer(1,c.sampleRate*dur,c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+    const src=c.createBufferSource(); src.buffer=buf;
+    const bp=c.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=3200; bp.Q.value=0.7;
+    const hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=1400;
+    const g=c.createGain(); const t=c.currentTime;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(0.52,t+0.03);
+    g.gain.setValueAtTime(0.42,t+0.09);
+    g.gain.exponentialRampToValueAtTime(0.08,t+0.55);
+    g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    src.connect(bp); bp.connect(hp); hp.connect(g); g.connect(c.destination);
+    src.start(t); src.stop(t+dur);
+  } catch{}
+}
+
+function playFlipSound() {
+  try {
+    const c=getCtx(), t=c.currentTime;
+    [880,1100,880,1100,1320].forEach((f,i)=>tone(f,t+i*0.14,0.22,0.17,'sine'));
+  } catch{}
+}
+
+function playCelebSound() {
+  try {
+    const c=getCtx(), t=c.currentTime;
+    [523,587,659,698,784,880,784,698,659,784,1047].forEach((f,i)=>tone(f,t+i*0.16,0.2,0.14,'triangle'));
+  } catch{}
+}
+
+function playSelectSound() {
+  try { const c=getCtx(),t=c.currentTime; tone(440,t,0.1,0.12,'sine'); tone(550,t+0.08,0.12,0.1,'sine'); } catch{}
+}
+
+/* ── Music tracks (4 synth remixes of Israeli folk melodies) ── */
+// Note: [freq_hz, beat_duration]  — beat at each track's BPM
+const _NOTE = {
+  C4:261.63,D4:293.66,Ds4:311.13,E4:329.63,F4:349.23,
+  Fs4:369.99,G4:392.00,Gs4:415.30,A4:440.00,As4:466.16,
+  B4:493.88,C5:523.25,Cs5:554.37,D5:587.33,Ds5:622.25,
+  E5:659.25,F5:698.46,Fs5:739.99,G5:783.99,A5:880.00,
+};
+const {C4,D4,Ds4,E4,F4,Fs4,G4,Gs4,A4,As4,B4,C5,Cs5,D5,E5,F5,G5,A5}=_NOTE;
+
+const TRACKS = [
+  { name:'הבה נגילה – Remix', emoji:'🕺', color:'#1d4ed8', bpm:128, vol:0.11,
+    notes:[
+      [E4,.5],[Fs4,.5],[Gs4,.5],[A4,1.5],[B4,.5],[B4,.5],[B4,.5],[C5,1.5],
+      [C5,.5],[B4,.5],[C5,.5],[B4,.5],[A4,2],[A4,.5],[Gs4,.5],[A4,.5],[Gs4,.5],[Fs4,2],
+      [E4,.5],[Fs4,.5],[Gs4,.5],[A4,1.5],[E5,.5],[Ds5,.5],[E5,.5],[D5,.5],[C5,2],[0,1],
+    ]},
+  { name:'ירושלים של זהב', emoji:'🏛️', color:'#7c3aed', bpm:88, vol:0.09,
+    notes:[
+      [G4,.75],[0,.25],[E4,.5],[D4,.5],[E4,.5],[G4,.5],[A4,.5],[B4,2],[0,.5],
+      [B4,.75],[0,.25],[G4,.5],[Fs4,.5],[G4,.5],[A4,.5],[G4,2],[0,.5],
+      [G4,.5],[G4,.5],[C5,.5],[B4,.5],[A4,.5],[G4,.5],[Fs4,.5],[D4,2],[0,.5],
+      [D4,.5],[D4,.5],[G4,.5],[Fs4,.5],[E4,.5],[D4,.5],[E4,.5],[G4,2],[0,1],
+    ]},
+  { name:'על כל אלה – Beat', emoji:'🌿', color:'#047857', bpm:108, vol:0.10,
+    notes:[
+      [D4,.5],[G4,1],[A4,.5],[As4,.5],[C5,1],[D5,2],
+      [C5,.5],[B4,.5],[A4,.5],[G4,.5],[Fs4,2],[0,.5],
+      [D4,.5],[G4,1],[A4,.5],[As4,.5],[C5,.5],[D5,.5],[F5,.5],[E5,2],[0,.5],
+      [D5,.5],[C5,.5],[B4,.5],[As4,.5],[A4,.5],[G4,.5],[Fs4,.5],[G4,2],[0,1],
+    ]},
+  { name:'ריקוד עם ישראל 🔥', emoji:'💃', color:'#b91c1c', bpm:145, vol:0.10,
+    notes:[
+      [E4,.5],[E4,.5],[Fs4,.5],[Gs4,.5],[A4,1],[B4,1],
+      [A4,.5],[Gs4,.5],[E4,.5],[Fs4,2],[0,.5],
+      [B4,.5],[B4,.5],[C5,.5],[B4,.5],[A4,.5],[Gs4,1.5],
+      [E4,.5],[Fs4,.5],[Gs4,.5],[A4,.5],[B4,1],[E5,1.5],[0,.5],
+      [E5,.5],[D5,.5],[C5,.5],[B4,.5],[A4,.5],[Gs4,.5],[Fs4,.5],[E4,2],[0,1],
+    ]},
+];
+
+let _musicOn=false, _musicTrack=0, _musicTimer=null, _loopStartMs=null, _loopDurMs=0;
+
+function _scheduleTrack(idx) {
+  const tr=TRACKS[idx], beat=60/tr.bpm, c=getCtx();
+  let t=c.currentTime+0.05;
+  tr.notes.forEach(([f,b])=>{ if(f>0) tone(f,t,b*beat*0.88,tr.vol,'triangle',true); t+=b*beat; });
+  const totalBeats=tr.notes.reduce((s,[,b])=>s+b,0);
+  const dur=totalBeats*beat;
+  _loopStartMs=Date.now()+50; _loopDurMs=dur*1000;
+  if(_musicTimer) clearTimeout(_musicTimer);
+  _musicTimer=setTimeout(()=>{ if(_musicOn) _scheduleTrack(_musicTrack); }, dur*1000+120);
+}
+function startTrack(idx){ _musicOn=true; _musicTrack=idx; _scheduleTrack(idx); }
+function stopTrack(){ _musicOn=false; if(_musicTimer){clearTimeout(_musicTimer);_musicTimer=null;} }
+function setMusicVol(v){ getMG().gain.value=v; }
+function getMusicProgress(){ if(!_musicOn||!_loopStartMs) return 0; return ((Date.now()-_loopStartMs)%_loopDurMs)/_loopDurMs; }
+
+/* ══════════════════════════════════════════════════════════
+   BG — PARALLAX STARS
+══════════════════════════════════════════════════════════ */
+const BG_STARS = Array.from({length:24},(_,i)=>({
+  id:i, x:(i*17+5)%94, y:(i*29+7)%88,
+  size:12+(i%5)*10, depth:0.2+(i%4)*0.28,
+  dur:`${5.5+i*1.1}s`, delay:`${(i*0.55)%4.5}s`,
+  op:0.055+(i%4)*0.022, dark:i%3===0,
+}));
+
+function FestiveBG() {
+  const [mx,setMx]=useState(0), [my,setMy]=useState(0);
+  const mobile = useMemo(()=>window.matchMedia('(max-width:768px)').matches,[]);
+  useEffect(()=>{
+    if(mobile) return;
+    const h=(e)=>{ setMx((e.clientX/window.innerWidth-.5)*2); setMy((e.clientY/window.innerHeight-.5)*2); };
+    window.addEventListener('mousemove',h,{passive:true});
+    return ()=>window.removeEventListener('mousemove',h);
+  },[mobile]);
+  return (
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
+      {BG_STARS.map(s=>{
+        const px=mobile?0:mx*s.depth*22, py=mobile?0:my*s.depth*16;
+        return (
+          <div key={s.id} className="star-bg absolute"
+            style={{ left:`${s.x}%`, top:`${s.y}%`, fontSize:s.size,
+              color:`rgba(${s.dark?'0,20,100':'0,40,160'},${s.op})`,
+              transform:`translate(${px}px,${py}px)`,
+              transition:mobile?'none':'transform 0.5s ease-out',
+              '--dur':s.dur, '--delay':s.delay,
+            }}>✡</div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   SMOKE (timer screen)
+══════════════════════════════════════════════════════════ */
+function Smoke() {
+  const ps=Array.from({length:8},(_,i)=>({
+    id:i, left:`${8+i*11}%`, size:26+i*8,
+    dur:`${2.3+i*0.3}s`, delay:`${i*0.4}s`, op:0.06+i*0.015,
+  }));
+  return (
+    <div className="pointer-events-none fixed bottom-0 inset-x-0 h-52 overflow-hidden z-10">
+      {ps.map(p=>(
+        <div key={p.id} className="smoke-p absolute bottom-1 rounded-full"
+          style={{ left:p.left, width:p.size, height:p.size,
+            background:`rgba(210,210,210,${p.op})`, filter:'blur(10px)',
+            '--dur':p.dur, '--delay':p.delay }} />
+      ))}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   MUSIC PLAYER
+══════════════════════════════════════════════════════════ */
+function MusicPlayer({ visible }) {
+  const [playing,  setPlaying]  = useState(false);
+  const [trackIdx, setTrackIdx] = useState(0);
+  const [vol,      setVol]      = useState(0.55);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(()=>{
+    if(!playing) return;
+    const iv=setInterval(()=>setProgress(getMusicProgress()),120);
+    return ()=>clearInterval(iv);
+  },[playing, trackIdx]);
+
+  const toggle = ()=>{
+    try{ getCtx().resume(); }catch{}
+    if(playing){ stopTrack(); setPlaying(false); setProgress(0); }
+    else { startTrack(trackIdx); setPlaying(true); }
+  };
+  const changeTrack = i=>{
+    setTrackIdx(i);
+    if(playing){ stopTrack(); setTimeout(()=>startTrack(i),60); }
+  };
+  const handleVol = e=>{
+    const v=parseFloat(e.target.value); setVol(v); setMusicVol(v);
+  };
+
+  if(!visible) return null;
+  const tr=TRACKS[trackIdx];
+  return (
+    <div className="glass rounded-2xl p-3 slide-up">
+      {/* Track pills */}
+      <div className="flex gap-1.5 mb-2.5 overflow-x-auto pb-0.5" style={{scrollbarWidth:'none'}}>
+        {TRACKS.map((t,i)=>(
+          <button key={i} onClick={()=>changeTrack(i)}
+            className="btn flex-shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap"
+            style={trackIdx===i ? {background:t.color,color:'#fff'} : {color:'rgba(255,255,255,0.4)'}}>
+            {t.emoji} {t.name}
+          </button>
+        ))}
+      </div>
+      {/* Controls */}
+      <div className="flex items-center gap-2.5">
+        <button onClick={toggle} className="btn text-2xl flex-shrink-0 w-9 h-9 flex items-center justify-center">
+          {playing ? '⏸' : '▶️'}
+        </button>
+        {/* Progress — LTR */}
+        <div className="flex-1 min-w-0" dir="ltr">
+          <div className="h-2 rounded-full overflow-hidden" style={{background:'rgba(255,255,255,0.15)'}}>
+            <div className="h-full rounded-full transition-all duration-100"
+              style={{width:`${progress*100}%`, background:tr.color}} />
+          </div>
+        </div>
+        {/* Volume — LTR */}
+        <div className="flex items-center gap-1.5 flex-shrink-0" dir="ltr">
+          <span className="text-white/40 text-xs">🔈</span>
+          <input type="range" min="0" max="1" step="0.05" value={vol} onChange={handleVol}
+            className="w-16" style={{background:`linear-gradient(to right,${tr.color} ${vol*100}%,rgba(255,255,255,0.2) ${vol*100}%)`}}/>
+          <span className="text-white/40 text-xs">🔊</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   MINI RING (for timer cards)
+══════════════════════════════════════════════════════════ */
+function MiniRing({ remaining, total, size=60 }) {
+  const R=size/2-5, C=2*Math.PI*R;
+  const pct = total>0 ? Math.max(0,remaining/total) : 0;
+  const offset = C*(1-pct);
+  const color = pct>0.5?'#3b82f6':pct>0.22?'#f97316':'#ef4444';
+  return (
+    <svg width={size} height={size} style={{transform:'rotate(-90deg)', flexShrink:0}}>
+      <circle cx={size/2} cy={size/2} r={R} fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={5}/>
+      <circle cx={size/2} cy={size/2} r={R} fill="none" stroke={color} strokeWidth={5}
+        strokeLinecap="round" strokeDasharray={C} strokeDashoffset={offset} className="ring-arc"/>
+    </svg>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   TIMER CARD (dashboard)
+══════════════════════════════════════════════════════════ */
+function TimerCard({ timer, onFlip, onRemove, onCelebrate }) {
+  const meat = MEATS.find(m=>m.id===timer.meatId);
+  if(!meat) return null;
+
+  const thick = THICKNESS.find(t=>t.id===timer.thickness);
+  const fire  = FIRE.find(f=>f.id===timer.fire);
+
+  const meatBg = {
+    rare:'radial-gradient(ellipse at 45% 40%,#b91c1c,#7f1d1d,#450a0a)',
+    medium:'radial-gradient(ellipse at 45% 40%,#d97706,#92400e,#451a03)',
+    wellDone:'radial-gradient(ellipse at 45% 40%,#57534e,#292524,#0c0a09)',
+  }[timer.doneness];
+
+  const isDone     = timer.phase==='done';
+  const isFlip     = timer.phase==='flipReady';
+  const isSecond   = timer.phase==='second';
+
+  const phaseLabel = isFlip    ? '⚡ הפוך עכשיו!'  :
+                     isDone    ? '✅ מוכן!'          :
+                     isSecond  ? '🔥 צד שני'         : '🔥 צד ראשון';
+
+  return (
+    <div className={`timer-card glass rounded-2xl overflow-hidden relative
+      ${isFlip  ? 'flip-pulse'  : ''}
+      ${isDone  ? 'done-pulse glass-green' : ''}
+    `}>
+      {/* Meat image strip */}
+      <div className="flex items-center gap-3 p-3">
+        <div className="relative flex-shrink-0">
+          <div className="w-16 h-16 rounded-xl flex items-center justify-center text-4xl"
+            style={{ background: meatBg,
+              filter: isDone ? 'brightness(1.1) saturate(1.3)' : 'none',
+              transition:'filter 0.5s' }}>
+            {meat.emoji}
+          </div>
+          {/* Phase dot */}
+          {!isDone && (
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white/20"
+              style={{background: isFlip?'#FF4500':isSecond?'#22c55e':'#3b82f6'}} />
+          )}
+        </div>
+
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="text-white font-black text-sm leading-tight truncate">{meat.name}</div>
+          <div className="text-white/55 text-xs mt-0.5 truncate">
+            {D_LABEL[timer.doneness]} · {thick?.label} · {fire?.iconSmall}
+          </div>
+          <div className={`text-xs font-bold mt-0.5
+            ${isFlip?'text-orange-300':isDone?'text-green-300':'text-blue-200'}`}>
+            {phaseLabel}
+          </div>
+        </div>
+
+        {/* Ring + Time */}
+        <div className="flex flex-col items-center gap-0.5 flex-shrink-0">
+          <MiniRing remaining={timer.remaining??0} total={timer.totalSecs} size={56}/>
+          <div className="text-white font-black text-xs" style={{marginTop:-2}}>
+            {isDone ? '🎉' : fmt(Math.ceil(timer.remaining??0))}
+          </div>
+        </div>
+      </div>
+
+      {/* Action buttons */}
+      {(isFlip || isDone) && (
+        <div className="px-3 pb-3 flex gap-2">
+          {isFlip && (
+            <button onClick={()=>onFlip(timer.id)}
+              className="btn flex-1 py-2.5 rounded-xl font-black text-white text-sm"
+              style={{background:'linear-gradient(135deg,#FF4500,#ff7700)'}}>
+              הפכתי! 🔄
+            </button>
+          )}
+          {isDone && (
+            <button onClick={()=>onCelebrate(timer)}
+              className="btn flex-1 py-2.5 rounded-xl font-black text-white text-sm"
+              style={{background:'linear-gradient(135deg,#16a34a,#22c55e)'}}>
+              🎉 חגוג!
+            </button>
+          )}
+          <button onClick={()=>onRemove(timer.id)}
+            className="btn glass px-4 py-2.5 rounded-xl text-white/60 text-sm font-bold">
+            ✕
+          </button>
+        </div>
+      )}
+      {!isFlip && !isDone && (
+        <button onClick={()=>onRemove(timer.id)}
+          className="absolute top-2 left-2 btn glass w-6 h-6 rounded-full flex items-center justify-center text-white/30 text-xs">
+          ✕
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   CELEBRATION OVERLAY
+══════════════════════════════════════════════════════════ */
+function Celebration({ timer, onClose }) {
+  const meat=MEATS.find(m=>m.id===timer.meatId);
+  const canvasRef=useRef(null);
+  useEffect(()=>{
+    playCelebSound(); vibe([300,120,300,120,600]);
+    const el=canvasRef.current; if(!el||!window.confetti) return;
+    const fire=confetti.create(el,{resize:true,useWorker:false});
+    const colors=['#0038B8','#FFFFFF','#1e40af','#93c5fd','#eff6ff'];
+    const shoot=x=>fire({particleCount:70,spread:88,origin:{x,y:0.65},colors,gravity:0.88});
+    shoot(0.25); shoot(0.75);
+    const t1=setTimeout(()=>{shoot(0.2);shoot(0.8);},430);
+    const t2=setTimeout(()=>{shoot(0.5);},870);
+    return ()=>{ clearTimeout(t1); clearTimeout(t2); };
+  },[]);
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{background:'rgba(0,12,60,0.93)'}}>
+      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none"/>
+      <div className="glass rounded-3xl p-8 text-center mx-5 max-w-xs w-full relative z-10 slide-up">
+        <div className="text-6xl mb-3">🎉</div>
+        <div className="text-4xl font-black text-white mb-2">מוכן!</div>
+        <div className="text-xl font-bold text-blue-200 mb-1">{meat?.name}</div>
+        <div className="text-white/55 text-sm mb-1">{D_LABEL[timer.doneness]}</div>
+        <div className="text-4xl my-4">🇮🇱</div>
+        <div className="text-white/65 text-sm mb-6">חג עצמאות שמח! בתיאבון 🥩🔥</div>
+        <button onClick={onClose}
+          className="btn w-full py-4 rounded-2xl font-black text-white text-lg"
+          style={{background:'linear-gradient(135deg,#0038B8,#0055ff)'}}>
+          אחלה, המשך! 🔥
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   HOME SCREEN (dashboard)
+══════════════════════════════════════════════════════════ */
+function HomeScreen({ timers, onAdd, onFlip, onRemove, onCelebrate, showMusic, onToggleMusic }) {
+  const shareWA = (t) => {
+    const meat=MEATS.find(m=>m.id===t.meatId);
+    const txt=encodeURIComponent(`ה${meat?.name} מוכן! בואו לאכול 🥩🔥 (${D_LABEL[t.doneness]})`);
+    window.open(`https://wa.me/?text=${txt}`,'_blank');
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col max-w-md mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 pt-6 pb-3">
+        <div>
+          <div className="text-2xl font-black text-white leading-tight">מנגל עצמאות 78</div>
+          <div className="text-blue-200 text-xs mt-0.5">🇮🇱 חג עצמאות שמח</div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={onToggleMusic}
+            className={`btn glass w-9 h-9 rounded-full flex items-center justify-center text-lg ${showMusic?'ring-2 ring-yellow-400':''}`}>
+            🎶
+          </button>
+          <button onClick={onAdd}
+            className="btn px-4 py-2 rounded-xl font-black text-white text-sm"
+            style={{background:'linear-gradient(135deg,#FF4500,#ff7700)',boxShadow:'0 4px 16px rgba(255,69,0,0.4)'}}>
+            + הוסף בשר
+          </button>
+        </div>
+      </div>
+
+      {/* Music player */}
+      {showMusic && <div className="px-4 mb-3"><MusicPlayer visible={true}/></div>}
+
+      {/* Timer cards grid */}
+      <div className="flex-1 px-4 pb-8">
+        {timers.length === 0 ? (
+          <div className="flex flex-col items-center justify-center pt-20 pb-10 text-center slide-up">
+            <div className="text-8xl mb-4">🔥</div>
+            <div className="text-2xl font-black text-white mb-2">הגריל מחכה לך!</div>
+            <div className="text-blue-200 text-sm mb-8">לחץ "+ הוסף בשר" כדי להתחיל</div>
+            <div className="text-6xl">🇮🇱</div>
+            <div className="text-white/30 text-xs mt-4 tracking-widest">✡ חג עצמאות שמח ✡</div>
+          </div>
+        ) : (
+          <div className={`grid gap-3 ${timers.length>1?'grid-cols-1 sm:grid-cols-2':'grid-cols-1'}`}>
+            {timers.map(t=>(
+              <div key={t.id}>
+                <TimerCard timer={t} onFlip={onFlip} onRemove={onRemove} onCelebrate={onCelebrate}/>
+                {t.phase==='done' && (
+                  <button onClick={()=>shareWA(t)}
+                    className="btn glass w-full mt-1.5 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-bold text-white"
+                    style={{borderColor:'rgba(37,211,102,0.4)',background:'rgba(37,211,102,0.1)'}}>
+                    📱 שלח לחבר'ה שמוכן
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   MEAT SELECTION SCREEN
+══════════════════════════════════════════════════════════ */
+function MeatScreen({ onSelect, onBack }) {
+  const [smokingId, setSmokingId] = useState(null);
+
+  const handleClick = (meat) => {
+    try { getCtx().resume(); } catch {}
+    playSizzle();
+    playSelectSound();
+    setSmokingId(meat.id);
+    setTimeout(()=>{ setSmokingId(null); onSelect(meat); }, 260);
+  };
+
+  const perSide = m => DONENESS.filter(d=>m.times[d.id]!==null).map(d=>`${d.label}:${m.times[d.id]}'`).join(' · ');
+
+  return (
+    <div className="min-h-screen p-4 pb-10 max-w-md mx-auto slide-left">
+      <button onClick={onBack} className="btn text-white/55 text-sm flex items-center gap-1 mt-4 mb-5">
+        ← חזרה
+      </button>
+      <div className="text-center mb-6">
+        <div className="text-4xl mb-2">🥩</div>
+        <h2 className="text-2xl font-black text-white">בחר את הבשר</h2>
+        <p className="text-blue-200 text-sm mt-1">לחיצה תפתח הגדרות צלייה</p>
+      </div>
+      <div className="space-y-3">
+        {MEATS.map(meat=>(
+          <button key={meat.id} onClick={()=>handleClick(meat)}
+            className="meat-card w-full glass rounded-2xl text-right overflow-hidden relative"
+            style={{boxShadow:'0 5px 24px rgba(0,0,0,0.28)'}}>
+            {/* Smoke burst overlay */}
+            {smokingId===meat.id && (
+              <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden rounded-2xl">
+                {[0,1,2,3,4,5].map(i=>(
+                  <div key={i} className="smoke-burst absolute bottom-2 rounded-full"
+                    style={{ left:`${12+i*14}%`, width:18, height:18,
+                      background:'rgba(220,220,200,0.75)', filter:'blur(5px)',
+                      animationDelay:`${i*0.055}s` }} />
+                ))}
+              </div>
+            )}
+            <div className="flex items-center gap-3 p-4">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0"
+                style={{background:meat.grad}}>{meat.emoji}</div>
+              <div className="flex-1 min-w-0">
+                <div className="text-white font-black text-base leading-tight">{meat.name}</div>
+                <div className="text-blue-200 text-sm">{meat.subtitle}</div>
+                <div className="text-white/30 text-xs mt-1 truncate">{perSide(meat)}</div>
+              </div>
+              <div className="text-white/35 text-lg flex-shrink-0">◀</div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   CONFIGURE SCREEN (doneness + thickness + fire)
+══════════════════════════════════════════════════════════ */
+function ConfigScreen({ meat, onBack, onStart }) {
+  const [doneness,  setDoneness]  = useState('medium');
+  const [thickness, setThickness] = useState('normal');
+  const [fire,      setFire]      = useState('medium');
+
+  const avail   = DONENESS.filter(d=>!(meat.id==='burger'&&d.id==='rare'));
+  const selDon  = avail.find(d=>d.id===doneness) || avail[0];
+  const sideMin = meat.times[doneness] ? calcSideTime(meat,doneness,thickness,fire) : null;
+
+  const previewBg = {
+    rare:'radial-gradient(ellipse at 45% 40%,#b91c1c,#7f1d1d,#450a0a)',
+    medium:'radial-gradient(ellipse at 45% 40%,#d97706,#92400e,#451a03)',
+    wellDone:'radial-gradient(ellipse at 45% 40%,#57534e,#292524,#0c0a09)',
+  }[doneness];
+
+  const SelRow = ({ options, value, onChange, label }) => (
+    <div className="mb-4">
+      <div className="text-white/60 text-xs font-bold mb-2 uppercase tracking-wider">{label}</div>
+      <div className="glass rounded-xl p-1 flex gap-1">
+        {options.map(opt=>(
+          <button key={opt.id} onClick={()=>onChange(opt.id)}
+            className={`sel-btn flex-1 py-2 px-1 rounded-lg text-center text-xs font-bold
+              ${value===opt.id?'text-white':'text-white/38'}`}
+            style={value===opt.id?{background:selDon.color,boxShadow:`0 2px 10px ${selDon.color}88`}:{}}>
+            <div>{opt.label}</div>
+            <div className="font-normal opacity-75 mt-0.5 text-xs">{opt.sub}</div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen p-4 max-w-md mx-auto flex flex-col slide-left">
+      <button onClick={onBack} className="btn text-white/55 text-sm flex items-center gap-1 mt-4 mb-4">
+        ← {meat.name}
+      </button>
+
+      {/* Meat preview */}
+      <div className="glass rounded-2xl p-5 text-center mb-5 transition-all duration-500"
+        style={{background:previewBg}}>
+        <div className="text-6xl mb-2 transition-all duration-500"
+          style={{filter:doneness==='wellDone'?'brightness(0.55) saturate(0.25)':'none'}}>
+          {meat.emoji}
+        </div>
+        {sideMin ? (
+          <>
+            <div className="text-white font-bold">{selDon.sub}</div>
+            <div className="text-white/60 text-sm mt-1">
+              <span className="font-black text-white text-lg">{sideMin.toFixed(1)}'</span> לכל צד
+              &nbsp;·&nbsp;
+              <span className="font-black text-white">{(sideMin*2).toFixed(1)}'</span> סה"כ
+            </div>
+          </>
+        ) : (
+          <div className="text-orange-300 font-bold text-sm">⚠️ לא מומלץ מבחינת בטיחות מזון</div>
+        )}
+      </div>
+
+      {/* Settings */}
+      <SelRow options={avail}      value={doneness}  onChange={setDoneness}  label="מידת עשייה" />
+      <SelRow options={THICKNESS}  value={thickness} onChange={setThickness} label="עובי הנתח" />
+      <SelRow options={FIRE}       value={fire}       onChange={setFire}      label="עוצמת האש" />
+
+      {/* Tip */}
+      <div className="glass rounded-xl p-3 mb-5 flex gap-3 items-start">
+        <span className="text-xl flex-shrink-0">👨‍🍳</span>
+        <div className="text-white/50 text-sm leading-relaxed">{meat.tip}</div>
+      </div>
+
+      {/* Start */}
+      <button disabled={!sideMin}
+        onClick={()=>{ if(sideMin){ playSelectSound(); onStart(meat,doneness,thickness,fire,sideMin); } }}
+        className="btn py-5 rounded-2xl font-black text-xl text-white mt-auto"
+        style={sideMin
+          ? {background:'linear-gradient(135deg,#FF4500,#ff7700)',boxShadow:'0 8px 28px rgba(255,69,0,0.42)'}
+          : {background:'#555',opacity:0.45}}>
+        {sideMin ? `🔥 הצת! (${(sideMin*2).toFixed(1)} דק')` : '🚫 לא זמין'}
+      </button>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   APP
+══════════════════════════════════════════════════════════ */
+function App() {
+  const [screen,        setScreen]        = useState('home');   // home | addMeat | configure
+  const [activeTimers,  setActiveTimers]  = useState([]);
+  const [pendingMeat,   setPendingMeat]   = useState(null);
+  const [showMusic,     setShowMusic]     = useState(false);
+  const [celebration,   setCelebration]   = useState(null);
+
+  const flipTriggered = useRef(new Set());
+  const doneTriggered = useRef(new Set());
+
+  /* ── Restore from localStorage ── */
+  useEffect(()=>{
+    const s=loadLS(); if(!s||!s.timers) return;
+    const restored=s.timers.map(t=>{
+      const elapsed=(Date.now()-t.sideStartMs)/1000;
+      const rem=Math.max(0,t.totalSecs-elapsed);
+      if(t.phase==='flipReady') return {...t, remaining:0};
+      if(t.phase==='second'&&rem<=0) return {...t, remaining:0, phase:'done'};
+      return {...t, remaining:rem};
+    }).filter(t=>t.phase!=='done' || true); // keep done so user can celebrate
+    setActiveTimers(restored);
+    // Re-mark already-triggered
+    restored.forEach(t=>{
+      if(t.phase==='flipReady'||t.phase==='second'||t.phase==='done') flipTriggered.current.add(t.id);
+      if(t.phase==='done') doneTriggered.current.add(t.id);
+    });
+  },[]);
+
+  /* ── Master tick ── */
+  useEffect(()=>{
+    const iv=setInterval(()=>{
+      setActiveTimers(prev=>{
+        let changed=false;
+        const next=prev.map(t=>{
+          if(t.phase==='done'||t.phase==='flipReady') return t;
+          const elapsed=(Date.now()-t.sideStartMs)/1000;
+          const rem=Math.max(0,t.totalSecs-elapsed);
+          if(rem<=0 && t.phase==='first' && !flipTriggered.current.has(t.id)){
+            flipTriggered.current.add(t.id);
+            playFlipSound(); vibe([500,150,500]);
+            changed=true;
+            return {...t, remaining:0, phase:'flipReady'};
+          }
+          if(rem<=0 && t.phase==='second' && !doneTriggered.current.has(t.id)){
+            doneTriggered.current.add(t.id);
+            changed=true;
+            return {...t, remaining:0, phase:'done'};
+          }
+          if(Math.abs((t.remaining??0)-rem)>0.08) changed=true;
+          return {...t, remaining:rem};
+        });
+        if(changed) {
+          saveLS({timers:next.map(({remaining:_,...rest})=>rest)});
+        }
+        return changed ? next : prev;
+      });
+    },220);
+    return ()=>clearInterval(iv);
+  },[]);
+
+  /* ── Actions ── */
+  const handleAddMeat = ()=>setScreen('addMeat');
+  const handleSelectMeat = m=>{ setPendingMeat(m); setScreen('configure'); };
+
+  const handleStartTimer = (meat,doneness,thickness,fire,sideMin)=>{
+    const totalSecs=sideMin*60;
+    const newTimer={
+      id:uid(), meatId:meat.id, doneness, thickness, fire,
+      phase:'first', sideStartMs:Date.now(), totalSecs,
+      remaining:totalSecs,
+    };
+    setActiveTimers(prev=>{
+      const next=[...prev,newTimer];
+      saveLS({timers:next.map(({remaining:_,...rest})=>rest)});
+      return next;
+    });
+    setScreen('home');
+  };
+
+  const handleFlip = id=>{
+    const now=Date.now();
+    flipTriggered.current.delete(id); // allow second-side done detection
+    setActiveTimers(prev=>{
+      const next=prev.map(t=>t.id===id
+        ? {...t, phase:'second', sideStartMs:now, remaining:t.totalSecs}
+        : t);
+      saveLS({timers:next.map(({remaining:_,...rest})=>rest)});
+      return next;
+    });
+  };
+
+  const handleRemove = id=>{
+    flipTriggered.current.delete(id);
+    doneTriggered.current.delete(id);
+    setActiveTimers(prev=>{
+      const next=prev.filter(t=>t.id!==id);
+      saveLS({timers:next.map(({remaining:_,...rest})=>rest)});
+      return next;
+    });
+  };
+
+  const handleCelebrate = timer=>{
+    setCelebration(timer);
+    handleRemove(timer.id);
+  };
+
+  return (
+    <>
+      <FestiveBG />
+      <div className="relative z-10">
+        {screen==='home' && (
+          <HomeScreen timers={activeTimers} onAdd={handleAddMeat}
+            onFlip={handleFlip} onRemove={handleRemove} onCelebrate={handleCelebrate}
+            showMusic={showMusic} onToggleMusic={()=>setShowMusic(p=>!p)}/>
+        )}
+        {screen==='addMeat' && (
+          <MeatScreen onSelect={handleSelectMeat} onBack={()=>setScreen('home')}/>
+        )}
+        {screen==='configure' && pendingMeat && (
+          <ConfigScreen meat={pendingMeat} onBack={()=>setScreen('addMeat')}
+            onStart={handleStartTimer}/>
+        )}
+      </div>
+      {celebration && (
+        <Celebration timer={celebration} onClose={()=>setCelebration(null)}/>
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
