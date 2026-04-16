@@ -151,7 +151,7 @@ function FestiveBG(){
 /* ══ SMOKE ══ */
 function Smoke(){
   return html`<div class="pointer-events-none fixed bottom-0 inset-x-0 h-52 overflow-hidden z-10">
-    ${Array.from({length:8},(_,i)=>html`<div key=${i} class="smoke-p absolute bottom-1 rounded-full" style=${{left:`${8+i*11}%`,width:26+i*8,height:26+i*8,background:`rgba(210,210,210,${.06+i*.015})`,filter:'blur(10px)','--dur':`${2.3+i*.3}s`,'--delay':`${i*.4}s`}}/>`)}`
+    ${Array.from({length:8},(_,i)=>html`<div key=${i} class="smoke-p absolute bottom-1 rounded-full" style=${{left:`${8+i*11}%`,width:26+i*8,height:26+i*8,background:`rgba(210,210,210,${.06+i*.015})`,filter:'blur(10px)','--dur':`${2.3+i*.3}s`,'--delay':`${i*.4}s`}}/>`) }
     </div>`;
 }
 
