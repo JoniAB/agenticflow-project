@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>בית חולים וטרינרי ד"ר אבי צרפתי</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1A3A6B;
+      --primary-light: #2A5499;
+      --primary-dark: #0D2040;
+      --gold: #C9A227;
+      --gold-light: #E8C55A;
+      --cream: #F7F8FC;
+      --text: #1A1A1A;
+      --text-muted: #6B7280;
+      --white: #FFFFFF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Heebo', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; }
+
+    nav {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 70px;
+      background: rgba(13,32,64,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201,162,39,0.2); transition: all 0.3s;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; }
+    .nav-logo-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .nav-logo-text { font-size: 1rem; font-weight: 700; color: var(--white); line-height: 1.2; }
+    .nav-logo-sub { font-size: 0.7rem; font-weight: 300; color: var(--gold-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold-light); }
+    .nav-cta {
+      background: var(--gold); color: var(--primary-dark); border: none; cursor: pointer;
+      padding: 10px 24px; border-radius: 25px; font-size: 0.9rem; font-weight: 700;
+      font-family: 'Heebo', sans-serif; transition: all 0.2s; text-decoration: none;
+    }
+    .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; position: relative; overflow: hidden;
+      display: flex; align-items: center;
+      background: linear-gradient(135deg, #0D2040 0%, #1A3A6B 45%, #0D2A54 100%);
+    }
+    .hero-shapes { position: absolute; inset: 0; pointer-events: none; }
+    .shape-1 {
+      position: absolute; right: -100px; top: 50%;
+      transform: translateY(-50%);
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,162,39,0.08) 0%, transparent 70%);
+    }
+    .shape-2 {
+      position: absolute; left: 10%; bottom: -100px;
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(42,84,153,0.3) 0%, transparent 70%);
+    }
+    .hero-lines {
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        45deg, transparent, transparent 60px,
+        rgba(255,255,255,0.01) 60px, rgba(255,255,255,0.01) 61px
+      );
+    }
+    .hero-content {
+      position: relative; z-index: 2; width: 100%; max-width: 1200px;
+      margin: 0 auto; padding: 120px 40px 80px;
+      display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: center;
+    }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(201,162,39,0.12); border: 1px solid rgba(201,162,39,0.25);
+      color: var(--gold-light); padding: 8px 18px; border-radius: 30px;
+      font-size: 0.82rem; font-weight: 600; margin-bottom: 28px;
+    }
+    .hero-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-light); animation: blink 1.5s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .hero-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: clamp(2.6rem, 4.5vw, 3.8rem);
+      font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 12px;
+    }
+    .hero-title .accent { color: var(--gold-light); }
+    .hero-year {
+      display: inline-block; background: rgba(201,162,39,0.2); color: var(--gold-light);
+      padding: 4px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; margin-bottom: 20px;
+    }
+    .hero-desc {
+      font-size: 1.05rem; color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 36px; font-weight: 300;
+    }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-gold {
+      background: var(--gold); color: var(--primary-dark); padding: 16px 36px; border-radius: 50px;
+      font-size: 1rem; font-weight: 800; font-family: 'Heebo', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 24px rgba(201,162,39,0.4); transition: all 0.25s;
+    }
+    .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,162,39,0.5); }
+    .btn-outline {
+      background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.25);
+      padding: 14px 34px; border-radius: 50px; font-size: 1rem; font-weight: 500;
+      font-family: 'Heebo', sans-serif; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s;
+    }
+    .btn-outline:hover { border-color: var(--gold-light); color: var(--gold-light); }
+
+    /* HERO SIDE CARD */
+    .hero-aside { display: flex; flex-direction: column; gap: 20px; }
+    .hero-main-card {
+      background: rgba(255,255,255,0.07); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 32px;
+      border-top: 3px solid var(--gold);
+    }
+    .experience-badge {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+    }
+    .exp-ring {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: conic-gradient(var(--gold) 0% 90%, rgba(255,255,255,0.1) 90% 100%);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .exp-ring-inner {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: rgba(13,32,64,0.9); display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .exp-num { font-size: 1.4rem; font-weight: 900; color: var(--gold-light); line-height: 1; }
+    .exp-unit { font-size: 0.6rem; color: rgba(255,255,255,0.6); }
+    .exp-label { font-size: 0.95rem; color: var(--white); font-weight: 600; }
+    .exp-sub { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 4px; }
+    .card-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 20px 0; }
+    .emergency-box {
+      background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 14px;
+    }
+    .emergency-icon { font-size: 1.8rem; }
+    .emergency-label { font-size: 0.78rem; color: rgba(255,255,255,0.6); }
+    .emergency-num { font-size: 1.1rem; font-weight: 800; color: #FCA5A5; }
+    .rating-row { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+    .rating-stars { color: var(--gold-light); font-size: 1rem; }
+    .rating-text { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+    .rating-num { font-size: 1.3rem; font-weight: 900; color: var(--gold-light); }
+
+    /* STATS */
+    .stats-bar {
+      background: var(--primary-dark); padding: 32px 40px;
+      display: flex; justify-content: center; gap: 80px;
+      border-bottom: 2px solid var(--gold);
+    }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 2.2rem; font-weight: 900; color: var(--gold-light); line-height: 1; }
+    .stat-label { font-size: 0.82rem; color: rgba(255,255,255,0.7); margin-top: 6px; font-weight: 300; }
+
+    section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; background: rgba(26,58,107,0.1); color: var(--primary);
+      padding: 4px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+      margin-bottom: 16px; border: 1px solid rgba(26,58,107,0.2);
+    }
+    .section-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900;
+      color: var(--primary-dark); line-height: 1.2; margin-bottom: 16px;
+    }
+    .section-subtitle { font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; max-width: 600px; }
+
+    /* ABOUT */
+    .about-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: center; }
+    .about-content { }
+    .about-text { font-size: 1rem; color: var(--text-muted); line-height: 1.8; margin: 24px 0; }
+    .timeline { display: flex; flex-direction: column; gap: 16px; }
+    .tl-item { display: flex; gap: 16px; align-items: flex-start; }
+    .tl-dot {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--primary);
+      display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+      color: white; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+    }
+    .tl-text { font-size: 0.95rem; color: var(--text); }
+    .tl-year { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+    .about-visual { display: flex; justify-content: flex-end; }
+    .doctor-card {
+      background: linear-gradient(160deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-radius: 24px; padding: 40px; text-align: center; width: 100%;
+      box-shadow: 0 30px 80px rgba(26,58,107,0.3); position: relative; overflow: hidden;
+    }
+    .doctor-card::before {
+      content: ''; position: absolute; top: -50px; left: -50px;
+      width: 200px; height: 200px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,162,39,0.12) 0%, transparent 70%);
+    }
+    .doctor-emoji { font-size: 5rem; display: block; margin-bottom: 20px; }
+    .doctor-name { font-size: 1.5rem; font-weight: 900; color: var(--white); margin-bottom: 6px; }
+    .doctor-role { font-size: 0.88rem; color: var(--gold-light); margin-bottom: 24px; }
+    .doctor-facts { display: flex; flex-direction: column; gap: 10px; text-align: right; }
+    .doctor-fact { display: flex; align-items: center; gap: 10px; }
+    .fact-icon { font-size: 1rem; }
+    .fact-text { font-size: 0.88rem; color: rgba(255,255,255,0.8); }
+
+    /* SERVICES */
+    .services-section { background: var(--cream); padding: 80px 0; }
+    .services-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 16px; margin-top: 48px; }
+    .service-card {
+      background: var(--white); border-radius: 16px; padding: 24px 20px;
+      text-align: center; border: 1px solid #E5E7EB; transition: all 0.25s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .service-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 16px 40px rgba(26,58,107,0.1); }
+    .service-icon { font-size: 1.8rem; margin-bottom: 12px; display: block; }
+    .service-name { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+
+    /* BLOG */
+    .blog-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; margin-top: 48px; }
+    .blog-card {
+      border-radius: 20px; overflow: hidden; background: var(--white);
+      border: 1px solid #E5E7EB; transition: all 0.25s; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .blog-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
+    .blog-thumb {
+      height: 190px; display: flex; align-items: center; justify-content: center;
+      font-size: 4.5rem; position: relative;
+    }
+    .bt-1 { background: linear-gradient(135deg, #1A3A6B, #2A5499); }
+    .bt-2 { background: linear-gradient(135deg, #0D2040, #1A3A6B); }
+    .bt-3 { background: linear-gradient(135deg, #C9A227, #E8C55A); }
+    .blog-cat {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+      color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.74rem; font-weight: 600;
+    }
+    .blog-body { padding: 22px; }
+    .blog-date { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 10px; }
+    .blog-title { font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 10px; }
+    .blog-excerpt { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .blog-read { color: var(--primary); font-size: 0.84rem; font-weight: 600; text-decoration: none; }
+    .blog-read:hover { color: var(--primary-light); }
+
+    /* REVIEWS */
+    .reviews-wrap { background: linear-gradient(135deg, #0D2040, #1A3A6B); padding: 80px 0; }
+    .reviews-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+    .reviews-inner .section-title { color: var(--white); }
+    .reviews-inner .section-subtitle { color: rgba(255,255,255,0.55); }
+    .reviews-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; }
+    .review-card {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 28px; transition: all 0.25s;
+    }
+    .review-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+    .review-stars { color: var(--gold-light); margin-bottom: 14px; }
+    .review-text { font-size: 0.93rem; color: rgba(255,255,255,0.82); line-height: 1.7; font-style: italic; margin-bottom: 18px; }
+    .review-author { display: flex; align-items: center; gap: 12px; }
+    .review-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-light), var(--gold));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: white; font-size: 0.88rem;
+    }
+    .review-name { font-size: 0.86rem; font-weight: 700; color: var(--white); }
+    .review-pet { font-size: 0.76rem; color: rgba(255,255,255,0.45); }
+
+    /* CTA */
+    .cta-wrap { background: var(--cream); padding: 80px 40px; text-align: center; }
+    .cta-inner { max-width: 700px; margin: 0 auto; }
+    .cta-wrap .section-title { color: var(--primary-dark); }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
+    .btn-wa {
+      background: #25D366; color: white; padding: 18px 40px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; font-family: 'Heebo', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: all 0.25s;
+    }
+    .btn-wa:hover { background: #1EBF5B; transform: translateY(-2px); }
+    .btn-tel {
+      background: var(--primary); color: white; padding: 18px 40px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; font-family: 'Heebo', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      transition: all 0.25s;
+    }
+    .btn-tel:hover { background: var(--primary-light); transform: translateY(-2px); }
+
+    footer { background: var(--primary-dark); color: rgba(255,255,255,0.55); padding: 36px; text-align: center; font-size: 0.84rem; }
+    footer a { color: var(--gold-light); text-decoration: none; }
+
+    .wa-float {
+      position: fixed; bottom: 32px; left: 32px; z-index: 999;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: #25D366; display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem; text-decoration: none;
+      box-shadow: 0 6px 25px rgba(37,211,102,0.5); transition: transform 0.25s;
+      animation: float 3s ease-in-out infinite;
+    }
+    .wa-float:hover { transform: scale(1.12) !important; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    .fade-in { opacity: 0; transform: translateY(24px); transition: all 0.65s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; gap: 40px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .stats-bar { gap: 40px; flex-wrap: wrap; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🏥</div>
+    <div>
+      <div class="nav-logo-text">בית חולים וטרינרי</div>
+      <div class="nav-logo-sub">ד"ר אבי צרפתי</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">אודות</a></li>
+    <li><a href="#services">שירותים</a></li>
+    <li><a href="#blog">מאמרים</a></li>
+    <li><a href="#reviews">ביקורות</a></li>
+  </ul>
+  <a href="tel:03-9327707" class="nav-cta">📞 קבע תור</a>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-shapes">
+    <div class="shape-1"></div>
+    <div class="shape-2"></div>
+    <div class="hero-lines"></div>
+  </div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-label">
+        <span class="dot"></span>
+        בית חולים וטרינרי • פתח תקווה • מעל 30 שנות ניסיון
+      </div>
+      <h1 class="hero-title">
+        30 שנות מקצועיות,<br>
+        <span class="accent">אחד בוטרינרים הוותיקים</span><br>
+        באזור המרכז
+      </h1>
+      <div class="hero-year">פעיל מאז 1993</div>
+      <p class="hero-desc">
+        טיפול מקיף לכלבים, חתולים ואקזוטיים — עם כירורגיה, הדמיה, מספרה ושירות חירום 24/7. 260 ביקורות, 4.8 כוכבים.
+      </p>
+      <div class="hero-actions">
+        <a href="tel:03-9327707" class="btn-gold">📅 קבע תור</a>
+        <a href="tel:03-9326261" class="btn-outline">🚨 חירום 24/7</a>
+      </div>
+    </div>
+    <div class="hero-aside">
+      <div class="hero-main-card">
+        <div class="experience-badge">
+          <div class="exp-ring">
+            <div class="exp-ring-inner">
+              <span class="exp-num">30+</span>
+              <span class="exp-unit">שנה</span>
+            </div>
+          </div>
+          <div>
+            <div class="exp-label">ד"ר אבי צרפתי</div>
+            <div class="exp-sub">וטרינר ראשי • מומחה כירורגיה ורפואה פנימית</div>
+          </div>
+        </div>
+        <hr class="card-divider">
+        <div class="emergency-box">
+          <span class="emergency-icon">🚨</span>
+          <div>
+            <div class="emergency-label">חירום 24/7</div>
+            <div class="emergency-num">03-9326261</div>
+          </div>
+        </div>
+        <div class="rating-row">
+          <span class="rating-num">4.8</span>
+          <span class="rating-stars">★★★★★</span>
+          <span class="rating-text">260 ביקורות</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">30+</div>
+    <div class="stat-label">שנות ניסיון</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">4.8 ⭐</div>
+    <div class="stat-label">דירוג ממוצע</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">260</div>
+    <div class="stat-label">ביקורות</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">24/7</div>
+    <div class="stat-label">שירות חירום</div>
+  </div>
+</div>
+
+<section id="about">
+  <div class="about-grid fade-in">
+    <div class="about-content">
+      <span class="section-tag">אודות הבית חולים</span>
+      <h2 class="section-title">ד"ר אבי צרפתי</h2>
+      <p class="about-text">
+        בית החולים הוטרינרי של ד"ר אבי צרפתי פועל מאז 1993 ומשרת דורות של בעלי חיות מחמד באזור פתח תקווה והסביבה. עם צוות מנוסה, ציוד מתקדם ומחויבות בלתי-מתפשרת לרפואה איכותית — אנו מהמוסדות הוטרינריים הוותיקים במרכז הארץ.
+      </p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot">🎓</div>
+          <div>
+            <div class="tl-text">בוגר הפקולטה לרפואה וטרינרית</div>
+            <div class="tl-year">מומחה בכירורגיה ורפואה פנימית</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">🏥</div>
+          <div>
+            <div class="tl-text">פתיחת בית החולים ברחוב עין גנים 94, פתח תקווה</div>
+            <div class="tl-year">1993 — מעל 30 שנות פעילות</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">🏆</div>
+          <div>
+            <div class="tl-text">260 ביקורות עם דירוג 4.8/5</div>
+            <div class="tl-year">אחד מהמוסדות המדורגים ביותר באזור</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot">🌿</div>
+          <div>
+            <div class="tl-text">הרחבת שירותי רפואה משלימה</div>
+            <div class="tl-year">טיפולים הוליסטיים לצד רפואה קונבנציונלית</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div class="doctor-card">
+        <span class="doctor-emoji">👨‍⚕️</span>
+        <div class="doctor-name">ד"ר אבי צרפתי</div>
+        <div class="doctor-role">וטרינר ראשי ומייסד</div>
+        <div class="doctor-facts">
+          <div class="doctor-fact"><span class="fact-icon">📍</span><span class="fact-text">עין גנים 94, פתח תקווה</span></div>
+          <div class="doctor-fact"><span class="fact-icon">📞</span><span class="fact-text">03-9327707</span></div>
+          <div class="doctor-fact"><span class="fact-icon">⏰</span><span class="fact-text">א׳–ה׳ 8:30–20:30 | שישי 8:30–14:00</span></div>
+          <div class="doctor-fact"><span class="fact-icon">🚨</span><span class="fact-text">חירום 24/7: 03-9326261</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="services-section" id="services">
+  <div class="services-inner fade-in">
+    <span class="section-tag">שירותים</span>
+    <h2 class="section-title">טיפול מלא תחת קורת גג אחת</h2>
+    <p class="section-subtitle">מכירורגיה מורכבת ועד מספרה — הצוות שלנו כאן בשבילך</p>
+    <div class="services-grid">
+      <div class="service-card"><span class="service-icon">💉</span><div class="service-name">חיסונים</div></div>
+      <div class="service-card"><span class="service-icon">🩺</span><div class="service-name">רפואה פנימית</div></div>
+      <div class="service-card"><span class="service-icon">🔪</span><div class="service-name">כירורגיה</div></div>
+      <div class="service-card"><span class="service-icon">📡</span><div class="service-name">הדמיה ורנטגן</div></div>
+      <div class="service-card"><span class="service-icon">🔬</span><div class="service-name">מעבדה</div></div>
+      <div class="service-card"><span class="service-icon">🦷</span><div class="service-name">שיניים</div></div>
+      <div class="service-card"><span class="service-icon">🥗</span><div class="service-name">תזונה</div></div>
+      <div class="service-card"><span class="service-icon">✂️</span><div class="service-name">עיקור וסירוס</div></div>
+      <div class="service-card"><span class="service-icon">✂️</span><div class="service-name">מספרה</div></div>
+      <div class="service-card"><span class="service-icon">🏥</span><div class="service-name">אשפוז</div></div>
+      <div class="service-card"><span class="service-icon">🦜</span><div class="service-name">אקזוטיים</div></div>
+      <div class="service-card"><span class="service-icon">🌿</span><div class="service-name">רפואה משלימה</div></div>
+    </div>
+  </div>
+</div>
+
+<section id="blog">
+  <span class="section-tag">מאמרי מומחה</span>
+  <h2 class="section-title">30 שנה של ניסיון — שווה לשתף</h2>
+  <p class="section-subtitle">מדריכים מעשיים מאת ד"ר אבי צרפתי</p>
+  <div class="blog-grid fade-in">
+    <div class="blog-card">
+      <div class="blog-thumb bt-1">🌙<span class="blog-cat">חירום</span></div>
+      <div class="blog-body">
+        <div class="blog-date">12 באפריל 2026</div>
+        <div class="blog-title">חיית המחמד חולה בלילה — מה עושים לפני שמגיעים לחדר מיון?</div>
+        <div class="blog-excerpt">לא כל תסמין חייב לסיים בנסיעה לחדר מיון. ד"ר צרפתי מסביר אילו סימנים מחייבים פעולה מיידית ואיך לשמור על קור רוח...</div>
+        <a href="#" class="blog-read">קרא עוד ←</a>
+      </div>
+    </div>
+    <div class="blog-card">
+      <div class="blog-thumb bt-2">🏆<span class="blog-cat">מקצועיות</span></div>
+      <div class="blog-body">
+        <div class="blog-date">5 באפריל 2026</div>
+        <div class="blog-title">מה למדתי מ-30 שנה של וטרינריה: 5 עצות לכל בעל כלב</div>
+        <div class="blog-excerpt">אחרי שלושה עשורים של טיפול בבעלי חיים, יש כמה דברים שהייתי רוצה שכל בעלים היה יודע מהיום הראשון...</div>
+        <a href="#" class="blog-read">קרא עוד ←</a>
+      </div>
+    </div>
+    <div class="blog-card">
+      <div class="blog-thumb bt-3">🥗<span class="blog-cat" style="color:#1A3A6B;">תזונה</span></div>
+      <div class="blog-body">
+        <div class="blog-date">28 במרץ 2026</div>
+        <div class="blog-title">תזונה לכלב מבוגר: מה שמסתירים מכם יצרני המזון</div>
+        <div class="blog-excerpt">כלב מעל גיל 7 צריך תזונה שונה בתכלית — פחות קלוריות, יותר חלבון, תוספי מפרקים. איך בוחרים נכון ומה שמים לב...</div>
+        <a href="#" class="blog-read">קרא עוד ←</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="reviews-wrap" id="reviews">
+  <div class="reviews-inner">
+    <span class="section-tag" style="background:rgba(201,162,39,0.15);color:var(--gold-light);border-color:rgba(201,162,39,0.3);">260 ביקורות מרוצות</span>
+    <h2 class="section-title">מה אומרים הלקוחות</h2>
+    <p class="section-subtitle">4.8 כוכבים ממאות בעלי חיות מחמד</p>
+    <div class="reviews-grid fade-in">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"ד"ר צרפתי מלווה את המשפחה שלי כבר 20 שנה. הוא מכיר את הכלבים שלנו כמו ילדיו. אין אחד כמוהו."</p>
+        <div class="review-author">
+          <div class="review-avatar">ש</div>
+          <div><div class="review-name">שירי מנחם</div><div class="review-pet">לקוחה ותיקה 20 שנה</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"הגעתי בלילה עם חתול בכאבים קשים. הטיפול החירום היה מהיר, מקצועי ומרגיע. חיסכו לו את החיים."</p>
+        <div class="review-author">
+          <div class="review-avatar">א</div>
+          <div><div class="review-name">אורן גולן</div><div class="review-pet">בעל חתול • פתח תקווה</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"הניתוח היה מורכב ביותר — ד"ר צרפתי הסביר הכל, ענה על כל שאלה ועקב אחרי ההחלמה עד הסוף. מעבר למצופה."</p>
+        <div class="review-author">
+          <div class="review-avatar">נ</div>
+          <div><div class="review-name">נועה כץ</div><div class="review-pet">לאחר ניתוח מורכב</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-wrap">
+  <div class="cta-inner fade-in">
+    <span class="section-tag">בואו אלינו</span>
+    <h2 class="section-title">חיית המחמד שלך ראויה לטוב ביותר</h2>
+    <p class="section-subtitle">א׳–ה׳ 8:30–20:30 | שישי 8:30–14:00 | חירום 24/7</p>
+    <div class="cta-buttons">
+      <a href="https://wa.me/9720544416277" class="btn-wa">💬 WhatsApp</a>
+      <a href="tel:03-9327707" class="btn-tel">📞 03-9327707</a>
+    </div>
+    <p style="margin-top:20px;font-size:0.85rem;color:var(--text-muted);">📍 עין גנים 94, פתח תקווה</p>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 בית חולים וטרינרי ד"ר אבי צרפתי | <a href="tel:03-9327707">03-9327707</a> | <a href="tel:03-9326261">חירום: 03-9326261</a></p>
+  <p style="margin-top:8px;font-size:0.76rem;opacity:0.4;">עמוד זה הוכן כהדגמה על ידי AgenticFlow</p>
+</footer>
+
+<a href="https://wa.me/9720544416277" class="wa-float">💬</a>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.background = window.scrollY > 50 ? 'rgba(13,32,64,0.98)' : 'rgba(13,32,64,0.92)';
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מרכז וטרינרי ענבר — ד"ר ענבר רזון</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #7B3A10;
+      --primary-light: #A0521A;
+      --primary-dark: #3D1A06;
+      --amber: #D97706;
+      --amber-light: #F59E0B;
+      --warm: #FFF8F0;
+      --text: #1A1A1A;
+      --text-muted: #6B7280;
+      --white: #FFFFFF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Heebo', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; }
+
+    nav {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 70px;
+      background: rgba(61,26,6,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(217,119,6,0.25); transition: all 0.3s;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; }
+    .nav-logo-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--amber), var(--amber-light));
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .nav-logo-text { font-size: 1rem; font-weight: 700; color: var(--white); line-height: 1.2; }
+    .nav-logo-sub { font-size: 0.7rem; font-weight: 300; color: var(--amber-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--amber-light); }
+    .nav-cta {
+      background: var(--amber); color: white; border: none; cursor: pointer;
+      padding: 10px 24px; border-radius: 25px; font-size: 0.9rem; font-weight: 700;
+      font-family: 'Heebo', sans-serif; transition: all 0.2s; text-decoration: none;
+    }
+    .nav-cta:hover { background: var(--amber-light); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; position: relative; overflow: hidden;
+      display: flex; align-items: center;
+      background: linear-gradient(150deg, #3D1A06 0%, #7B3A10 50%, #2A1004 100%);
+    }
+    .hero-bg { position: absolute; inset: 0; pointer-events: none; }
+    .bg-warm {
+      position: absolute; right: -120px; top: -100px;
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(217,119,6,0.12) 0%, transparent 65%);
+    }
+    .bg-dark {
+      position: absolute; left: -80px; bottom: -120px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(123,58,16,0.3) 0%, transparent 65%);
+    }
+    .hero-texture {
+      position: absolute; inset: 0; opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1.5' fill='white'/%3E%3C/svg%3E");
+    }
+    .hero-content {
+      position: relative; z-index: 2; width: 100%; max-width: 1200px;
+      margin: 0 auto; padding: 120px 40px 80px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center;
+    }
+    .hero-flag {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(217,119,6,0.14); border: 1px solid rgba(217,119,6,0.28);
+      color: var(--amber-light); padding: 8px 18px; border-radius: 30px;
+      font-size: 0.8rem; font-weight: 600; margin-bottom: 26px;
+    }
+    .hero-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: clamp(2.5rem, 4.5vw, 3.8rem);
+      font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 22px;
+    }
+    .hero-title .warm { color: var(--amber-light); }
+    .hero-desc {
+      font-size: 1.05rem; color: rgba(255,255,255,0.68); line-height: 1.75; margin-bottom: 36px; font-weight: 300;
+    }
+    .hero-score-row { display: flex; gap: 24px; align-items: center; margin-bottom: 36px; }
+    .score-box {
+      background: rgba(217,119,6,0.15); border: 1px solid rgba(217,119,6,0.3);
+      border-radius: 14px; padding: 14px 20px; display: flex; flex-direction: column; align-items: center;
+    }
+    .score-big { font-size: 2rem; font-weight: 900; color: var(--amber-light); line-height: 1; }
+    .score-label { font-size: 0.7rem; color: rgba(255,255,255,0.55); margin-top: 4px; text-align: center; }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-amber {
+      background: var(--amber); color: white; padding: 16px 36px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; font-family: 'Heebo', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 24px rgba(217,119,6,0.45); transition: all 0.25s;
+    }
+    .btn-amber:hover { background: var(--amber-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(217,119,6,0.55); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.08); color: white; border: 2px solid rgba(255,255,255,0.2);
+      padding: 14px 34px; border-radius: 50px; font-size: 1rem; font-weight: 500;
+      font-family: 'Heebo', sans-serif; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s;
+    }
+    .btn-ghost:hover { border-color: var(--amber-light); color: var(--amber-light); }
+
+    /* HERO SIDE */
+    .hero-side { display: flex; flex-direction: column; gap: 20px; }
+    .hero-profile-card {
+      background: rgba(255,255,255,0.06); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 32px;
+      border-top: 3px solid var(--amber);
+    }
+    .profile-top { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 24px; }
+    .profile-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--primary-light));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; border: 3px solid rgba(217,119,6,0.4); flex-shrink: 0;
+    }
+    .profile-name { font-size: 1.15rem; font-weight: 800; color: var(--white); margin-bottom: 4px; }
+    .profile-role { font-size: 0.8rem; color: var(--amber-light); line-height: 1.5; }
+    .review-highlight {
+      background: rgba(217,119,6,0.12); border: 1px solid rgba(217,119,6,0.25);
+      border-radius: 12px; padding: 16px; margin-bottom: 20px;
+    }
+    .rh-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .rh-score { font-size: 2.2rem; font-weight: 900; color: var(--amber-light); line-height: 1; }
+    .rh-stars { color: var(--amber-light); font-size: 0.9rem; }
+    .rh-count { font-size: 0.78rem; color: rgba(255,255,255,0.6); }
+    .rh-source { font-size: 0.72rem; color: rgba(255,255,255,0.4); }
+    .exotic-badge {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 14px 16px;
+    }
+    .exotic-title { font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+    .exotic-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .exotic-tag {
+      background: rgba(217,119,6,0.15); color: var(--amber-light);
+      padding: 4px 12px; border-radius: 20px; font-size: 0.76rem; font-weight: 600;
+    }
+
+    /* STATS */
+    .stats-bar {
+      background: var(--primary-dark); padding: 30px 40px;
+      display: flex; justify-content: center; gap: 80px;
+      border-bottom: 2px solid var(--amber);
+    }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 900; color: var(--amber-light); line-height: 1; }
+    .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.65); margin-top: 6px; }
+
+    section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; background: rgba(123,58,16,0.1); color: var(--primary);
+      padding: 4px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+      margin-bottom: 16px; border: 1px solid rgba(123,58,16,0.2);
+    }
+    .section-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900;
+      color: var(--primary-dark); line-height: 1.2; margin-bottom: 16px;
+    }
+    .section-subtitle { font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; max-width: 600px; }
+
+    /* ABOUT */
+    .about-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-items: center; }
+    .about-photo-wrap { display: flex; justify-content: center; position: relative; }
+    .about-photo {
+      width: 300px; height: 360px; border-radius: 24px;
+      background: linear-gradient(160deg, var(--primary-light), var(--primary-dark));
+      display: flex; align-items: center; justify-content: center; font-size: 7rem;
+      box-shadow: 0 30px 80px rgba(123,58,16,0.3); position: relative; overflow: hidden;
+    }
+    .about-badge {
+      position: absolute; bottom: -18px; left: -18px;
+      background: var(--amber); color: white; border-radius: 14px; padding: 14px 18px;
+      box-shadow: 0 8px 24px rgba(217,119,6,0.4); text-align: center;
+    }
+    .badge-num { font-size: 1.8rem; font-weight: 900; line-height: 1; }
+    .badge-text { font-size: 0.7rem; font-weight: 700; }
+    .about-text p { font-size: 1rem; color: var(--text-muted); line-height: 1.8; margin: 20px 0; }
+    .about-specialty {
+      background: var(--warm); border-radius: 16px; padding: 24px;
+      border-right: 4px solid var(--amber); margin-top: 24px;
+    }
+    .spec-title { font-size: 1rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 14px; }
+    .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .spec-item { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--text); }
+    .spec-icon { font-size: 1rem; }
+
+    /* REVIEWS AS HERO */
+    .reviews-hero { background: var(--warm); padding: 80px 0; }
+    .reviews-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+    .review-grid-hero { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; }
+    .rhero-card {
+      background: var(--white); border-radius: 20px; padding: 28px;
+      border: 1px solid #E5E7EB; transition: all 0.25s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05); position: relative;
+    }
+    .rhero-card:hover { transform: translateY(-6px); box-shadow: 0 24px 50px rgba(123,58,16,0.1); border-color: var(--amber); }
+    .rhero-quote { font-size: 3rem; color: var(--amber-light); line-height: 0.5; margin-bottom: 16px; opacity: 0.5; }
+    .rhero-text { font-size: 0.95rem; color: var(--text); line-height: 1.7; font-style: italic; margin-bottom: 20px; }
+    .rhero-author { display: flex; align-items: center; gap: 12px; }
+    .rhero-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--primary-light));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: white; font-size: 0.88rem;
+    }
+    .rhero-name { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .rhero-pet { font-size: 0.76rem; color: var(--text-muted); }
+
+    /* SERVICES */
+    .services-section { background: var(--white); }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap: 16px; margin-top: 48px; }
+    .service-card {
+      background: var(--warm); border-radius: 16px; padding: 22px 18px;
+      text-align: center; border: 1px solid #F0E8E0; transition: all 0.25s;
+    }
+    .service-card:hover { transform: translateY(-5px); border-color: var(--amber); box-shadow: 0 14px 36px rgba(123,58,16,0.1); }
+    .service-icon { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+    .service-name { font-size: 0.86rem; font-weight: 700; }
+
+    /* BLOG */
+    .blog-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; margin-top: 48px; }
+    .blog-card {
+      border-radius: 20px; overflow: hidden; background: var(--white);
+      border: 1px solid #E5E7EB; transition: all 0.25s; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .blog-card:hover { transform: translateY(-8px); box-shadow: 0 28px 56px rgba(0,0,0,0.1); }
+    .blog-thumb {
+      height: 190px; display: flex; align-items: center; justify-content: center;
+      font-size: 4.5rem; position: relative;
+    }
+    .bt-1 { background: linear-gradient(135deg, #7B3A10, #A0521A); }
+    .bt-2 { background: linear-gradient(135deg, #3D1A06, #7B3A10); }
+    .bt-3 { background: linear-gradient(135deg, #D97706, #F59E0B); }
+    .blog-cat {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+      color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.74rem; font-weight: 600;
+    }
+    .blog-body { padding: 22px; }
+    .blog-date { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 10px; }
+    .blog-title { font-size: 1rem; font-weight: 700; line-height: 1.4; margin-bottom: 10px; }
+    .blog-excerpt { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .blog-read { color: var(--primary); font-size: 0.84rem; font-weight: 600; text-decoration: none; }
+
+    /* CTA */
+    .cta-wrap {
+      background: linear-gradient(150deg, #3D1A06, #7B3A10);
+      padding: 80px 40px; text-align: center;
+    }
+    .cta-inner { max-width: 700px; margin: 0 auto; }
+    .cta-wrap .section-title { color: var(--white); }
+    .cta-sub { font-size: 1rem; color: rgba(255,255,255,0.65); margin: 16px 0 40px; }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-wa {
+      background: #25D366; color: white; padding: 18px 40px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; font-family: 'Heebo', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: all 0.25s;
+    }
+    .btn-wa:hover { background: #1EBF5B; transform: translateY(-2px); }
+    .btn-tel {
+      background: var(--amber); color: white; padding: 18px 40px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; font-family: 'Heebo', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      transition: all 0.25s; box-shadow: 0 4px 20px rgba(217,119,6,0.4);
+    }
+    .btn-tel:hover { background: var(--amber-light); transform: translateY(-2px); }
+
+    footer { background: var(--primary-dark); color: rgba(255,255,255,0.55); padding: 36px; text-align: center; font-size: 0.84rem; }
+    footer a { color: var(--amber-light); text-decoration: none; }
+
+    .wa-float {
+      position: fixed; bottom: 32px; left: 32px; z-index: 999;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: #25D366; display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem; text-decoration: none;
+      box-shadow: 0 6px 25px rgba(37,211,102,0.5); transition: transform 0.25s;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    .fade-in { opacity: 0; transform: translateY(24px); transition: all 0.65s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .review-grid-hero { grid-template-columns: 1fr; }
+      .stats-bar { gap: 40px; flex-wrap: wrap; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🐇</div>
+    <div>
+      <div class="nav-logo-text">מרכז וטרינרי ענבר</div>
+      <div class="nav-logo-sub">ד"ר ענבר רזון</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">אודות</a></li>
+    <li><a href="#services">שירותים</a></li>
+    <li><a href="#blog">מאמרים</a></li>
+    <li><a href="#reviews">ביקורות</a></li>
+  </ul>
+  <a href="tel:09-9668787" class="nav-cta">📞 קבע תור</a>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="bg-warm"></div>
+    <div class="bg-dark"></div>
+    <div class="hero-texture"></div>
+  </div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-flag">⭐ 9.0/10 · 136 ביקורות · כפר סבא</div>
+      <h1 class="hero-title">
+        הרופאה שמכירה גם
+        <span class="warm">ארנבים, תוכים</span>
+        ויודעת להגיד "לא לחירום"
+      </h1>
+      <p class="hero-desc">
+        ד"ר ענבר רזון מתמחה ברפואת כלבים, חתולים, ארנבים וחיות אקזוטיות — עם 136 ביקורות מוצקות ב-easy.co.il, ידע מעמיק ואמפתיה אמיתית.
+      </p>
+      <div class="hero-score-row">
+        <div class="score-box">
+          <span class="score-big">9.0</span>
+          <span class="score-label">מתוך 10<br>easy.co.il</span>
+        </div>
+        <div class="score-box">
+          <span class="score-big">136</span>
+          <span class="score-label">ביקורות<br>מאומתות</span>
+        </div>
+        <div style="font-size:0.9rem;color:rgba(255,255,255,0.7);line-height:1.6;font-weight:300;">
+          "וטרינרית מקצועית ביותר. רגישה ואמפתית."
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a href="tel:09-9668787" class="btn-amber">📅 קבע תור</a>
+        <a href="#about" class="btn-ghost">קרא עוד ←</a>
+      </div>
+    </div>
+    <div class="hero-side">
+      <div class="hero-profile-card">
+        <div class="profile-top">
+          <div class="profile-avatar">👩‍⚕️</div>
+          <div>
+            <div class="profile-name">ד"ר ענבר רזון</div>
+            <div class="profile-role">רופאת חיות ראשית<br>מומחית חיות אקזוטיות וארנבים</div>
+          </div>
+        </div>
+        <div class="review-highlight">
+          <div class="rh-row">
+            <span class="rh-score">9.0</span>
+            <div>
+              <div class="rh-stars">★★★★★</div>
+              <div class="rh-count">136 ביקורות מאומתות</div>
+            </div>
+          </div>
+          <div class="rh-source">מקור: easy.co.il</div>
+        </div>
+        <div class="exotic-badge">
+          <div class="exotic-title">🐾 מומחית חיות אקזוטיות</div>
+          <div class="exotic-tags">
+            <span class="exotic-tag">🐇 ארנבים</span>
+            <span class="exotic-tag">🦜 תוכים</span>
+            <span class="exotic-tag">🦔 אקזוטיים</span>
+            <span class="exotic-tag">🐹 מכרסמים</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">9.0/10</div><div class="stat-label">דירוג easy.co.il</div></div>
+  <div class="stat-item"><div class="stat-num">136</div><div class="stat-label">ביקורות מאומתות</div></div>
+  <div class="stat-item"><div class="stat-num">13</div><div class="stat-label">תחומי טיפול</div></div>
+  <div class="stat-item"><div class="stat-num">כפר סבא</div><div class="stat-label">מיקום</div></div>
+</div>
+
+<section id="about">
+  <div class="about-grid fade-in">
+    <div class="about-photo-wrap">
+      <div class="about-photo">👩‍⚕️
+        <div class="about-badge">
+          <div class="badge-num">9.0</div>
+          <div class="badge-text">easy.co.il</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-text">
+      <span class="section-tag">אודות המרפאה</span>
+      <h2 class="section-title">ד"ר ענבר רזון</h2>
+      <p>ד"ר ענבר רזון מנהלת את מרכז וטרינרי ענבר בכפר סבא, ומספקת טיפול מקיף לכלבים, חתולים, ארנבים, ציפורים וחיות אקזוטיות. עם 136 ביקורות חיוביות ב-easy.co.il ודירוג של 9.0, היא אחת הוטרינריות המוערכות באזור השרון.</p>
+      <p>הגישה שלה — רגישה, מדויקת, ואנושית — מתבטאת בכל ביקור: הקשבה ללקוח, הסבר מפורט, ומעקב אמיתי עד ההחלמה.</p>
+      <div class="about-specialty">
+        <div class="spec-title">🌟 תחומי התמחות</div>
+        <div class="spec-grid">
+          <div class="spec-item"><span class="spec-icon">🐇</span> ארנבים ואקזוטיים</div>
+          <div class="spec-item"><span class="spec-icon">🦜</span> ציפורים ותוכים</div>
+          <div class="spec-item"><span class="spec-icon">🔬</span> מעבדה ואולטרסאונד</div>
+          <div class="spec-item"><span class="spec-icon">🦷</span> רפואת שיניים</div>
+          <div class="spec-item"><span class="spec-icon">🩺</span> רפואה פנימית</div>
+          <div class="spec-item"><span class="spec-icon">📋</span> מנויים שנתיים</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REAL REVIEWS SECTION -->
+<div class="reviews-hero" id="reviews">
+  <div class="reviews-inner">
+    <span class="section-tag">מה אומרים הלקוחות</span>
+    <h2 class="section-title">136 ביקורות שמדברות בעד עצמן</h2>
+    <p class="section-subtitle">9.0 מתוך 10 — אחת הציונים הגבוהים ביותר לוטרינרית בכפר סבא</p>
+    <div class="review-grid-hero fade-in">
+      <div class="rhero-card">
+        <div class="rhero-quote">"</div>
+        <p class="rhero-text">וטרינרית מקצועית ביותר. רגישה ואמפתית. הרגשתי שהיא באמת אכפת לה מהכלב שלי.</p>
+        <div class="rhero-author">
+          <div class="rhero-avatar">נ</div>
+          <div><div class="rhero-name">נועה שמואלי</div><div class="rhero-pet">easy.co.il ⭐⭐⭐⭐⭐</div></div>
+        </div>
+      </div>
+      <div class="rhero-card">
+        <div class="rhero-quote">"</div>
+        <p class="rhero-text">הבאתי חתול בוגר עם בעיות כליות — ענבר עשתה מאמצים אדירים. הסבירה הכל, עקבה מקרוב. תודה.</p>
+        <div class="rhero-author">
+          <div class="rhero-avatar">מ</div>
+          <div><div class="rhero-name">מיכה אדרי</div><div class="rhero-pet">easy.co.il ⭐⭐⭐⭐⭐</div></div>
+        </div>
+      </div>
+      <div class="rhero-card">
+        <div class="rhero-quote">"</div>
+        <p class="rhero-text">טיפול בארנבים מהיר, מקצועי ומדויק. ענבר אחת הבודדות שמכירות ממש טוב את הנושא — לא מובן מאליו.</p>
+        <div class="rhero-author">
+          <div class="rhero-avatar">ת</div>
+          <div><div class="rhero-name">תמר ליפשיץ</div><div class="rhero-pet">easy.co.il ⭐⭐⭐⭐⭐</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="services">
+  <span class="section-tag">שירותים</span>
+  <h2 class="section-title">טיפול מלא לכל בעלי החיים</h2>
+  <p class="section-subtitle">מחיות בית מוכרות ועד ארנבים ותוכים — הכל אצלנו</p>
+  <div class="services-grid fade-in">
+    <div class="service-card"><span class="service-icon">🩺</span><div class="service-name">רפואה פנימית</div></div>
+    <div class="service-card"><span class="service-icon">💉</span><div class="service-name">חיסונים</div></div>
+    <div class="service-card"><span class="service-icon">🔪</span><div class="service-name">ניתוחים</div></div>
+    <div class="service-card"><span class="service-icon">🦷</span><div class="service-name">שיניים</div></div>
+    <div class="service-card"><span class="service-icon">☢️</span><div class="service-name">רנטגן</div></div>
+    <div class="service-card"><span class="service-icon">📡</span><div class="service-name">אולטרסאונד</div></div>
+    <div class="service-card"><span class="service-icon">🔬</span><div class="service-name">מעבדה</div></div>
+    <div class="service-card"><span class="service-icon">🏥</span><div class="service-name">אשפוז</div></div>
+    <div class="service-card"><span class="service-icon">🦜</span><div class="service-name">ציפורים ותוכים</div></div>
+    <div class="service-card"><span class="service-icon">🐇</span><div class="service-name">ארנבים</div></div>
+    <div class="service-card"><span class="service-icon">🥗</span><div class="service-name">תזונה</div></div>
+    <div class="service-card"><span class="service-icon">📋</span><div class="service-name">מנוי שנתי</div></div>
+  </div>
+</section>
+
+<section id="blog">
+  <span class="section-tag">מאמרי מומחה</span>
+  <h2 class="section-title">ידע שחוסך ביקורי חירום מיותרים</h2>
+  <p class="section-subtitle">מאמרים מקצועיים מאת ד"ר ענבר רזון</p>
+  <div class="blog-grid fade-in">
+    <div class="blog-card">
+      <div class="blog-thumb bt-1">🐇<span class="blog-cat">ארנבים</span></div>
+      <div class="blog-body">
+        <div class="blog-date">11 באפריל 2026</div>
+        <div class="blog-title">ארנב שלא אכל 6 שעות — מתי מדאיג ומתי לא?</div>
+        <div class="blog-excerpt">GI stasis הוא אחד המצבים המסוכנים ביותר לארנבים — וגם אחד השכיחים. ד"ר ענבר מסבירה איך לזהות ומה לעשות בכל שלב...</div>
+        <a href="#" class="blog-read">קרא עוד ←</a>
+      </div>
+    </div>
+    <div class="blog-card">
+      <div class="blog-thumb bt-2">🏆<span class="blog-cat">ביקורות</span></div>
+      <div class="blog-body">
+        <div class="blog-date">4 באפריל 2026</div>
+        <div class="blog-title">9.0 מתוך 10 — מה עומד מאחורי הציון שלנו?</div>
+        <div class="blog-excerpt">136 לקוחות לקחו את הזמן לכתוב ביקורת. מה הם מספרים? ד"ר ענבר מסכמת את הנושאים החוזרים ואיך הם עיצבו את המרפאה...</div>
+        <a href="#" class="blog-read">קרא עוד ←</a>
+      </div>
+    </div>
+    <div class="blog-card">
+      <div class="blog-thumb bt-3">🦜<span class="blog-cat" style="color:#3D1A06;">ציפורים</span></div>
+      <div class="blog-body">
+        <div class="blog-date">26 במרץ 2026</div>
+        <div class="blog-title">תוכי חולה: 7 סימנים שבעלי תוכים חייבים להכיר</div>
+        <div class="blog-excerpt">תוכים מסתירים חולי עד שהמצב חמור. ד"ר ענבר — אחת הבודדות בשרון המתמחות בציפורים — מסבירה מה לחפש כל יום...</div>
+        <a href="#" class="blog-read">קרא עוד ←</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-wrap">
+  <div class="cta-inner fade-in">
+    <h2 class="section-title">מוכנים לתור הבא?</h2>
+    <p class="cta-sub">א,ב,ד,ה: 09:00-12:00 ו-16:30-19:30 | ג: 10:00-13:00 | שישי: 09:00-13:00</p>
+    <div class="cta-buttons">
+      <a href="https://wa.me/9720545401202" class="btn-wa">💬 WhatsApp</a>
+      <a href="tel:09-9668787" class="btn-tel">📞 09-9668787</a>
+    </div>
+    <p style="margin-top:20px;font-size:0.85rem;color:rgba(255,255,255,0.5);">📍 אינשטיין 3, כפר סבא</p>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 מרכז וטרינרי ענבר — ד"ר ענבר רזון | <a href="tel:09-9668787">09-9668787</a></p>
+  <p style="margin-top:8px;font-size:0.76rem;opacity:0.4;">עמוד זה הוכן כהדגמה על ידי AgenticFlow</p>
+</footer>
+
+<a href="https://wa.me/9720545401202" class="wa-float">💬</a>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.background = window.scrollY > 50 ? 'rgba(61,26,6,0.98)' : 'rgba(61,26,6,0.92)';
+  });
+</script>
+</body>
+</html>

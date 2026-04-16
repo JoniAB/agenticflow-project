@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ד"ר גלית לוין-גיחון — מרפאה וטרינרית הוליסטית</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #5B2D8B;
+      --primary-light: #7B4DB0;
+      --primary-dark: #2D1045;
+      --accent: #E91E8C;
+      --accent-light: #F472B6;
+      --cream: #FBF8FF;
+      --text: #1A1A1A;
+      --text-muted: #6B7280;
+      --white: #FFFFFF;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Heebo', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; }
+
+    nav {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 70px;
+      background: rgba(45,16,69,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(233,30,140,0.2); transition: all 0.3s;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; }
+    .nav-logo-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .nav-logo-text { font-size: 0.95rem; font-weight: 700; color: var(--white); line-height: 1.2; }
+    .nav-logo-sub { font-size: 0.68rem; font-weight: 300; color: var(--accent-light); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--accent-light); }
+    .nav-cta {
+      background: var(--accent); color: white; border: none; cursor: pointer;
+      padding: 10px 24px; border-radius: 25px; font-size: 0.9rem; font-weight: 700;
+      font-family: 'Heebo', sans-serif; transition: all 0.2s; text-decoration: none;
+    }
+    .nav-cta:hover { background: var(--accent-light); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh; position: relative; overflow: hidden;
+      display: flex; align-items: center;
+      background: linear-gradient(145deg, #2D1045 0%, #5B2D8B 55%, #1F0830 100%);
+    }
+    .hero-orbs { position: absolute; inset: 0; pointer-events: none; }
+    .orb-1 {
+      position: absolute; width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(233,30,140,0.1) 0%, transparent 65%);
+      top: -80px; right: -80px;
+    }
+    .orb-2 {
+      position: absolute; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(91,45,139,0.25) 0%, transparent 65%);
+      bottom: -150px; left: -100px;
+    }
+    .orb-3 {
+      position: absolute; width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(233,30,140,0.07) 0%, transparent 70%);
+      top: 40%; left: 35%;
+    }
+    .hero-content {
+      position: relative; z-index: 2; width: 100%; max-width: 1200px;
+      margin: 0 auto; padding: 120px 40px 80px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center;
+    }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(233,30,140,0.12); border: 1px solid rgba(233,30,140,0.25);
+      color: var(--accent-light); padding: 7px 18px; border-radius: 30px;
+      font-size: 0.8rem; font-weight: 600; margin-bottom: 24px;
+    }
+    .hero-chip .spark { animation: spin 4s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hero-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+      font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 20px;
+    }
+    .hero-title .line2 { color: var(--accent-light); }
+    .hero-desc {
+      font-size: 1.05rem; color: rgba(255,255,255,0.68); line-height: 1.75; margin-bottom: 36px; font-weight: 300;
+    }
+    .hero-pills { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
+    .pill {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85); padding: 6px 16px; border-radius: 20px;
+      font-size: 0.8rem; font-weight: 500;
+    }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-accent {
+      background: var(--accent); color: white; padding: 16px 36px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; font-family: 'Heebo', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 24px rgba(233,30,140,0.4); transition: all 0.25s;
+    }
+    .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(233,30,140,0.55); }
+    .btn-zoom {
+      background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.2);
+      padding: 14px 34px; border-radius: 50px; font-size: 1rem; font-weight: 500;
+      font-family: 'Heebo', sans-serif; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px; transition: all 0.25s;
+    }
+    .btn-zoom:hover { border-color: var(--accent-light); color: var(--accent-light); }
+
+    /* HERO RIGHT PANEL */
+    .hero-panel {
+      background: rgba(255,255,255,0.06); backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 36px;
+      border-top: 3px solid var(--accent);
+    }
+    .panel-header { text-align: center; margin-bottom: 28px; }
+    .panel-emoji { font-size: 4.5rem; display: block; margin-bottom: 16px; }
+    .panel-name { font-size: 1.3rem; font-weight: 900; color: var(--white); margin-bottom: 4px; }
+    .panel-role { font-size: 0.82rem; color: var(--accent-light); }
+    .zoom-highlight {
+      background: rgba(233,30,140,0.12); border: 1px solid rgba(233,30,140,0.25);
+      border-radius: 14px; padding: 18px; display: flex; gap: 14px; align-items: center; margin-bottom: 20px;
+    }
+    .zoom-icon { font-size: 2rem; }
+    .zoom-title { font-size: 0.95rem; font-weight: 700; color: var(--white); }
+    .zoom-sub { font-size: 0.78rem; color: rgba(255,255,255,0.55); margin-top: 4px; }
+    .specialties { display: flex; flex-direction: column; gap: 10px; }
+    .spec-item { display: flex; align-items: center; gap: 12px; }
+    .spec-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .spec-text { font-size: 0.9rem; color: rgba(255,255,255,0.8); font-weight: 500; }
+
+    /* STATS */
+    .stats-bar {
+      background: var(--primary-dark); padding: 30px 40px;
+      display: flex; justify-content: center; gap: 80px;
+      border-bottom: 2px solid var(--accent);
+    }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 900; color: var(--accent-light); line-height: 1; }
+    .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.65); margin-top: 6px; }
+
+    section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; background: rgba(91,45,139,0.1); color: var(--primary);
+      padding: 4px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+      margin-bottom: 16px; border: 1px solid rgba(91,45,139,0.2);
+    }
+    .section-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900;
+      color: var(--primary-dark); line-height: 1.2; margin-bottom: 16px;
+    }
+    .section-subtitle { font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; max-width: 600px; }
+
+    /* UNIQUE VALUE */
+    .unique-section { background: var(--cream); padding: 80px 0; }
+    .unique-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+    .unique-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin-top: 48px; }
+    .unique-card {
+      background: var(--white); border-radius: 20px; padding: 32px;
+      border: 1px solid #E5E7EB; transition: all 0.25s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      position: relative; overflow: hidden;
+    }
+    .unique-card::before {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 100px; height: 100px;
+      background: radial-gradient(circle, rgba(91,45,139,0.05) 0%, transparent 70%);
+    }
+    .unique-card:hover { transform: translateY(-6px); box-shadow: 0 24px 50px rgba(91,45,139,0.1); border-color: var(--primary-light); }
+    .unique-card-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+    .unique-card-title { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 10px; }
+    .unique-card-text { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* SERVICES */
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap: 16px; margin-top: 48px; }
+    .service-card {
+      background: var(--white); border-radius: 16px; padding: 22px 18px;
+      text-align: center; border: 1px solid #E5E7EB; transition: all 0.25s;
+    }
+    .service-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 14px 36px rgba(91,45,139,0.1); }
+    .service-icon { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+    .service-name { font-size: 0.86rem; font-weight: 700; color: var(--text); }
+
+    /* BLOG */
+    .blog-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; margin-top: 48px; }
+    .blog-card {
+      border-radius: 20px; overflow: hidden; background: var(--white);
+      border: 1px solid #E5E7EB; transition: all 0.25s; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+    .blog-card:hover { transform: translateY(-8px); box-shadow: 0 28px 56px rgba(0,0,0,0.1); }
+    .blog-thumb {
+      height: 190px; display: flex; align-items: center; justify-content: center;
+      font-size: 4.5rem; position: relative;
+    }
+    .bt-1 { background: linear-gradient(135deg, #5B2D8B, #7B4DB0); }
+    .bt-2 { background: linear-gradient(135deg, #2D1045, #5B2D8B); }
+    .bt-3 { background: linear-gradient(135deg, #E91E8C, #F472B6); }
+    .blog-cat {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+      color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.74rem; font-weight: 600;
+    }
+    .blog-body { padding: 22px; }
+    .blog-date { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 10px; }
+    .blog-title { font-size: 1rem; font-weight: 700; line-height: 1.4; margin-bottom: 10px; }
+    .blog-excerpt { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .blog-read { color: var(--primary); font-size: 0.84rem; font-weight: 600; text-decoration: none; }
+
+    /* REVIEWS */
+    .reviews-wrap { background: linear-gradient(145deg, #2D1045, #5B2D8B); padding: 80px 0; }
+    .reviews-inner { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+    .reviews-inner .section-title { color: var(--white); }
+    .reviews-inner .section-subtitle { color: rgba(255,255,255,0.55); }
+    .reviews-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; }
+    .review-card {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 26px; transition: all 0.25s;
+    }
+    .review-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+    .review-stars { color: var(--accent-light); margin-bottom: 14px; }
+    .review-text { font-size: 0.92rem; color: rgba(255,255,255,0.82); line-height: 1.7; font-style: italic; margin-bottom: 18px; }
+    .review-author { display: flex; align-items: center; gap: 12px; }
+    .review-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--primary-light));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: white; font-size: 0.88rem;
+    }
+    .review-name { font-size: 0.86rem; font-weight: 700; color: var(--white); }
+    .review-pet { font-size: 0.76rem; color: rgba(255,255,255,0.45); }
+
+    /* CTA */
+    .cta-wrap { background: var(--cream); padding: 80px 40px; text-align: center; }
+    .cta-inner { max-width: 700px; margin: 0 auto; }
+    .cta-wrap .section-title { color: var(--primary-dark); }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
+    .btn-wa {
+      background: #25D366; color: white; padding: 18px 40px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; font-family: 'Heebo', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: all 0.25s;
+    }
+    .btn-wa:hover { background: #1EBF5B; transform: translateY(-2px); }
+    .btn-tel {
+      background: var(--primary); color: white; padding: 18px 40px; border-radius: 50px;
+      font-size: 1rem; font-weight: 700; font-family: 'Heebo', sans-serif;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+      transition: all 0.25s;
+    }
+    .btn-tel:hover { background: var(--primary-light); transform: translateY(-2px); }
+    .btn-vid {
+      background: transparent; color: var(--primary); border: 2px solid var(--primary);
+      padding: 16px 38px; border-radius: 50px; font-size: 1rem; font-weight: 700;
+      font-family: 'Heebo', sans-serif; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 10px; transition: all 0.25s;
+    }
+    .btn-vid:hover { background: var(--primary); color: white; }
+
+    footer { background: var(--primary-dark); color: rgba(255,255,255,0.55); padding: 36px; text-align: center; font-size: 0.84rem; }
+    footer a { color: var(--accent-light); text-decoration: none; }
+
+    .wa-float {
+      position: fixed; bottom: 32px; left: 32px; z-index: 999;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: #25D366; display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem; text-decoration: none;
+      box-shadow: 0 6px 25px rgba(37,211,102,0.5); transition: transform 0.25s;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    .fade-in { opacity: 0; transform: translateY(24px); transition: all 0.65s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .unique-grid { grid-template-columns: 1fr; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .reviews-grid { grid-template-columns: 1fr; }
+      .stats-bar { gap: 40px; flex-wrap: wrap; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🌿</div>
+    <div>
+      <div class="nav-logo-text">ד"ר גלית לוין-גיחון</div>
+      <div class="nav-logo-sub">רפואה וטרינרית הוליסטית</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">אודות</a></li>
+    <li><a href="#unique">הגישה שלנו</a></li>
+    <li><a href="#blog">מאמרים</a></li>
+    <li><a href="#reviews">ביקורות</a></li>
+  </ul>
+  <a href="tel:09-7444007" class="nav-cta">📞 קבע תור</a>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-orbs">
+    <div class="orb-1"></div>
+    <div class="orb-2"></div>
+    <div class="orb-3"></div>
+  </div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-chip">
+        <span class="spark">✨</span>
+        רפואה הוליסטית לחיות מחמד • כפר סבא
+      </div>
+      <h1 class="hero-title">
+        כשהרפואה הקונבנציונלית
+        <span class="line2">פוגשת את הטבע</span>
+      </h1>
+      <p class="hero-desc">
+        ד"ר גלית לוין-גיחון משלבת רפואה וטרינרית מקצועית עם דיקור סיני, הומיאופתיה וכירופרקטיקה — ויועצת גם בזום לנוחות שלכם.
+      </p>
+      <div class="hero-pills">
+        <span class="pill">🪡 דיקור סיני</span>
+        <span class="pill">🌿 הומיאופתיה</span>
+        <span class="pill">🦴 כירופרקטיקה</span>
+        <span class="pill">💻 ייעוץ בזום</span>
+        <span class="pill">🔬 מעבדה</span>
+      </div>
+      <div class="hero-actions">
+        <a href="tel:09-7444007" class="btn-accent">📅 קבע תור</a>
+        <a href="#" class="btn-zoom">💻 ייעוץ בזום</a>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="panel-header">
+        <span class="panel-emoji">👩‍⚕️</span>
+        <div class="panel-name">ד"ר גלית לוין-גיחון</div>
+        <div class="panel-role">וטרינרית ומומחית רפואה משלימה</div>
+      </div>
+      <div class="zoom-highlight">
+        <span class="zoom-icon">💻</span>
+        <div>
+          <div class="zoom-title">ייעוץ וטרינרי בזום</div>
+          <div class="zoom-sub">ייעוץ מקצועי מהבית — ללא המתנה</div>
+        </div>
+      </div>
+      <div class="specialties">
+        <div class="spec-item"><div class="spec-dot"></div><span class="spec-text">דיקור סיני לבעלי חיים</span></div>
+        <div class="spec-item"><div class="spec-dot"></div><span class="spec-text">הומיאופתיה וכירופרקטיקה</span></div>
+        <div class="spec-item"><div class="spec-dot"></div><span class="spec-text">כירורגיה ורפואה פנימית</span></div>
+        <div class="spec-item"><div class="spec-dot"></div><span class="spec-text">דרמטולוגיה וטרינרית</span></div>
+        <div class="spec-item"><div class="spec-dot"></div><span class="spec-text">הדמיה ומעבדה פנימית</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">4.2 ⭐</div><div class="stat-label">דירוג</div></div>
+  <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">שיטות טיפול</div></div>
+  <div class="stat-item"><div class="stat-num">💻</div><div class="stat-label">ייעוץ בזום</div></div>
+  <div class="stat-item"><div class="stat-num">כפר סבא</div><div class="stat-label">מיקום</div></div>
+</div>
+
+<!-- UNIQUE VALUE -->
+<div class="unique-section" id="unique">
+  <div class="unique-inner fade-in">
+    <span class="section-tag">מה מייחד אותנו</span>
+    <h2 class="section-title">רפואה שרואה את החיה כולה</h2>
+    <p class="section-subtitle">גישה אינטגרטיבית שמשלבת מדע עם רפואת טבע — לתוצאות שאי אפשר להשיג בדרך אחרת</p>
+    <div class="unique-grid">
+      <div class="unique-card">
+        <span class="unique-card-icon">🪡</span>
+        <div class="unique-card-title">דיקור סיני לבעלי חיים</div>
+        <div class="unique-card-text">שיטה מוכחת לטיפול בכאבי מפרקים, שיתוק חלקי ומחלות כרוניות. מעל 3,000 שנה של ידע מסורתי בשילוב רפואה מודרנית.</div>
+      </div>
+      <div class="unique-card">
+        <span class="unique-card-icon">🌿</span>
+        <div class="unique-card-title">הומיאופתיה וצמחי מרפא</div>
+        <div class="unique-card-text">טיפול עדין ויעיל ללא תופעות לוואי — מתאים במיוחד לחיות מבוגרות, חיות עם רגישויות, ולמצבים שרפואה קונבנציונלית אינה מצליחה לפתור.</div>
+      </div>
+      <div class="unique-card">
+        <span class="unique-card-icon">💻</span>
+        <div class="unique-card-title">ייעוץ וטרינרי בזום</div>
+        <div class="unique-card-text">נסיעה מיותרת? ד"ר גלית מציעה ייעוץ מקצועי בווידאו — מושלם לשאלות ראשוניות, מעקב טיפולי ובדיקות שגרתיות לחיות שקשה להוציא מהבית.</div>
+      </div>
+      <div class="unique-card">
+        <span class="unique-card-icon">🦴</span>
+        <div class="unique-card-title">כירופרקטיקה וטרינרית</div>
+        <div class="unique-card-text">טיפול ידני בעמוד השדרה ובמפרקים — מביא הקלה מיידית לכלבים וחתולים הסובלים מכאבי גב, צליעה ובעיות תנועה.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="services">
+  <span class="section-tag">שירותים</span>
+  <h2 class="section-title">טיפול מלא — הוליסטי וקונבנציונלי</h2>
+  <p class="section-subtitle">מחיסון שנתי ועד דיקור סיני — הכל תחת קורת גג אחת</p>
+  <div class="services-grid fade-in">
+    <div class="service-card"><span class="service-icon">🩺</span><div class="service-name">רפואה כללית</div></div>
+    <div class="service-card"><span class="service-icon">🔪</span><div class="service-name">כירורגיה</div></div>
+    <div class="service-card"><span class="service-icon">🔬</span><div class="service-name">מעבדה</div></div>
+    <div class="service-card"><span class="service-icon">📡</span><div class="service-name">הדמיה</div></div>
+    <div class="service-card"><span class="service-icon">🦷</span><div class="service-name">שיניים</div></div>
+    <div class="service-card"><span class="service-icon">🧴</span><div class="service-name">דרמטולוגיה</div></div>
+    <div class="service-card"><span class="service-icon">🪡</span><div class="service-name">דיקור סיני</div></div>
+    <div class="service-card"><span class="service-icon">🌿</span><div class="service-name">הומיאופתיה</div></div>
+    <div class="service-card"><span class="service-icon">🦴</span><div class="service-name">כירופרקטיקה</div></div>
+    <div class="service-card"><span class="service-icon">💻</span><div class="service-name">ייעוץ בזום</div></div>
+  </div>
+</section>
+
+<section id="blog">
+  <span class="section-tag">מאמרי מומחה</span>
+  <h2 class="section-title">ידע שמשנה את חייהם של בעלי חיים</h2>
+  <p class="section-subtitle">מאמרים מקצועיים מאת ד"ר גלית לוין-גיחון</p>
+  <div class="blog-grid fade-in">
+    <div class="blog-card">
+      <div class="blog-thumb bt-1">🪡<span class="blog-cat">דיקור סיני</span></div>
+      <div class="blog-body">
+        <div class="blog-date">13 באפריל 2026</div>
+        <div class="blog-title">דיקור סיני לכלבים: האם זה עובד באמת?</div>
+        <div class="blog-excerpt">מחקרים מהשנים האחרונות מראים ירידה של 60% בכאב אצל כלבים עם דלקת מפרקים לאחר סדרת טיפולי דיקור. ד"ר גלית מסבירה...</div>
+        <a href="#" class="blog-read">קרא עוד ←</a>
+      </div>
+    </div>
+    <div class="blog-card">
+      <div class="blog-thumb bt-2">🌿<span class="blog-cat">הומיאופתיה</span></div>
+      <div class="blog-body">
+        <div class="blog-date">6 באפריל 2026</div>
+        <div class="blog-title">הומיאופתיה לחתולים — מה הרופאים לא תמיד אומרים</div>
+        <div class="blog-excerpt">לא כל חתול סובל טוב תרופות קונבנציונליות. הומיאופתיה יכולה להיות פתרון מצוין למצבים כרוניים, מחלות עור ובעיות עיכול...</div>
+        <a href="#" class="blog-read">קרא עוד ←</a>
+      </div>
+    </div>
+    <div class="blog-card">
+      <div class="blog-thumb bt-3">💻<span class="blog-cat" style="color:#2D1045;">זום וטרינרי</span></div>
+      <div class="blog-body">
+        <div class="blog-date">29 במרץ 2026</div>
+        <div class="blog-title">ייעוץ וטרינרי בזום: למי זה מתאים ואיך זה עובד?</div>
+        <div class="blog-excerpt">חיות מסויימות נלחצות מעצם הנסיעה לרופא. ייעוץ בזום יכול להחליף 30% מהביקורים — בנוחות מוחלטת מהסלון שלך...</div>
+        <a href="#" class="blog-read">קרא עוד ←</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="reviews-wrap" id="reviews">
+  <div class="reviews-inner">
+    <span class="section-tag" style="background:rgba(233,30,140,0.15);color:var(--accent-light);border-color:rgba(233,30,140,0.3);">ביקורות לקוחות</span>
+    <h2 class="section-title">מה אומרים המטופלים</h2>
+    <p class="section-subtitle">לקוחות שמצאו פתרון אחרי שניסו הכל</p>
+    <div class="reviews-grid fade-in">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"הכלב שלי סבל מכאבי מפרקים חמורים שנתיים. אחרי שישה טיפולי דיקור אצל ד"ר גלית — הוא רץ שוב. פשוט לא יאמן."</p>
+        <div class="review-author">
+          <div class="review-avatar">י</div>
+          <div><div class="review-name">יעל אברהם</div><div class="review-pet">בעלת Retriever בן 9</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"עשיתי ייעוץ בזום כשהחתולה הייתה חולה בלילה. ד"ר גלית הרגיעה אותי, הדריכה אותי מה לעשות ולמחרת הגענו למרפאה. שירות יוצא מן הכלל."</p>
+        <div class="review-author">
+          <div class="review-avatar">ה</div>
+          <div><div class="review-name">הדס כהן</div><div class="review-pet">בעלת חתולה</div></div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★☆</div>
+        <p class="review-text">"לא האמנתי ברפואה משלימה לפני שניסיתי. הומיאופתיה פתרה לכלב שלי בעיית עור כרונית שלוש שנים לא נפתרה. המשיך לבקר."</p>
+        <div class="review-author">
+          <div class="review-avatar">ג</div>
+          <div><div class="review-name">גיא מזרחי</div><div class="review-pet">בעל כלב • כפר סבא</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cta-wrap">
+  <div class="cta-inner fade-in">
+    <span class="section-tag">בואו אלינו</span>
+    <h2 class="section-title">רפואה שרואה את חיית המחמד שלך כולה</h2>
+    <p class="section-subtitle">א׳–ה׳ 09:00-14:00 ו-16:00-19:00 | שישי 09:30-13:30</p>
+    <div class="cta-buttons">
+      <a href="https://wa.me/9720549447080" class="btn-wa">💬 WhatsApp</a>
+      <a href="tel:09-7444007" class="btn-tel">📞 09-7444007</a>
+      <a href="#" class="btn-vid">💻 ייעוץ בזום</a>
+    </div>
+    <p style="margin-top:20px;font-size:0.85rem;color:var(--text-muted);">📍 יערה 1, כפר סבא</p>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 ד"ר גלית לוין-גיחון — מרפאה וטרינרית הוליסטית | <a href="tel:09-7444007">09-7444007</a></p>
+  <p style="margin-top:8px;font-size:0.76rem;opacity:0.4;">עמוד זה הוכן כהדגמה על ידי AgenticFlow</p>
+</footer>
+
+<a href="https://wa.me/9720549447080" class="wa-float">💬</a>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.background = window.scrollY > 50 ? 'rgba(45,16,69,0.98)' : 'rgba(45,16,69,0.92)';
+  });
+</script>
+</body>
+</html>
