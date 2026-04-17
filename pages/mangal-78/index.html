@@ -108,16 +108,26 @@ const FIRE = [
   {id:'high',   label:'אש חזקה',    sub:'שלהבת גבוהה',  mult:.75,  icon:'🔥🔥'},
 ];
 const SC_TRACKS = [
-  { name:'הבה נגילה טכנו',       emoji:'🕺', color:'#1d4ed8', url:'https://soundcloud.com/fr34ky-759796436/hava-nagila-techno-remix' },
-  { name:'הבה נגילה מיקס',       emoji:'🎵', color:'#7c3aed', url:'https://soundcloud.com/divinmusic/divin-hava-nagila-original-mix' },
-  { name:'הבה נגילה – דנה',      emoji:'🌟', color:'#db2777', url:'https://soundcloud.com/danainternational/hava-nagila-2018' },
-  { name:'ירושלים של זהב',       emoji:'🏛️', color:'#b45309', url:'https://soundcloud.com/yotamishay/jerusalem-of-gold' },
-  { name:'על כל אלה – Koolulam', emoji:'🌿', color:'#047857', url:'https://soundcloud.com/user-604463715/al-kol-eleh' },
-  { name:'עם ישראל חי – MAYA',   emoji:'🔥', color:'#dc2626', url:'https://soundcloud.com/maya_djs/maya-djs-remix-free-download-1' },
-  { name:'עם ישראל חי – Shanti', emoji:'💫', color:'#0369a1', url:'https://soundcloud.com/shlomishanti/eyal-golan-am-israel-chai-shlomi-shanti-remix' },
-  { name:'עם ישראל חי – Yaniv T',emoji:'🎧', color:'#7e22ce', url:'https://soundcloud.com/djyanivt/yaniv-t-remix' },
-  { name:'עם ישראל חי – AKI',    emoji:'⚡', color:'#0891b2', url:'https://soundcloud.com/akicohen/aki-remix' },
-  { name:'עם ישראל חי – Afro',   emoji:'🌍', color:'#15803d', url:'https://soundcloud.com/djakhy26/eyal-golan-akhy-afro-edit' },
+  /* הבה נגילה */
+  { name:'הבה נגילה טכנו',            emoji:'🕺', color:'#1d4ed8', url:'https://soundcloud.com/fr34ky-759796436/hava-nagila-techno-remix' },
+  { name:'הבה נגילה מיקס',            emoji:'🎵', color:'#7c3aed', url:'https://soundcloud.com/divinmusic/divin-hava-nagila-original-mix' },
+  { name:'הבה נגילה – דנה אינטרנשיונל',emoji:'🌟', color:'#db2777', url:'https://soundcloud.com/danainternational/hava-nagila-2018' },
+  /* שירי ארץ ישראל */
+  { name:'ירושלים של זהב',            emoji:'🏛️', color:'#b45309', url:'https://soundcloud.com/yotamishay/jerusalem-of-gold' },
+  { name:'על כל אלה – Koolulam',      emoji:'🌿', color:'#047857', url:'https://soundcloud.com/user-604463715/al-kol-eleh' },
+  { name:'ארץ ישראל שלי',             emoji:'🇮🇱', color:'#0284c7', url:'https://soundcloud.com/shirdeutch/in8oui9hopjr' },
+  /* מהפכה של שמחה */
+  { name:'מהפכה של שמחה – Eden',      emoji:'🎉', color:'#d97706', url:'https://soundcloud.com/edenshalev/eden-shalev-remix' },
+  { name:'מהפכה של שמחה – DjBr.s',   emoji:'🥳', color:'#c2410c', url:'https://soundcloud.com/dj-br-official-page/djbrs-new-remix' },
+  { name:'מהפכה של שמחה – Club Edit', emoji:'💃', color:'#7c3aed', url:'https://soundcloud.com/yuval-chen/mahapeha' },
+  { name:'מהפכה של שמחה – Nati',      emoji:'🎶', color:'#0f766e', url:'https://soundcloud.com/nati-aminovhebrewmixes/lior-narkis-mahapecha-shel-simcha-natiremix' },
+  /* עם ישראל חי */
+  { name:'עם ישראל חי – MAYA DJs',    emoji:'🔥', color:'#dc2626', url:'https://soundcloud.com/maya_djs/maya-djs-remix-free-download-1' },
+  { name:'עם ישראל חי – Shlomi Shanti',emoji:'💫', color:'#0369a1', url:'https://soundcloud.com/shlomishanti/eyal-golan-am-israel-chai-shlomi-shanti-remix' },
+  { name:'עם ישראל חי – Yaniv T',     emoji:'🎧', color:'#7e22ce', url:'https://soundcloud.com/djyanivt/yaniv-t-remix' },
+  { name:'עם ישראל חי – AKI',         emoji:'⚡', color:'#0891b2', url:'https://soundcloud.com/akicohen/aki-remix' },
+  { name:'עם ישראל חי – Yinon',       emoji:'🌊', color:'#0e7490', url:'https://soundcloud.com/yinonmusic/remix-by-yinon-elharar-3' },
+  { name:'עם ישראל חי – Afro House',  emoji:'🌍', color:'#15803d', url:'https://soundcloud.com/djakhy26/eyal-golan-akhy-afro-edit' },
 ];
 const D_LABEL = {rare:'Rare',medium:'Medium',wellDone:'Well Done'};
 const LS_KEY  = 'mangal78_v3';
@@ -276,9 +286,13 @@ function MusicPlayer(){
       <input type="range" min="0" max="1" step="0.05" value=${vol} onInput=${e=>{const v=parseFloat(e.target.value);setVol(v);scSetVol(v);}} class="w-20" style=${{background:'linear-gradient(to right,'+tr.color+' '+(vol*100)+'%,rgba(255,255,255,0.2) '+(vol*100)+'%)'}}/>
       <span class="text-white/30 text-xs">🔊</span>
     </div>
-    <div class="flex gap-1.5 px-3 pb-3 overflow-x-auto" style=${{scrollbarWidth:'none',borderTop:'1px solid rgba(255,255,255,0.08)',paddingTop:'8px'}}>
-      ${SC_TRACKS.map((t,i)=>html`<button key=${i} onClick=${()=>changeTrack(i)} class="btn flex-shrink-0 flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap" style=${trackIdx===i?{background:t.color,color:'#fff',boxShadow:'0 2px 8px '+t.color+'55'}:{color:'rgba(255,255,255,0.38)'}}>
-        ${t.emoji} ${t.name}
+    <div style=${{borderTop:'1px solid rgba(255,255,255,0.08)',maxHeight:'210px',overflowY:'auto',scrollbarWidth:'none'}}>
+      ${SC_TRACKS.map((t,i)=>html`<button key=${i} onClick=${()=>changeTrack(i)} class="btn w-full flex items-center gap-2.5 px-4 py-2.5 text-right" style=${trackIdx===i?{background:'rgba(255,255,255,0.09)',borderRight:'3px solid '+t.color}:{borderRight:'3px solid transparent'}}>
+        <span class="text-base flex-shrink-0" style=${{opacity:trackIdx===i?1:0.55}}>${t.emoji}</span>
+        <span class=${'flex-1 text-xs font-bold truncate text-right'} style=${trackIdx===i?{color:t.color}:{color:'rgba(255,255,255,0.55)'}}>${t.name}</span>
+        ${trackIdx===i&&playing?html`<div class="flex items-end gap-0.5 flex-shrink-0" style=${{height:'12px'}}>
+          ${[0,1,2].map(j=>html`<div key=${j} class="sbar" style=${{background:t.color,height:'10px',animationDelay:(j*.14)+'s'}}/>`) }
+        </div>`:html`<div style=${{width:'14px'}}/>` }
       </button>`)}
     </div>
   </div>`;
