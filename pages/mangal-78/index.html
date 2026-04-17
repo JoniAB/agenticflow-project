@@ -331,7 +331,7 @@ function HomeScreen({timers,onAdd,onFlip,onRemove,onCelebrate,showMusic,onToggle
       </div>
       <div class="flex items-center gap-2">
         <button onClick=${onToggleMusic} class=${`btn glass w-9 h-9 rounded-full flex items-center justify-center text-lg ${showMusic?'ring-2 ring-yellow-400':''}`}>🎶</button>
-        <button onClick=${onAdd} class="btn px-4 py-2 rounded-xl font-black text-white text-sm" style=${{background:'linear-gradient(135deg,#FF4500,#ff7700)',boxShadow:'0 4px 16px rgba(255,69,0,0.4)'}}>+ הוסף בשר</button>
+        <button onClick=${onAdd} class="btn px-4 py-2 rounded-xl font-black text-white text-sm" style=${{background:'linear-gradient(135deg,#FF4500,#ff7700)',boxShadow:'0 4px 16px rgba(255,69,0,0.4)'}}>+ הוסף בשר למנגל</button>
       </div>
     </div>
     ${showMusic?html`<div class="px-4 mb-3"><${MusicPlayer}/></div>`:null}
@@ -342,7 +342,7 @@ function HomeScreen({timers,onAdd,onFlip,onRemove,onCelebrate,showMusic,onToggle
         <div class="text-blue-200 text-sm mb-8">לחץ "+ הוסף בשר" כדי להתחיל</div>
         <div class="text-6xl">🇮🇱</div>
         <div class="text-white/30 text-xs mt-4 tracking-widest">✡ חג עצמאות שמח ✡</div>
-      </div>`:html`<div class=${`grid gap-3 ${timers.length>1?'grid-cols-1 sm:grid-cols-2':'grid-cols-1'}`}>
+      </div>`:html`<div class="grid gap-3 grid-cols-1">
         ${timers.map(t=>html`<div key=${t.id}>
           <${TimerCard} timer=${t} onFlip=${onFlip} onRemove=${onRemove} onCelebrate=${onCelebrate}/>
           ${t.phase==='done'?html`<button onClick=${()=>shareWA(t)} class="btn glass w-full mt-1.5 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-bold text-white" style=${{borderColor:'rgba(37,211,102,0.4)',background:'rgba(37,211,102,0.1)'}}>📱 שלח לחבר'ה שמוכן</button>`:null}
