@@ -100,15 +100,11 @@ const FIRE = [
   {id:'medium', label:'אש בינונית', sub:'גריל רגיל',    mult:1.0,  icon:'🔥'},
   {id:'high',   label:'אש חזקה',    sub:'שלהבת גבוהה',  mult:.75,  icon:'🔥🔥'},
 ];
-const TRACKS = [
-  {name:'הבה נגילה – Remix', emoji:'🕺', color:'#1d4ed8', bpm:128, vol:.11,
-   notes:[[330,.5],[370,.5],[415,.5],[440,1.5],[494,.5],[494,.5],[494,.5],[523,1.5],[523,.5],[494,.5],[523,.5],[494,.5],[440,2],[440,.5],[415,.5],[440,.5],[415,.5],[370,2],[330,.5],[370,.5],[415,.5],[440,1.5],[659,.5],[622,.5],[587,.5],[523,2.5],[0,.5]]},
-  {name:'ירושלים של זהב', emoji:'🏛️', color:'#7c3aed', bpm:88, vol:.09,
-   notes:[[392,.75],[0,.25],[330,.5],[294,.5],[330,.5],[392,.5],[440,.5],[494,2],[0,.5],[494,.75],[0,.25],[392,.5],[370,.5],[392,.5],[440,.5],[392,2],[0,.5],[392,.5],[392,.5],[523,.5],[494,.5],[440,.5],[392,.5],[330,.5],[294,2],[0,.5],[294,.5],[294,.5],[392,.5],[370,.5],[330,.5],[294,.5],[440,2],[0,1]]},
-  {name:'על כל אלה – Beat', emoji:'🌿', color:'#047857', bpm:108, vol:.10,
-   notes:[[294,.5],[392,1],[440,.5],[466,.5],[523,1],[587,2],[523,.5],[494,.5],[440,.5],[392,.5],[330,2],[0,.5],[294,.5],[392,1],[440,.5],[466,.5],[523,.5],[587,.5],[698,.5],[659,.5],[587,.5],[523,2],[0,1]]},
-  {name:'ריקוד עם ישראל 🔥', emoji:'💃', color:'#b91c1c', bpm:145, vol:.10,
-   notes:[[330,.5],[330,.5],[370,.5],[415,.5],[440,1],[494,1],[440,.5],[415,.5],[330,.5],[370,2],[0,.5],[494,.5],[494,.5],[523,.5],[494,.5],[440,.5],[415,1.5],[330,.5],[370,.5],[415,.5],[440,.5],[494,1],[659,1.5],[0,.5],[659,.5],[587,.5],[523,.5],[494,.5],[440,.5],[415,.5],[370,.5],[330,2],[0,1]]},
+const SC_TRACKS = [
+  { name:'הבה נגילה טכנו',  emoji:'🕺', color:'#1d4ed8', url:'https://soundcloud.com/fr34ky-759796436/hava-nagila-techno-remix' },
+  { name:'הבה נגילה מיקס',  emoji:'🎵', color:'#7c3aed', url:'https://soundcloud.com/divinmusic/divin-hava-nagila-original-mix' },
+  { name:'ירושלים של זהב',  emoji:'🏛️', color:'#b45309', url:'https://soundcloud.com/yotamishay/jerusalem-of-gold' },
+  { name:'על כל אלה',       emoji:'🌿', color:'#047857', url:'https://soundcloud.com/user-604463715/al-kol-eleh' },
 ];
 const D_LABEL = {rare:'Rare',medium:'Medium',wellDone:'Well Done'};
 const LS_KEY  = 'mangal78_v3';
@@ -121,53 +117,11 @@ const loadLS = () => { try{const r=localStorage.getItem(LS_KEY);return r?JSON.pa
 const vibe   = p  => { if('vibrate' in navigator) try{navigator.vibrate(p)}catch{} };
 const calcSideTime = (meat,don,th,fi) => (meat.times[don]??4) * (THICKNESS.find(t=>t.id===th)?.mult??1) * (FIRE.find(f=>f.id===fi)?.mult??1);
 
-/* ══ AUDIO ══ */
-let _ctx=null,_mg=null,_rev=null,_musicOn=false,_musicTrack=0,_musicTimer=null,_loopStartMs=null,_loopDurMs=0;
+/* ══ AUDIO SFX ══ */
+let _ctx=null;
 const getCtx=()=>{if(!_ctx)_ctx=new(window.AudioContext||window.webkitAudioContext)();return _ctx;};
-const getMG=()=>{if(!_mg){const c=getCtx();_mg=c.createGain();_mg.gain.value=.55;_mg.connect(c.destination);}return _mg;};
-function getRev(){
-  if(_rev)return _rev;
-  try{const c=getCtx(),len=Math.floor(c.sampleRate*1.6),buf=c.createBuffer(2,len,c.sampleRate);
-  for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.2);}
-  _rev=c.createConvolver();_rev.buffer=buf;const rg=c.createGain();rg.gain.value=.22;_rev.connect(rg);rg.connect(getMG());}catch{}
-  return _rev;
-}
-function richNote(freq,start,dur,vol=.12){
-  try{const c=getCtx(),rev=getRev();
-  [0,-9,9].forEach((det,i)=>{
-    const o=c.createOscillator(),g=c.createGain();
-    o.type='triangle';o.frequency.value=freq;o.detune.value=det;
-    const v=i===0?vol:vol*.38;
-    g.gain.setValueAtTime(0,start);g.gain.linearRampToValueAtTime(v,start+.02);
-    g.gain.setValueAtTime(v,start+dur*.7);g.gain.exponentialRampToValueAtTime(.001,start+dur);
-    o.connect(g);g.connect(getMG());if(rev)g.connect(rev);
-    o.start(start);o.stop(start+dur+.04);
-  });}catch{}
-}
-function tone(freq,start,dur,vol=.18,type='triangle',master=false){
-  try{const c=getCtx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(master?getMG():c.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,start);g.gain.exponentialRampToValueAtTime(.001,start+dur);o.start(start);o.stop(start+dur+.02);}catch{}
-}
-function drumKick(t){
-  try{const c=getCtx(),o=c.createOscillator(),g=c.createGain();
-  o.type='sine';o.frequency.setValueAtTime(155,t);o.frequency.exponentialRampToValueAtTime(42,t+.14);
-  g.gain.setValueAtTime(.85,t);g.gain.exponentialRampToValueAtTime(.001,t+.22);
-  o.connect(g);g.connect(getMG());o.start(t);o.stop(t+.26);}catch{}
-}
-function drumSnare(t){
-  try{const c=getCtx(),dur=.13,buf=c.createBuffer(1,Math.floor(c.sampleRate*dur),c.sampleRate),d=buf.getChannelData(0);
-  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
-  const src=c.createBufferSource();src.buffer=buf;
-  const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=1800;
-  const g=c.createGain();g.gain.setValueAtTime(.35,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
-  src.connect(hp);hp.connect(g);g.connect(getMG());src.start(t);src.stop(t+dur);}catch{}
-}
-function drumHihat(t,vol=.10){
-  try{const c=getCtx(),dur=.05,buf=c.createBuffer(1,Math.floor(c.sampleRate*dur),c.sampleRate),d=buf.getChannelData(0);
-  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
-  const src=c.createBufferSource();src.buffer=buf;
-  const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=7200;
-  const g=c.createGain();g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
-  src.connect(hp);hp.connect(g);g.connect(getMG());src.start(t);src.stop(t+dur+.01);}catch{}
+function tone(freq,start,dur,vol=.18,type='triangle'){
+  try{const c=getCtx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,start);g.gain.exponentialRampToValueAtTime(.001,start+dur);o.start(start);o.stop(start+dur+.02);}catch{}
 }
 function playSizzle(){
   try{const c=getCtx(),dur=1.1,buf=c.createBuffer(1,c.sampleRate*dur,c.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const src=c.createBufferSource();src.buffer=buf;const bp=c.createBiquadFilter();bp.type='bandpass';bp.frequency.value=3200;bp.Q.value=.7;const hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=1400;const g=c.createGain(),t=c.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.52,t+.03);g.gain.setValueAtTime(.42,t+.09);g.gain.exponentialRampToValueAtTime(.001,t+dur);src.connect(bp);bp.connect(hp);hp.connect(g);g.connect(c.destination);src.start(t);src.stop(t+dur);}catch{}
@@ -175,29 +129,41 @@ function playSizzle(){
 function playFlipSound(){try{const c=getCtx(),t=c.currentTime;[880,1100,880,1100,1320].forEach((f,i)=>tone(f,t+i*.14,.22,.17,'sine'));}catch{}}
 function playCelebSound(){try{const c=getCtx(),t=c.currentTime;[523,587,659,698,784,880,784,698,659,784,1047].forEach((f,i)=>tone(f,t+i*.16,.2,.14,'triangle'));}catch{}}
 function playSelectSound(){try{const c=getCtx(),t=c.currentTime;tone(440,t,.1,.12,'sine');tone(550,t+.08,.12,.1,'sine');}catch{}}
-function scheduleTrack(idx){
-  const tr=TRACKS[idx],beat=60/tr.bpm,c=getCtx();
-  let t=c.currentTime+.05,totalBeats=0;
-  tr.notes.forEach(([f,b])=>{if(f>0)richNote(f,t,b*beat*.85,tr.vol);t+=b*beat;totalBeats+=b;});
-  // Drums
-  let dt=c.currentTime+.05;
-  const nb=Math.floor(totalBeats);
-  for(let i=0;i<nb;i++){
-    drumKick(dt);
-    if(i%2===1)drumSnare(dt+beat*.01);
-    drumHihat(dt+beat*.0,.08);
-    drumHihat(dt+beat*.5,.05);
-    dt+=beat;
-  }
-  const dur=totalBeats*beat;
-  _loopStartMs=Date.now()+50;_loopDurMs=dur*1000;
-  if(_musicTimer)clearTimeout(_musicTimer);
-  _musicTimer=setTimeout(()=>{if(_musicOn)scheduleTrack(_musicTrack);},dur*1000+120);
+
+/* ══ SOUNDCLOUD PLAYER ══ */
+let _scInited=false,_scWidgets=[],_scReady=[],_scCurrent=-1,_scIsPlaying=false,_scProgress=0;
+function initSC(){
+  if(_scInited)return;_scInited=true;
+  const s=document.createElement('script');
+  s.src='https://w.soundcloud.com/player/api.js';
+  s.onload=()=>{
+    const c=document.getElementById('sc-players');if(!c)return;
+    SC_TRACKS.forEach((t,i)=>{
+      const f=document.createElement('iframe');
+      f.src='https://w.soundcloud.com/player/?url='+encodeURIComponent(t.url)+'&auto_play=false&hide_related=true&show_comments=false&show_reposts=false&visual=false&buying=false&liking=false&download=false&sharing=false';
+      f.width='1';f.height='1';f.frameBorder='0';f.scrolling='no';
+      c.appendChild(f);
+      const w=SC.Widget(f);_scWidgets[i]=w;
+      w.bind(SC.Widget.Events.READY,()=>{_scReady[i]=true;});
+      w.bind(SC.Widget.Events.PLAY_PROGRESS,data=>{if(i===_scCurrent)_scProgress=data.relativePosition||0;});
+      w.bind(SC.Widget.Events.FINISH,()=>{if(i===_scCurrent&&_scIsPlaying){w.seekTo(0);w.play();}});
+    });
+  };
+  document.head.appendChild(s);
 }
-function startTrack(i){_musicOn=true;_musicTrack=i;scheduleTrack(i);}
-function stopTrack(){_musicOn=false;if(_musicTimer){clearTimeout(_musicTimer);_musicTimer=null;}}
-function setMusicVol(v){getMG().gain.value=v;}
-function getMusicProgress(){if(!_musicOn||!_loopStartMs)return 0;return((Date.now()-_loopStartMs)%_loopDurMs)/_loopDurMs;}
+function scPlay(idx){
+  if(_scCurrent!==idx&&_scCurrent!==-1)_scWidgets[_scCurrent]?.pause();
+  _scCurrent=idx;_scIsPlaying=true;_scProgress=0;
+  const w=_scWidgets[idx];if(w){w.seekTo(0);w.play();}
+}
+function scPause(){_scIsPlaying=false;if(_scCurrent!==-1)_scWidgets[_scCurrent]?.pause();}
+function scStop(){
+  _scIsPlaying=false;_scProgress=0;
+  if(_scCurrent!==-1){_scWidgets[_scCurrent]?.pause();try{_scWidgets[_scCurrent]?.seekTo(0);}catch{}_scCurrent=-1;}
+}
+function scSetVol(v){_scWidgets.forEach(w=>w?.setVolume(Math.round(v*100)));}
+function scGetProgress(){return _scProgress;}
+function scIsReady(){return _scReady.some(Boolean);}
 
 /* ══ BACKGROUND ══ */
 const BG_STARS = Array.from({length:24},(_,i)=>({id:i,x:(i*17+5)%94,y:(i*29+7)%88,size:12+(i%5)*10,depth:.2+(i%4)*.28,dur:`${5.5+i*1.1}s`,delay:`${(i*.55)%4.5}s`,op:.055+(i%4)*.022,dark:i%3===0}));
@@ -224,26 +190,40 @@ function Smoke(){
 
 /* ══ MUSIC PLAYER ══ */
 function MusicPlayer(){
-  const [playing,setPlaying]=useState(false),[trackIdx,setTrackIdx]=useState(0),[vol,setVol]=useState(.55),[progress,setProgress]=useState(0);
-  useEffect(()=>{if(!playing)return;const iv=setInterval(()=>setProgress(getMusicProgress()),120);return()=>clearInterval(iv);},[playing,trackIdx]);
-  const toggle=()=>{try{getCtx().resume();}catch{}if(playing){stopTrack();setPlaying(false);setProgress(0);}else{startTrack(trackIdx);setPlaying(true);}};
-  const changeTrack=i=>{setTrackIdx(i);if(playing){stopTrack();setTimeout(()=>startTrack(i),60);}};
-  const tr=TRACKS[trackIdx];
+  const [playing,setPlaying]=useState(false),[trackIdx,setTrackIdx]=useState(0),[vol,setVol]=useState(.7),[progress,setProgress]=useState(0),[ready,setReady]=useState(false);
+  useEffect(()=>{
+    initSC();
+    const iv=setInterval(()=>{if(scIsReady()){setReady(true);clearInterval(iv);}},350);
+    return()=>clearInterval(iv);
+  },[]);
+  useEffect(()=>{
+    if(!playing)return;
+    const iv=setInterval(()=>setProgress(scGetProgress()),200);
+    return()=>clearInterval(iv);
+  },[playing,trackIdx]);
+  const toggle=()=>{
+    if(!ready)return;
+    if(playing){scPause();setPlaying(false);}
+    else{try{getCtx().resume();}catch{}scPlay(trackIdx);setPlaying(true);}
+  };
+  const stop=()=>{scStop();setPlaying(false);setProgress(0);};
+  const changeTrack=i=>{setTrackIdx(i);setProgress(0);if(playing)scPlay(i);};
+  const tr=SC_TRACKS[trackIdx];
   return html`<div class="glass rounded-2xl p-3 slide-up">
     <div class="flex gap-1.5 mb-2.5 overflow-x-auto pb-0.5" style=${{scrollbarWidth:'none'}}>
-      ${TRACKS.map((t,i)=>html`<button key=${i} onClick=${()=>changeTrack(i)} class="btn flex-shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap" style=${trackIdx===i?{background:t.color,color:'#fff'}:{color:'rgba(255,255,255,0.4)'}}>${t.emoji} ${t.name}</button>`)}
+      ${SC_TRACKS.map((t,i)=>html`<button key=${i} onClick=${()=>changeTrack(i)} class="btn flex-shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold whitespace-nowrap" style=${trackIdx===i?{background:t.color,color:'#fff'}:{color:'rgba(255,255,255,0.4)'}}>${t.emoji} ${t.name}</button>`)}
     </div>
     <div class="flex items-center gap-2.5">
-      <button onClick=${toggle} class="btn text-2xl flex-shrink-0 w-9 h-9 flex items-center justify-center">${playing?'⏸':'▶️'}</button>
-      ${playing?html`<button onClick=${()=>{stopTrack();setPlaying(false);setProgress(0);}} class="btn glass flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-white/70 font-black text-lg" title="עצור">■</button>`:null}
+      <button onClick=${toggle} class=${`btn text-2xl flex-shrink-0 w-9 h-9 flex items-center justify-center${!ready?' opacity-40':''}`}>${!ready?'⏳':playing?'⏸':'▶️'}</button>
+      ${playing?html`<button onClick=${stop} class="btn glass flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-white/70 font-black text-lg" title="עצור">■</button>`:null}
       <div class="flex-1 min-w-0" dir="ltr">
         <div class="h-2 rounded-full overflow-hidden" style=${{background:'rgba(255,255,255,0.15)'}}>
-          <div class="h-full rounded-full transition-all duration-100" style=${{width:`${progress*100}%`,background:tr.color}}/>
+          <div class="h-full rounded-full transition-all duration-200" style=${{width:`${progress*100}%`,background:tr.color}}/>
         </div>
       </div>
       <div class="flex items-center gap-1.5 flex-shrink-0" dir="ltr">
         <span class="text-white/40 text-xs">🔈</span>
-        <input type="range" min="0" max="1" step="0.05" value=${vol} onInput=${e=>{const v=parseFloat(e.target.value);setVol(v);setMusicVol(v);}} class="w-16" style=${{background:`linear-gradient(to right,${tr.color} ${vol*100}%,rgba(255,255,255,0.2) ${vol*100}%)`}}/>
+        <input type="range" min="0" max="1" step="0.05" value=${vol} onInput=${e=>{const v=parseFloat(e.target.value);setVol(v);scSetVol(v);}} class="w-16" style=${{background:`linear-gradient(to right,${tr.color} ${vol*100}%,rgba(255,255,255,0.2) ${vol*100}%)`}}/>
         <span class="text-white/40 text-xs">🔊</span>
       </div>
     </div>
@@ -331,7 +311,24 @@ function HomeScreen({timers,onAdd,onFlip,onRemove,onCelebrate,showMusic,onToggle
       </div>
       <div class="flex items-center gap-2">
         <button onClick=${onToggleMusic} class=${`btn glass w-9 h-9 rounded-full flex items-center justify-center text-lg ${showMusic?'ring-2 ring-yellow-400':''}`}>🎶</button>
-        <button onClick=${onAdd} class="btn px-4 py-2 rounded-xl font-black text-white text-sm" style=${{background:'linear-gradient(135deg,#FF4500,#ff7700)',boxShadow:'0 4px 16px rgba(255,69,0,0.4)'}}>+ הוסף בשר למנגל</button>
+        <button onClick=${onAdd} class="btn flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl" style=${{background:'linear-gradient(175deg,#1c1c1c,#2d2d2d)',border:'1.5px solid rgba(255,90,0,0.55)',boxShadow:'0 4px 18px rgba(255,60,0,0.4)'}}>
+          <div style=${{position:'relative',height:'48px',width:'44px'}}>
+            <span style=${{position:'absolute',top:0,left:'50%',transform:'translateX(-50%)',fontSize:'14px',lineHeight:1}}>🔥</span>
+            <svg width="44" height="34" viewBox="0 0 44 34" fill="none" style=${{position:'absolute',bottom:0,left:0}}>
+              <ellipse cx="22" cy="9" rx="14" ry="5" fill="#282828" stroke="#4a4a4a" stroke-width="1.3"/>
+              <path d="M8,9 Q8,21 22,21 Q36,21 36,9" fill="#1e1e1e" stroke="#3d3d3d" stroke-width="1.3"/>
+              <ellipse cx="22" cy="18" rx="9" ry="3" fill="rgba(255,85,0,0.35)"/>
+              <line x1="10" y1="9" x2="34" y2="9" stroke="#4a4a4a" stroke-width="1.1"/>
+              <line x1="15" y1="5" x2="15" y2="13" stroke="#3d3d3d" stroke-width="0.9"/>
+              <line x1="22" y1="4" x2="22" y2="14" stroke="#3d3d3d" stroke-width="0.9"/>
+              <line x1="29" y1="5" x2="29" y2="13" stroke="#3d3d3d" stroke-width="0.9"/>
+              <line x1="16" y1="21" x2="11" y2="34" stroke="#4a4a4a" stroke-width="2" stroke-linecap="round"/>
+              <line x1="22" y1="21" x2="22" y2="34" stroke="#4a4a4a" stroke-width="2" stroke-linecap="round"/>
+              <line x1="28" y1="21" x2="33" y2="34" stroke="#4a4a4a" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span style=${{color:'rgba(255,200,130,0.95)',fontSize:'10px',fontWeight:900,whiteSpace:'nowrap'}}>+ הוסף בשר למנגל</span>
+        </button>
       </div>
     </div>
     ${showMusic?html`<div class="px-4 mb-3"><${MusicPlayer}/></div>`:null}
@@ -339,7 +336,7 @@ function HomeScreen({timers,onAdd,onFlip,onRemove,onCelebrate,showMusic,onToggle
       ${timers.length===0?html`<div class="flex flex-col items-center justify-center pt-20 pb-10 text-center slide-up">
         <div class="text-8xl mb-4">🔥</div>
         <div class="text-2xl font-black text-white mb-2">הגריל מחכה לך!</div>
-        <div class="text-blue-200 text-sm mb-8">לחץ "+ הוסף בשר" כדי להתחיל</div>
+        <div class="text-blue-200 text-sm mb-8">לחץ "הוסף בשר למנגל" כדי להתחיל</div>
         <div class="text-6xl">🇮🇱</div>
         <div class="text-white/30 text-xs mt-4 tracking-widest">✡ חג עצמאות שמח ✡</div>
       </div>`:html`<div class="grid gap-3 grid-cols-1">
@@ -480,6 +477,7 @@ function App(){
   const handleCelebrate=timer=>{setCelebration(timer);handleRemove(timer.id);};
 
   return html`<div>
+    <div id="sc-players" style=${{position:'fixed',top:'-9999px',left:'-9999px',width:'10px',height:'10px',overflow:'hidden',opacity:0,pointerEvents:'none'}}></div>
     <${FestiveBG}/>
     <div class="relative z-10">
       ${screen==='home'?html`<${HomeScreen} timers=${activeTimers} onAdd=${()=>setScreen('addMeat')} onFlip=${handleFlip} onRemove=${handleRemove} onCelebrate=${handleCelebrate} showMusic=${showMusic} onToggleMusic=${()=>setShowMusic(p=>!p)}/>`:null}
