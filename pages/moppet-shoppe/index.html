@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgenticFlow × The Moppet Shoppe</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --navy: #0a0f1e;
+      --blue: #0ea5e9;
+      --teal: #14b8a6;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --light: #f0fdf4;
+      --text: #1e293b;
+      --muted: #64748b;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0fdf9; color: var(--text); }
+
+    nav { background: var(--navy); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    nav .logo { color: white; font-weight: 700; font-size: 1.1rem; }
+    nav .logo span { color: var(--teal); }
+    nav .badge { background: var(--teal); color: white; font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 600; }
+
+    .hero { background: linear-gradient(135deg, #022c22 0%, #064e3b 100%); color: white; padding: 5rem 2rem 4rem; text-align: center; }
+    .hero .tag { display: inline-block; background: rgba(20,184,166,0.15); border: 1px solid var(--teal); color: #5eead4; font-size: 0.8rem; padding: 0.3rem 1rem; border-radius: 999px; margin-bottom: 1.5rem; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+    .hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; line-height: 1.2; max-width: 720px; margin: 0 auto 1.5rem; }
+    .hero h1 span { color: #6ee7b7; }
+    .hero p { font-size: 1.1rem; color: #6ee7b7; max-width: 580px; margin: 0 auto; line-height: 1.7; opacity: 0.85; }
+
+    .section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
+    .section-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #059669; margin-bottom: 0.75rem; }
+    .section h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; margin-bottom: 1rem; color: var(--navy); }
+    .section .subtitle { color: var(--muted); font-size: 1rem; line-height: 1.7; max-width: 680px; margin-bottom: 2.5rem; }
+
+    /* CAROL SPOTLIGHT */
+    .carol-box { background: white; border-radius: 20px; padding: 2rem; display: flex; gap: 1.5rem; align-items: flex-start; margin-bottom: 3rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #d1fae5; }
+    .carol-avatar { width: 60px; height: 60px; background: linear-gradient(135deg, #6ee7b7, #34d399); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
+    .carol-text h3 { font-weight: 700; color: var(--navy); margin-bottom: 0.4rem; }
+    .carol-text p { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .carol-text .star { color: #f59e0b; font-size: 0.9rem; margin-bottom: 0.4rem; }
+
+    .pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .pain-card { background: white; border-radius: 16px; padding: 1.75rem; border-left: 4px solid #f97316; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .pain-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .pain-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--navy); }
+    .pain-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+    .divider { text-align: center; padding: 2rem; font-size: 2rem; color: var(--muted); }
+
+    .solutions { background: linear-gradient(135deg, #022c22, #064e3b); padding: 4rem 2rem; }
+    .solutions-inner { max-width: 900px; margin: 0 auto; }
+    .solutions-inner .section-label { color: #6ee7b7; }
+    .solutions-inner h2 { color: white; }
+    .solutions-inner .subtitle { color: #a7f3d0; opacity: 0.85; }
+
+    .solution-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .solution-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 1.75rem; }
+    .solution-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .solution-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: white; }
+    .solution-card p { font-size: 0.9rem; color: #a7f3d0; line-height: 1.6; opacity: 0.85; }
+    .solution-card .check { color: #6ee7b7; font-weight: 700; font-size: 0.85rem; margin-top: 0.75rem; }
+
+    .mockup-section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
+    .mockup-section h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; }
+    .mockup-section .subtitle { color: var(--muted); margin-bottom: 2.5rem; }
+
+    .before-after { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    .ba-card { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .ba-label { padding: 0.6rem 1rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .ba-label.before { background: #fee2e2; color: #991b1b; }
+    .ba-label.after { background: #d1fae5; color: #065f46; }
+    .ba-content { background: white; padding: 1.25rem; }
+    .ba-content.old { background: #f8f9fa; }
+    .ba-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; font-size: 0.85rem; }
+    .ba-row .x { color: #ef4444; font-weight: 700; }
+    .ba-row .check { color: #22c55e; font-weight: 700; }
+    .ba-row span { color: var(--muted); }
+
+    .browser { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+    .browser-bar { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.red { background: #ef4444; }
+    .dot.yellow { background: #f59e0b; }
+    .dot.green { background: #22c55e; }
+    .url-bar { flex: 1; background: #e2e8f0; border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.8rem; color: var(--muted); margin: 0 1rem; }
+
+    .mock-site { background: white; }
+    .mock-nav { background: linear-gradient(135deg, #065f46, #059669); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .mock-nav .name { color: white; font-weight: 800; font-size: 1.1rem; }
+    .mock-nav .links { display: flex; gap: 1.5rem; }
+    .mock-nav .links span { color: rgba(255,255,255,0.85); font-size: 0.85rem; }
+    .mock-hero { padding: 3rem 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; background: linear-gradient(135deg, #f0fdf4, white); }
+    .mock-hero .copy h2 { font-size: 1.5rem; font-weight: 800; color: var(--navy); line-height: 1.3; margin-bottom: 0.75rem; }
+    .mock-hero .copy p { color: #64748b; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+    .mock-btn { display: inline-block; background: linear-gradient(135deg, #059669, #0ea5e9); color: white; padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
+    .mock-features { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
+    .mock-badge { background: #d1fae5; color: #065f46; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600; }
+    .mock-img { background: linear-gradient(135deg, #d1fae5, #bfdbfe); height: 180px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    .mock-chat { background: white; border-top: 1px solid #f1f5f9; padding: 1rem 2rem; display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+    .chat-bubble { background: #059669; color: white; font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 8px; }
+    .chat-dot { width: 36px; height: 36px; background: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; }
+
+    .stats { background: #f8fafc; padding: 3rem 2rem; }
+    .stats-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; text-align: center; }
+    .stat-num { font-size: 2.5rem; font-weight: 800; color: var(--navy); }
+    .stat-num span { color: #059669; }
+    .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
+
+    .testimonial { background: white; border-radius: 16px; padding: 2rem; margin: 2rem auto; max-width: 680px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border-left: 4px solid #22c55e; }
+    .testimonial p { font-style: italic; color: var(--muted); line-height: 1.7; margin-bottom: 0.75rem; }
+    .testimonial .author { font-weight: 600; color: var(--navy); font-size: 0.9rem; }
+    .stars { color: #f59e0b; margin-bottom: 0.5rem; }
+
+    .cta-section { background: linear-gradient(135deg, #022c22, #064e3b); padding: 5rem 2rem; text-align: center; color: white; }
+    .cta-section h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 1rem; }
+    .cta-section p { color: #a7f3d0; font-size: 1rem; max-width: 580px; margin: 0 auto 2.5rem; line-height: 1.7; opacity: 0.85; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--teal); color: white; padding: 0.9rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; border: none; cursor: pointer; }
+    .btn-secondary { background: transparent; color: white; padding: 0.9rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; border: 2px solid rgba(255,255,255,0.25); cursor: pointer; }
+    .cta-note { color: #6ee7b7; font-size: 0.8rem; margin-top: 1.5rem; opacity: 0.7; }
+
+    footer { background: #011a12; color: #475569; text-align: center; padding: 2rem; font-size: 0.85rem; }
+    footer span { color: var(--teal); }
+
+    @media (max-width: 600px) {
+      .before-after { grid-template-columns: 1fr; }
+      .mock-hero { grid-template-columns: 1fr; }
+      .mock-nav .links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Agentic<span>Flow</span></div>
+  <div class="badge">Built just for you · Free</div>
+</nav>
+
+<div class="hero">
+  <div class="tag">Personalized for The Moppet Shoppe</div>
+  <h1>Carol's service is <span>legendary.</span><br/>The website should be too.</h1>
+  <p>4.9 stars. 33 glowing reviews. Sacramento's most beloved kids boutique. You've built something special — let's make sure your website says the same thing.</p>
+</div>
+
+<div class="section">
+  <div class="section-label">What your customers are saying</div>
+  <h2>Your in-store experience is 5 stars. Online is a different story.</h2>
+
+  <div class="carol-box">
+    <div class="carol-avatar">⭐</div>
+    <div class="carol-text">
+      <div class="star">★★★★★</div>
+      <h3>"The owner knows every item in the store."</h3>
+      <p>Your customers rave about your personal touch, your knowledge, your warmth. But what happens when they try to recreate that experience online — and they can't? That gap is costing you customers.</p>
+    </div>
+  </div>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="icon">🖥️</div>
+      <h3>Website design from 2015</h3>
+      <p>Your site still uses Google Analytics UA (replaced in 2023). Parents subconsciously judge quality by website appearance — a dated site signals a dated business, even if it's not true.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">🔀</div>
+      <h3>Shop is on a different website</h3>
+      <p>Your e-commerce lives on themoppetshoppe.ecwid.com — a completely different domain. Customers get confused, trust drops, and sales are lost in the transition.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">💬</div>
+      <h3>Carol can't be everywhere at once</h3>
+      <p>Your legendary in-store service can't scale online. When customers have questions at 9pm, there's no one to answer — and they move on. An AI can be Carol's digital voice.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">💰</div>
+      <h3>"$45 for a onesie" — price perception problem</h3>
+      <p>Without a premium-looking website, premium prices feel hard to justify. A modern site that reflects your quality turns price objections into "worth every penny."</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider">↓</div>
+
+<div class="solutions">
+  <div class="solutions-inner">
+    <div class="section-label">What we can do</div>
+    <h2 style="color:white;">Bring Carol's magic online. Scale it to all of Sacramento.</h2>
+    <p class="subtitle">We build agentic systems — not just websites. The Moppet Shoppe experience, automated.</p>
+
+    <div class="solution-grid">
+      <div class="solution-card">
+        <div class="icon">🏆</div>
+        <h3>Premium website redesign</h3>
+        <p>A modern, beautiful site that instantly signals "this is a quality boutique." One unified experience — no more jumping between domains.</p>
+        <div class="check">✓ Built-in store, no Ecwid needed</div>
+      </div>
+      <div class="solution-card">
+        <div class="icon">🤖</div>
+        <h3>AI that sounds like Carol</h3>
+        <p>We train an AI assistant on your products, your values, your tone. It answers customer questions exactly as you would — when you're with a customer in-store.</p>
+        <div class="check">✓ 24/7 customer service, zero effort</div>
+      </div>
+      <div class="solution-card">
+        <div class="icon">📦</div>
+        <h3>Smart inventory + ordering</h3>
+        <p>Customers can see real-time stock, request special orders, and get notified when items are restocked — automatically.</p>
+        <div class="check">✓ Fewer "do you have this?" calls</div>
+      </div>
+      <div class="solution-card">
+        <div class="icon">⭐</div>
+        <h3>Reviews that sell for you</h3>
+        <p>Your 4.9-star reputation should be front-and-center everywhere. We build a system that captures and showcases reviews automatically.</p>
+        <div class="check">✓ Social proof on autopilot</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mockup-section">
+  <div class="section-label">Before & After</div>
+  <h2>Same boutique. Completely different first impression.</h2>
+  <p class="subtitle">Here's what The Moppet Shoppe looks like now — and what it could look like with AgenticFlow.</p>
+
+  <div class="before-after">
+    <div class="ba-card">
+      <div class="ba-label before">Before — Current Site</div>
+      <div class="ba-content old">
+        <div class="ba-row"><span class="x">✗</span><span>2015 design aesthetic</span></div>
+        <div class="ba-row"><span class="x">✗</span><span>Shop on external Ecwid domain</span></div>
+        <div class="ba-row"><span class="x">✗</span><span>No live chat or AI assistant</span></div>
+        <div class="ba-row"><span class="x">✗</span><span>Old Google Analytics (UA)</span></div>
+        <div class="ba-row"><span class="x">✗</span><span>No automated review requests</span></div>
+        <div class="ba-row"><span class="x">✗</span><span>Customers can't order after hours</span></div>
+      </div>
+    </div>
+    <div class="ba-card">
+      <div class="ba-label after">After — AgenticFlow Build</div>
+      <div class="ba-content">
+        <div class="ba-row"><span class="check">✓</span><span>2026 premium design</span></div>
+        <div class="ba-row"><span class="check">✓</span><span>Unified store on your domain</span></div>
+        <div class="ba-row"><span class="check">✓</span><span>AI assistant, 24/7</span></div>
+        <div class="ba-row"><span class="check">✓</span><span>Modern analytics & insights</span></div>
+        <div class="ba-row"><span class="check">✓</span><span>Automated review collection</span></div>
+        <div class="ba-row"><span class="check">✓</span><span>Orders taken while you sleep</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="browser">
+    <div class="browser-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <div class="url-bar">kidsclothingstoresacramento.com — New Design by AgenticFlow</div>
+    </div>
+    <div class="mock-site">
+      <div class="mock-nav">
+        <div class="name">The Moppet Shoppe</div>
+        <div class="links">
+          <span>Shop</span>
+          <span>Organic</span>
+          <span>Gift Sets</span>
+          <span>Reviews</span>
+        </div>
+      </div>
+      <div class="mock-hero">
+        <div class="copy">
+          <h2>Sacramento's most loved kids boutique — now online</h2>
+          <p>Organic, USA-made, and handpicked by Carol. The in-store magic, available 24/7. Free gift-wrapping on every order.</p>
+          <div class="mock-btn">Shop the Collection</div>
+          <div class="mock-features">
+            <div class="mock-badge">★ 4.9 stars · 33 reviews</div>
+            <div class="mock-badge">✓ Organic & USA-made</div>
+            <div class="mock-badge">✓ Special orders welcome</div>
+          </div>
+        </div>
+        <div class="mock-img">🌱👶🎁</div>
+      </div>
+      <div class="mock-chat">
+        <div class="chat-bubble">Hi! Ask me anything about our products 🌿</div>
+        <div class="chat-dot">💬</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stats-inner">
+    <div>
+      <div class="stat-num">4.9<span>★</span></div>
+      <div class="stat-label">Average rating — your reputation is already there</div>
+    </div>
+    <div>
+      <div class="stat-num">2<span>x</span></div>
+      <div class="stat-label">More conversions when store is on one unified domain</div>
+    </div>
+    <div>
+      <div class="stat-num">40<span>%</span></div>
+      <div class="stat-label">Of e-commerce happens outside business hours</div>
+    </div>
+    <div>
+      <div class="stat-num">7<span>days</span></div>
+      <div class="stat-label">From old site to fully modernized experience</div>
+    </div>
+  </div>
+</div>
+
+<div style="padding: 3rem 2rem; max-width: 700px; margin: 0 auto;">
+  <div class="testimonial">
+    <div class="stars">★★★★★</div>
+    <p>"The owner will offer assistance without hovering and you don't feel pressured to purchase anything. Some of these outfits cost quite the pretty penny — but the experience and the items are SO worth the extra money."</p>
+    <div class="author">— Real Moppet Shoppe customer review</div>
+  </div>
+  <p style="text-align:center;color:var(--muted);font-size:0.9rem;margin-top:1rem;">Your customers already sell for you. Imagine a website that does the same.</p>
+</div>
+
+<div class="cta-section">
+  <h2>37 reviews. 4.9 stars.<br/>Time to let the <span style="color:#6ee7b7;">world</span> see it.</h2>
+  <p>The Moppet Shoppe already has everything it takes to win online — the products, the service, the reputation. AgenticFlow just builds the bridge between your store and the digital world.</p>
+  <div class="cta-buttons">
+    <a class="btn-primary" href="https://cal.com/yoniautomation/אוטומציה-עסקית">Let's talk — it's free</a>
+    <button class="btn-secondary" onclick="window.open('https://calendly.com','_blank')">Book a 20-min call</button>
+  </div>
+  <div class="cta-note">No commitment. We show you a plan and you decide. Simple.</div>
+</div>
+
+<footer>
+  Built with care by <span>AgenticFlow</span> · This page was created specifically for The Moppet Shoppe · 2026
+</footer>
+
+</body>
+</html>

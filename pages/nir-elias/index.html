@@ -1,243 +1,421 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>יוני אלוני × ניר אליאס — הדגמה</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>נבנה במיוחד בשבילך — ניר אליאס</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --dark: #0a0f1e;
-      --teal: #0d9488;
-      --blue: #0ea5e9;
-      --amber: #f59e0b;
-      --light: #f0fdfa;
-      --text: #0f172a;
-      --muted: #64748b;
+      --accent:  #5EEAD4;
+      --accent2: #0EA5E9;
+      --accent3: #38BDF8;
+      --dark:  #0d0d0d;
+      --card:  #161616;
+      --card2: #1c1c1c;
+      --muted: #888;
+      --text:  #f0f0f0;
+      --border:#2a2a2a;
     }
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--light); color: var(--text); direction: rtl; }
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{ font-family:'Heebo',system-ui,sans-serif; background:var(--dark); color:var(--text); overflow-x:hidden; }
 
-    nav { background: var(--dark); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
-    nav .logo { color: white; font-weight: 700; font-size: 1.1rem; }
-    nav .logo span { color: var(--teal); }
-    nav .badge { background: var(--teal); color: white; font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 600; }
+    @keyframes floatScissors{
+      0%,100%{ transform:translateY(0) rotate(var(--r,0deg)) scale(1); }
+      50%{ transform:translateY(-20px) rotate(calc(var(--r,0deg) + 15deg)) scale(1.05); }
+    }
+    @keyframes sparkle{
+      0%,100%{ opacity:0; transform:scale(0); }
+      50%{ opacity:1; transform:scale(1); }
+    }
+    @keyframes fadeUp{ from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes gradShift{
+      0%{ background-position:0% 50%; }
+      50%{ background-position:100% 50%; }
+      100%{ background-position:0% 50%; }
+    }
+    @keyframes pulse-ring{
+      0%{ transform:scale(1); opacity:.7; }
+      100%{ transform:scale(2); opacity:0; }
+    }
+    @keyframes bounce{ 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-8px)} }
+    @keyframes shimmer{
+      0%{ background-position:-200% center; }
+      100%{ background-position:200% center; }
+    }
+    @keyframes slideIn{ from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
 
-    .hero { background: linear-gradient(135deg, #0a0f1e 0%, #0c2340 60%, #0a1a1a 100%); color: white; padding: 5rem 2rem 4rem; text-align: center; }
-    .hero .tag { display: inline-block; background: rgba(13,148,136,0.15); border: 1px solid var(--teal); color: #5eead4; font-size: 0.8rem; padding: 0.3rem 1rem; border-radius: 999px; margin-bottom: 1.5rem; font-weight: 600; }
-    .hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; line-height: 1.3; max-width: 750px; margin: 0 auto 1.5rem; }
-    .hero h1 span { color: #5eead4; }
-    .hero p { font-size: 1.05rem; color: #94a3b8; max-width: 580px; margin: 0 auto; line-height: 1.8; }
-
-    .products-banner { background: linear-gradient(90deg, var(--teal), var(--blue)); padding: 0.9rem 2rem; text-align: center; color: white; font-weight: 600; font-size: 0.9rem; }
-
-    .section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
-    .section-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--teal); margin-bottom: 0.75rem; }
-    .section h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; margin-bottom: 1rem; color: var(--dark); }
-    .section .subtitle { color: var(--muted); font-size: 1rem; line-height: 1.8; max-width: 680px; margin-bottom: 2.5rem; }
-
-    .pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
-    .pain-card { background: white; border-radius: 16px; padding: 1.75rem; border-right: 4px solid #ef4444; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
-    .pain-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
-    .pain-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--dark); }
-    .pain-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
-
-    .divider { text-align: center; padding: 1.5rem; font-size: 2rem; color: #5eead4; }
-
-    .solutions { background: var(--dark); padding: 4rem 2rem; }
-    .solutions-inner { max-width: 900px; margin: 0 auto; }
-    .solutions-inner .section-label { color: #5eead4; }
-    .solutions-inner h2 { color: white; font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; margin-bottom: 1rem; }
-    .solutions-inner .subtitle { color: #94a3b8; font-size: 1rem; line-height: 1.8; max-width: 680px; margin-bottom: 2.5rem; }
-
-    .solution-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
-    .solution-card { background: rgba(13,148,136,0.07); border: 1px solid rgba(13,148,136,0.2); border-radius: 16px; padding: 1.75rem; }
-    .solution-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
-    .solution-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: white; }
-    .solution-card p { font-size: 0.88rem; color: #94a3b8; line-height: 1.65; }
-    .solution-card .check { color: #5eead4; font-weight: 700; font-size: 0.85rem; margin-top: 0.75rem; }
-
-    .mockup-section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
-    .mockup-section .section-label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--teal); margin-bottom: 0.75rem; }
-    .mockup-section h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; color: var(--dark); margin-bottom: 0.5rem; }
-    .mockup-section .subtitle { color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem; line-height: 1.8; }
-
-    /* Dual-channel mockup: salon booking + products */
-    .dual-mock { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    .mock-channel { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
-    .mock-channel h3 { font-size: 0.9rem; font-weight: 700; color: var(--dark); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-    .mock-channel h3 .chip { background: var(--teal); color: white; font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 4px; }
-    .chat-line { display: flex; flex-direction: column; gap: 0.5rem; }
-    .bubble { padding: 0.5rem 0.75rem; border-radius: 10px; font-size: 0.78rem; line-height: 1.5; }
-    .bubble.user { background: #f1f5f9; align-self: flex-end; color: #333; }
-    .bubble.bot { background: #e8fdf5; border-right: 3px solid var(--teal); color: #333; }
-    .bubble.highlight { background: #fef3c7; border-right: 3px solid var(--amber); font-weight: 600; color: #333; }
-
-    @media (max-width: 600px) {
-      .dual-mock { grid-template-columns: 1fr; }
+    /* NAV */
+    nav{
+      background:rgba(10,10,10,.95); backdrop-filter:blur(12px);
+      padding:14px 40px; display:flex; justify-content:space-between; align-items:center;
+      border-bottom:1px solid var(--border); position:sticky; top:0; z-index:200;
+    }
+    .nav-brand{ font-size:15px; font-weight:700; color:var(--accent); }
+    .nav-badge{
+      background:linear-gradient(90deg,#5EEAD4,#0EA5E9);
+      color:#fff; font-size:11px; font-weight:700; padding:5px 14px; border-radius:20px;
     }
 
-    .stats { background: #e0f2fe; padding: 3rem 2rem; }
-    .stats-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; text-align: center; }
-    .stat-num { font-size: 2.5rem; font-weight: 800; color: var(--dark); }
-    .stat-num span { color: var(--teal); }
-    .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
+    /* HERO */
+    .hero{
+      min-height:95vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; text-align:center;
+      padding:80px 40px 60px; position:relative; overflow:hidden;
+    }
+    .hero-bg{
+      position:absolute; inset:0;
+      background-image:url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1400&q=80&fit=crop');
+      background-size:cover; background-position:center;
+      filter:brightness(.18) saturate(.6);
+    }
+    .hero-gradient{
+      position:absolute; inset:0;
+      background:linear-gradient(160deg, rgba(5,30,50,.9) 0%, rgba(3,15,20,.95) 60%, rgba(5,5,5,.97) 100%);
+    }
+    .hero-particles{ position:absolute; inset:0; pointer-events:none; }
+    .hero-content{ position:relative; z-index:2; max-width:820px; }
+    .hero-eyebrow{
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+      padding:7px 20px; border-radius:30px; font-size:11px; font-weight:700;
+      letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:28px;
+    }
+    .hero h1{
+      font-size:clamp(2rem,5.5vw,3.6rem); font-weight:900; line-height:1.15;
+      margin-bottom:22px; letter-spacing:-.5px;
+    }
+    .hero h1 .grad{
+      background:linear-gradient(135deg,#5EEAD4,#0EA5E9,#38BDF8);
+      background-size:200%;
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      animation:gradShift 4s ease infinite;
+    }
+    .hero-tagline{
+      display:inline-block; font-size:.85rem; font-weight:700; letter-spacing:3px;
+      text-transform:uppercase; color:#5EEAD4; opacity:.7; margin-bottom:16px;
+    }
+    .hero-sub{
+      font-size:1.1rem; color:rgba(255,255,255,.6); max-width:600px; margin:0 auto 44px; line-height:1.85;
+    }
+    .hero-stats{ display:flex; justify-content:center; gap:48px; flex-wrap:wrap; }
+    .hero-stat .num{
+      font-size:2.4rem; font-weight:900;
+      background:linear-gradient(135deg,#5EEAD4,#0EA5E9);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .hero-stat .lbl{ font-size:11px; color:rgba(255,255,255,.45); margin-top:4px; letter-spacing:.5px; }
 
-    .cta-section { background: linear-gradient(135deg, #0a0f1e, #0c2340); padding: 5rem 2rem; text-align: center; color: white; }
-    .cta-section h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; margin-bottom: 1rem; }
-    .cta-section p { color: #94a3b8; font-size: 1rem; max-width: 560px; margin: 0 auto 2.5rem; line-height: 1.8; }
-    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .btn-primary { background: linear-gradient(90deg, var(--teal), var(--blue)); color: white; padding: 0.9rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; display: inline-block; }
-    .btn-secondary { background: transparent; color: white; padding: 0.9rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; border: 2px solid rgba(255,255,255,0.3); text-decoration: none; display: inline-block; }
+    /* BANNER */
+    .banner{
+      background:linear-gradient(90deg,#5EEAD4,#0EA5E9,#38BDF8);
+      background-size:200%; animation:gradShift 5s ease infinite;
+      text-align:center; padding:11px; font-size:13px; font-weight:700; color:#000;
+    }
 
-    footer { background: #020817; color: #475569; text-align: center; padding: 2rem; font-size: 0.85rem; }
-    footer span { color: var(--teal); }
+    /* IMAGE FEATURE */
+    .img-feature{
+      display:grid; grid-template-columns:1fr 1fr; gap:0;
+      max-width:1000px; margin:0 auto; border-radius:24px; overflow:hidden;
+    }
+    .img-feature-photo{
+      position:relative; height:380px;
+    }
+    .img-feature-photo img{
+      width:100%; height:100%; object-fit:cover; filter:brightness(.7) saturate(.8);
+    }
+    .img-feature-text{
+      background:var(--card); padding:48px 40px;
+      display:flex; flex-direction:column; justify-content:center;
+    }
+    .img-feature-text .eyebrow{
+      font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      color:var(--accent); margin-bottom:12px;
+    }
+    .img-feature-text h3{
+      font-size:1.7rem; font-weight:900; line-height:1.3; margin-bottom:16px;
+    }
+    .img-feature-text h3 em{ font-style:normal; color:var(--accent); }
+    .img-feature-text p{ color:var(--muted); font-size:.95rem; line-height:1.8; }
+
+    /* SECTIONS */
+    .section{ padding:64px 40px; max-width:1000px; margin:0 auto; }
+    .sec-eyebrow{ font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+    .sec-title{ font-size:clamp(1.6rem,3vw,2.2rem); font-weight:900; margin-bottom:8px; }
+    .sec-title em{ font-style:normal; color:var(--accent); }
+    .sec-sub{ color:var(--muted); font-size:.95rem; line-height:1.8; margin-bottom:40px; max-width:640px; }
+
+    /* PAIN CARDS */
+    .pain-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+    .pain-card{
+      background:var(--card); border-radius:16px; padding:24px;
+      border-bottom:2px solid #e74c3c; transition:transform .2s,box-shadow .2s;
+    }
+    .pain-card:hover{ transform:translateY(-5px); box-shadow:0 16px 40px rgba(0,0,0,.5); }
+    .pain-icon{ font-size:2rem; margin-bottom:12px; }
+    .pain-card h4{ font-size:15px; font-weight:800; margin-bottom:6px; }
+    .pain-card p{ font-size:13px; color:var(--muted); line-height:1.65; }
+
+    /* SOLUTION CARDS */
+    .sol-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
+    .sol-card{
+      background:var(--card2); border-radius:16px; padding:28px;
+      border:1px solid var(--border); position:relative; overflow:hidden;
+      transition:transform .2s, border-color .2s;
+    }
+    .sol-card:hover{ transform:translateY(-4px); border-color:var(--accent); }
+    .sol-num{
+      font-size:3rem; font-weight:900; opacity:.07; position:absolute; top:12px; left:16px;
+      line-height:1;
+    }
+    .sol-icon{ font-size:2rem; margin-bottom:12px; position:relative; }
+    .sol-card h4{
+      font-size:15px; font-weight:800; margin-bottom:6px;
+      background:linear-gradient(135deg,#5EEAD4,#0EA5E9);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      position:relative;
+    }
+    .sol-card p{ font-size:13px; color:var(--muted); line-height:1.65; position:relative; }
+
+    /* WHATSAPP */
+    .mockup-wrap{ display:flex; justify-content:center; padding:20px 0; }
+    .phone{
+      width:360px; background:#111; border-radius:40px; padding:18px;
+      box-shadow:0 32px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.04);
+      border:6px solid #1a1a1a;
+    }
+    .wa-header{
+      background:#1f2c34; border-radius:22px 22px 0 0;
+      padding:13px 16px; display:flex; align-items:center; gap:12px;
+    }
+    .wa-avatar{
+      width:40px; height:40px;
+      background:linear-gradient(135deg,#5EEAD4,#0EA5E9);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:20px; flex-shrink:0;
+    }
+    .wa-name{ font-size:14px; font-weight:700; color:#fff; }
+    .wa-status{ font-size:11px; color:#00af9c; }
+    .wa-body{ background:#0b141a; padding:16px; border-radius:0 0 22px 22px; min-height:360px; }
+    .msg{ margin-bottom:10px; max-width:84%; }
+    .msg.in{ margin-right:auto; animation:slideIn .3s ease; }
+    .msg.out{ margin-left:auto; }
+    .bubble{ padding:9px 14px; border-radius:14px; font-size:13px; line-height:1.55; }
+    .msg.in  .bubble{ background:#1e2d24; color:#d4efdc; border-radius:14px 14px 14px 2px; }
+    .msg.out .bubble{ background:#005c4b; color:#e8fdf5; border-radius:14px 14px 2px 14px; }
+    .msg-time{ font-size:10px; color:#444; margin-top:3px; text-align:left; }
+    .msg.in .msg-time{ text-align:right; }
+    .typing-b{ display:flex; align-items:center; gap:5px; padding:12px 16px; }
+    .dot{ width:7px; height:7px; background:var(--accent); border-radius:50%; animation:bounce 1.2s infinite; }
+    .dot:nth-child(2){ animation-delay:.2s; }
+    .dot:nth-child(3){ animation-delay:.4s; }
+
+    /* STATS */
+    .stats-bar{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+      background:var(--border); border-radius:20px; overflow:hidden;
+    }
+    .stat-item{
+      background:var(--card); padding:36px 24px; text-align:center;
+    }
+    .stat-num{
+      font-size:2.4rem; font-weight:900;
+      background:linear-gradient(135deg,#5EEAD4,#0EA5E9);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .stat-lbl{ font-size:13px; color:var(--muted); margin-top:6px; }
+
+    /* CTA */
+    .cta-wrap{
+      border-radius:24px; padding:60px 48px; text-align:center;
+      background:linear-gradient(135deg,#111 0%,#1a1a1a 100%);
+      border:1px solid var(--border); position:relative; overflow:hidden;
+    }
+    .cta-wrap::before{
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse at 50% 0%,rgba(94,234,212,.12) 0%,transparent 60%);
+    }
+    .cta-wrap h2{
+      font-size:clamp(1.6rem,3vw,2.2rem); font-weight:900; margin-bottom:14px;
+      position:relative;
+    }
+    .cta-wrap p{
+      color:var(--muted); font-size:1rem; line-height:1.8; margin-bottom:36px;
+      max-width:560px; margin-left:auto; margin-right:auto; position:relative;
+    }
+    .cta-btns{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; position:relative; }
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:16px 34px; border-radius:50px; font-size:16px; font-weight:800;
+      text-decoration:none; transition:transform .2s,box-shadow .2s; font-family:inherit;
+    }
+    .btn:hover{ transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,.6); }
+    .btn-wa{ background:#25D366; color:#000; }
+    .btn-book{
+      background:linear-gradient(135deg,#5EEAD4,#0EA5E9);
+      color:#fff; border:none;
+    }
+
+    footer{
+      background:#050505; padding:28px 40px; text-align:center;
+      font-size:12px; color:#333; border-top:1px solid var(--border);
+    }
+
+    @media(max-width:768px){
+      .img-feature{ grid-template-columns:1fr; }
+      .img-feature-photo{ height:220px; }
+    }
+    @media(max-width:640px){
+      nav{ padding:12px 20px; }
+      .hero{ padding:60px 20px 40px; min-height:auto; }
+      .section{ padding:40px 20px; }
+      .pain-grid,.sol-grid{ grid-template-columns:1fr; }
+      .stats-bar{ grid-template-columns:1fr; }
+      .phone{ width:100%; }
+      .cta-wrap{ padding:36px 20px; }
+    }
   </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo">יוני אלוני <span>אוטומציה ו-AI</span></div>
-  <div class="badge">נבנה במיוחד עבורכם · חינם</div>
+  <div class="nav-brand">✂️ יוני אלוני | AI לעסקים</div>
+  <div class="nav-badge">נבנה במיוחד בשבילך</div>
 </nav>
 
-<div class="products-banner">
-  ניר אליאס · מספרה + מוצרי שיער מקצועיים · תל אביב · שירות מאז 2020
-</div>
+<div class="banner">📍 הוכן בלעדית עבור ניר אליאס — תל אביב</div>
 
-<div class="hero">
-  <div class="tag">הדגמה מותאמת אישית — ניר אליאס</div>
-  <h1>מספרה + חנות מוצרים — שני ערוצים.<br/><span>לקוח שמחפש לא יודע לאן לפנות.</span></h1>
-  <p>יש לכם שילוב נדיר: שירותי מספרה מקצועיים לצד מוצרי שיער איכותיים. בנינו הדגמה שמראה איך סוכן אחד מטפל בשניהם — בלי לבלבל את הלקוח.</p>
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-particles">
+    <div style="position:absolute;left:8%;top:20%;font-size:18px;transform:rotate(-20deg);animation:floatScissors 8s ease-in-out 0s infinite;opacity:0.12;pointer-events:none;">✂️</div><div style="position:absolute;left:85%;top:15%;font-size:14px;transform:rotate(30deg);animation:floatScissors 7s ease-in-out 1.5s infinite;opacity:0.12;pointer-events:none;">✂️</div><div style="position:absolute;left:5%;top:60%;font-size:12px;transform:rotate(15deg);animation:floatScissors 9s ease-in-out 3s infinite;opacity:0.12;pointer-events:none;">✂️</div><div style="position:absolute;left:92%;top:55%;font-size:16px;transform:rotate(-35deg);animation:floatScissors 7.5s ease-in-out 0.5s infinite;opacity:0.12;pointer-events:none;">✂️</div><div style="position:absolute;left:50%;top:10%;font-size:10px;transform:rotate(45deg);animation:floatScissors 8.5s ease-in-out 2s infinite;opacity:0.12;pointer-events:none;">✂️</div><div style="position:absolute;left:70%;top:80%;font-size:14px;transform:rotate(-15deg);animation:floatScissors 9s ease-in-out 1s infinite;opacity:0.12;pointer-events:none;">✂️</div><div style="position:absolute;left:20%;top:85%;font-size:12px;transform:rotate(25deg);animation:floatScissors 7s ease-in-out 3.5s infinite;opacity:0.12;pointer-events:none;">✂️</div><div style="position:absolute;left:95%;top:35%;font-size:10px;transform:rotate(10deg);animation:floatScissors 8s ease-in-out 2.5s infinite;opacity:0.12;pointer-events:none;">✂️</div>
+    <div style="position:absolute;left:15%;top:30%;width:8px;height:8px;background:#5EEAD4;border-radius:50%;animation:sparkle 2.0s ease-in-out 0s infinite;opacity:0;pointer-events:none;"></div><div style="position:absolute;left:75%;top:20%;width:6px;height:6px;background:#5EEAD4;border-radius:50%;animation:sparkle 2.3s ease-in-out 1s infinite;opacity:0;pointer-events:none;"></div><div style="position:absolute;left:40%;top:60%;width:10px;height:10px;background:#5EEAD4;border-radius:50%;animation:sparkle 2.6s ease-in-out 2s infinite;opacity:0;pointer-events:none;"></div><div style="position:absolute;left:90%;top:70%;width:7px;height:7px;background:#5EEAD4;border-radius:50%;animation:sparkle 2.9s ease-in-out 0.5s infinite;opacity:0;pointer-events:none;"></div><div style="position:absolute;left:25%;top:80%;width:8px;height:8px;background:#5EEAD4;border-radius:50%;animation:sparkle 3.2s ease-in-out 1.5s infinite;opacity:0;pointer-events:none;"></div><div style="position:absolute;left:60%;top:40%;width:6px;height:6px;background:#5EEAD4;border-radius:50%;animation:sparkle 3.5s ease-in-out 3s infinite;opacity:0;pointer-events:none;"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-tagline">✂️ מספרה מקצועית • מוצרי שיער</div>
+    <div class="hero-eyebrow">✨ נבנה במיוחד בשבילך</div>
+    <h1 class="fade-up">מספרה + חנות מוצרים.<br><span class="grad">שני ערוצי הכנסה — בוט אחד.</span></h1>
+    <p class="hero-sub">ניר — יש לך משהו נדיר: שירותי מספרה מקצועיים + מוצרי שיער איכותיים. בניתי הדגמה שמראה איך בוט אחד מטפל בשניהם.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">24/7</div><div class="lbl">זמינות מלאה</div></div><div class="hero-stat"><div class="num">2 ערוצים</div><div class="lbl">בבוט אחד</div></div><div class="hero-stat"><div class="num">40%</div><div class="lbl">עלייה ממוצעת בסל הקנייה</div></div>
+    </div>
+  </div>
+</section>
+
+<div style="padding:48px 40px; max-width:1000px; margin:0 auto;">
+  <div class="img-feature">
+    <div class="img-feature-photo">
+      <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1400&q=80&fit=crop" alt="ניר אליאס" loading="lazy">
+    </div>
+    <div class="img-feature-text">
+      <div class="eyebrow">למה עכשיו?</div>
+      <h3>לקוחות שלא מקבלים<br>מענה <em>מיד</em> — עוברים לבא.</h3>
+      <p>ב-2026, אנשים מצפים לענות ב-WhatsApp בתוך דקות. הבוט לא ישן, לא בחופשה, ולא עמוס — הוא תמיד שם.</p>
+    </div>
+  </div>
 </div>
 
 <div class="section">
-  <div class="section-label">מה שמצאנו</div>
-  <h2>שני כוחות — בלי מנוע שמחבר ביניהם.</h2>
-  <p class="subtitle">האתר שלכם הוא בין הספורים שמציעים גם שירותי מספרה וגם מכירת מוצרים מקצועיים. אבל לקוחות נאבקים בשאלה הבסיסית: "איך מזמינים תור?" ו-"כמה זה עולה?" — ואין תשובה.</p>
-
+  <div class="sec-eyebrow">המצב היום</div>
+  <div class="sec-title">מה <em>עוצר לקוחות</em> מלהגיע</div>
+  <p class="sec-sub">בכל אחד מהנקודות הבאות, חלק מהלקוחות מוותרים ועוברים למתחרה.</p>
   <div class="pain-grid">
+    
     <div class="pain-card">
-      <div class="icon">🗓️</div>
-      <h3>אין הזמנת תור אונליין</h3>
-      <p>מי שרוצה לקבוע תור חייב להתקשר לטלפון או לשלוח WhatsApp ולחכות לתשובה. לקוחות שמחפשים ב-20:00 — פשוט לא יקבעו.</p>
-    </div>
-    <div class="pain-card">
-      <div class="icon">💸</div>
-      <h3>אין מחירי שירותים</h3>
-      <p>האתר מציג מחירי מוצרים (שמפו 69₪, מסכה 219₪) אבל לא מחירי שירותים. לקוח שרוצה להחליק שיער — לא יודע להיכן להתחיל.</p>
+      <div class="pain-icon">🛒</div>
+      <h4>שני ערוצים — לא מחוברים</h4>
+      <p>לקוח שקנה מוצר לא יודע על שירותי המספרה. לקוח שבא לתספורת לא יודע על המוצרים.</p>
     </div>
     <div class="pain-card">
-      <div class="icon">🔀</div>
-      <h3>ערוץ מוצרים וערוץ שירותים — לא מחוברים</h3>
-      <p>לקוח שקנה שמפו אורגני לא מקבל הצעה לטיפול. לקוחה שהחליקה שיער לא מוצעת לה מסכה משלימה. הזדמנויות נשרפות.</p>
+      <div class="pain-icon">📅</div>
+      <h4>אין הזמנה אונליין</h4>
+      <p>תורים רק בטלפון — ב-2026 זה מגביל. חלק מהלקוחות לא מתקשרים.</p>
     </div>
     <div class="pain-card">
-      <div class="icon">📅</div>
-      <h3>תוכן אתר מ-2020 — לא מעודכן</h3>
-      <p>האתר לא מציג ביקורות לקוחות, תמונות עבודה עדכניות, או טיפולים חדשים. לקוח חדש לא מקבל סיבה לבחור דווקא בכם.</p>
+      <div class="pain-icon">💰</div>
+      <h4>אין מחירון נגיש</h4>
+      <p>לקוח שרוצה לדעת כמה עולה עיצוב שיער — צריך להתקשר. חלק לא מתקשרים.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">📱</div>
+      <h4>נוכחות דיגיטלית חלשה</h4>
+      <p>אתר מ-2020, לא מובייל-פריינדלי. לקוח שמחפש בגוגל לא מוצא.</p>
     </div>
   </div>
 </div>
 
-<div class="divider">↓</div>
-
-<div class="solutions">
-  <div class="solutions-inner">
-    <div class="section-label">מה שנוכל לבנות</div>
-    <h2 style="color:white;">סוכן אחד שמוכר תורים ומוצרים — ומחבר ביניהם.</h2>
-    <p class="subtitle">היתרון הגדול שלכם הוא השילוב. כלי אוטומציה אחד יכול לנצל אותו לגמרי.</p>
-
-    <div class="solution-grid">
-      <div class="solution-card">
-        <div class="icon">💬</div>
-        <h3>chatbot שמבין גם שירות וגם מוצר</h3>
-        <p>"איזה שמפו טוב לשיער יבש?" — מקבל המלצת מוצר + הצעה לטיפול משלים. שתי המכירות נסגרות בשיחה אחת.</p>
-        <div class="check">✓ מכפיל ערך לקוח ממוצע</div>
-      </div>
-      <div class="solution-card">
-        <div class="icon">📅</div>
-        <h3>הזמנת תורים 24/7</h3>
-        <p>לקוחות מזמינים תור בזמן אמת — בוחרים שירות, תאריך ושעה. אתם רואים הכל ביומן. תזכורות אוטומטיות כלולות.</p>
-        <div class="check">✓ פחות no-shows, יותר הכנסה</div>
-      </div>
-      <div class="solution-card">
-        <div class="icon">🔄</div>
-        <h3>follow-up חכם אחרי קנייה</h3>
-        <p>לקוח קנה מסכה לשיער? שבוע אחרי — "איך השיער מרגיש? מעוניין בטיפול שמשלים את התוצאה?" הידוק הקשר, בלי מאמץ.</p>
-        <div class="check">✓ חוזרים יותר, קונים יותר</div>
-      </div>
-      <div class="solution-card">
-        <div class="icon">⭐</div>
-        <h3>מחירון + ביקורות שמוכרים</h3>
-        <p>עמוד שירותים עם מחירים שקופים + ביקורות אמיתיות = לקוח שמגיע כבר מוכן. פחות שאלות, יותר סגירות.</p>
-        <div class="check">✓ המרה גבוהה יותר</div>
-      </div>
+<div class="section">
+  <div class="sec-eyebrow">הפתרון</div>
+  <div class="sec-title">מה <em>הבוט עושה</em> בשבילכם</div>
+  <p class="sec-sub">סוכן AI שעובד 24/7 — מגיב ללקוחות, מזמין תורים, ומוכר שירותים.</p>
+  <div class="sol-grid">
+    
+    <div class="sol-card">
+      <div class="sol-num">01</div>
+      <div class="sol-icon">🤖</div>
+      <h4>בוט שמוכר הכל</h4>
+      <p>תספורת, צביעה, מוצרים — הבוט מציג, ממליץ, ומסייע לקנות.</p>
+    </div>
+    <div class="sol-card">
+      <div class="sol-num">02</div>
+      <div class="sol-icon">📅</div>
+      <h4>הזמנות תורים אוטומטיות</h4>
+      <p>לקוח מזמין תספורת בוואטסאפ ב-23:00 — ומקבל אישור תוך שניות.</p>
+    </div>
+    <div class="sol-card">
+      <div class="sol-num">03</div>
+      <div class="sol-icon">🛍️</div>
+      <h4>מכירת מוצרים מחכמה</h4>
+      <p>לקוח שיצא עם תספורת — מקבל המלצת מוצר אוטומטית. מכירות עולות.</p>
+    </div>
+    <div class="sol-card">
+      <div class="sol-num">04</div>
+      <div class="sol-icon">📊</div>
+      <h4>מעקב לקוחות</h4>
+      <p>הבוט זוכר כל לקוח — מה הוא קנה, מתי הגיע, מה הוא אוהב.</p>
     </div>
   </div>
 </div>
 
-<div class="mockup-section">
-  <div class="section-label">הדגמה חיה</div>
-  <h2>שני ערוצים — שיחה אחת</h2>
-  <p class="subtitle">כך הסוכן מטפל בלקוח שמגיע עם שאלת מוצר — וסוגר גם תור.</p>
-
-  <div class="dual-mock">
-    <div class="mock-channel">
-      <h3>💬 לקוח שואל על מוצר <span class="chip">LIVE</span></h3>
-      <div class="chat-line">
-        <div class="bubble user">מה ההבדל בין המסכה ב-99₪ לזאת ב-219₪?</div>
-        <div class="bubble bot">המסכה ב-99₪ מתאימה לשיפור יומיומי — לחות ועדינות. המסכה ב-219₪ היא טיפול עומק לשיקום שיער פגום או צבוע. 🌿</div>
-        <div class="bubble user">יש לי שיער צבוע ויבש</div>
-        <div class="bubble bot">אז ממליץ על המסכה ב-219₪ + שמפו לשיער צבוע (69₪). 👇<br/>ואגב — יש לנו טיפול לחות בסלון שמשלים את זה מעולה. רוצה לשמוע פרטים?</div>
-        <div class="bubble highlight">🎯 לקוח ממשיך לקביעת תור →</div>
+<div class="section">
+  <div class="sec-eyebrow">נבנה במיוחד בשבילך</div>
+  <div class="sec-title">ראו <em>איך זה עובד</em> בפועל</div>
+  <p class="sec-sub">שיחת WhatsApp אמיתית — בדיוק כמו שהבוט יעבוד אצלכם.</p>
+  <div class="mockup-wrap">
+    <div class="phone">
+      <div class="wa-header">
+        <div class="wa-avatar">✂️</div>
+        <div>
+          <div class="wa-name">ניר אליאס — מספרה</div>
+          <div class="wa-status">✓ עונה תוך שניות</div>
+        </div>
       </div>
-    </div>
-    <div class="mock-channel">
-      <h3>📅 המשך — קביעת תור <span class="chip">AUTO</span></h3>
-      <div class="chat-line">
-        <div class="bubble user">כן, כמה עולה הטיפול לחות?</div>
-        <div class="bubble bot">טיפול לחות עומק עולה 180₪, כ-45 דקות. 💆‍♀️<br/>יש זמינות השבוע: ג׳ ב-11:00, ד׳ ב-16:00, ה׳ ב-13:00.</div>
-        <div class="bubble user">יום ה׳ 13:00 בסדר</div>
-        <div class="bubble bot">מעולה! תור ל-ה׳ 17/4 ב-13:00 אצל ניר ✅<br/>גם הוספתי את המסכה לפנייה — תקבל הכל ביחד.</div>
-        <div class="bubble highlight">✓ תור + מוצר — עסקה כפולה אוטומטית</div>
+      <div class="wa-body">
+        <div class="msg out"><div class="bubble">שלום, כמה עולה תספורת + עיצוב?</div><div class="msg-time">21:00</div></div><div class="msg in"><div class="bubble">היי! ✂️<br><br>תספורת + עיצוב אצל ניר:<br>• גברים: ₪120<br>• נשים (קצר): ₪160<br>• נשים (ארוך): ₪220<br><br>אגב — יש לנו מבצע הזה: תספורת + שמפו מקצועי מתנה 🎁</div><div class="msg-time">21:00</div></div><div class="msg out"><div class="bubble">מעוניין! גבר, מתי יש ביום חמישי?</div><div class="msg-time">21:01</div></div><div class="msg in"><div class="bubble">ביום חמישי יש:<br>• 15:00 ✅<br>• 17:30 ✅<br>• 19:00 ✅<br><br>מה מועדף?</div><div class="msg-time">21:01</div></div><div class="msg in"><div class="bubble typing-b"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div><div class="msg out"><div class="bubble">17:30 אחלה</div><div class="msg-time">21:02</div></div><div class="msg in"><div class="bubble">🎉 נקבע! יום ה׳ ב-17:30<br>ניר אליאס, תל אביב<br><br>ועוד טיפ — מוצרי השיער שלנו זמינים גם לאיסוף עצמי. בא לראות? 🛍️</div><div class="msg-time">21:02</div></div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="stats">
-  <div class="stats-inner">
-    <div>
-      <div class="stat-num">2<span>x</span></div>
-      <div class="stat-label">ערך ממוצע לעסקה עם שילוב שירות+מוצר</div>
-    </div>
-    <div>
-      <div class="stat-num">24<span>/7</span></div>
-      <div class="stat-label">הזמנות תורים ללא מגע יד</div>
-    </div>
-    <div>
-      <div class="stat-num">7<span> ימים</span></div>
-      <div class="stat-label">זמן יישום מהאפס</div>
-    </div>
-    <div>
-      <div class="stat-num">0<span>₪</span></div>
-      <div class="stat-label">לשיחת הכרות ראשונה</div>
+<div class="section">
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-lbl">זמינות מלאה</div></div><div class="stat-item"><div class="stat-num">2 ערוצים</div><div class="stat-lbl">בבוט אחד</div></div><div class="stat-item"><div class="stat-num">40%</div><div class="stat-lbl">עלייה ממוצעת בסל הקנייה</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="cta-wrap">
+    <h2>רוצים לראות איך זה עובד אצלכם?</h2>
+    <p>10 דקות שיחה ואני מראה לכם איך הבוט מחבר בין שני ערוצי ההכנסה שלכם — בצורה חכמה ואוטומטית.</p>
+    <div class="cta-btns">
+      <a href="https://wa.me/972502249151?text=היי+ניר,+ראיתי+את+ההדגמה" class="btn btn-wa">💬 WhatsApp</a>
+      <a href="https://cal.com/yoniautomation/אוטומציה-עסקית" class="btn btn-book">📅 קבעו שיחת היכרות</a>
     </div>
   </div>
 </div>
 
-<div class="cta-section">
-  <h2>תראו לנו את שני הערוצים שלכם.</h2>
-  <p>10 דקות שיחה — ואני מראה לכם איך הסוכן יכול לעבוד עם המספרה ועם החנות שלכם, יחד.</p>
-  <div class="cta-buttons">
-    <a href="https://wa.me/972537002404?text=היי+יוני,+ראיתי+את+ההדגמה+של+ניר+אליאס+ורוצה+לשמוע+עוד" class="btn-primary">שלחו לי הודעה בוואטסאפ</a>
-    <a href="mailto:yoniautomation@gmail.com?subject=הדגמה - ניר אליאס" class="btn-secondary">שלחו מייל</a>
-  </div>
-</div>
-
-<footer>
-  נבנה במיוחד עבור <span>ניר אליאס</span> · יוני אלוני אוטומציה ו-AI
-</footer>
+<footer>יוני אלוני אוטומציה ו-AI | הדגמה זו הוכנה בלעדית עבור ניר אליאס | תל אביב | 2026</footer>
 
 </body>
 </html>

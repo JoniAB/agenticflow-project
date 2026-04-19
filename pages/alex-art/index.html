@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>יוני אלוני × Alex Art צלם חתונות</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --navy: #0a0f1e;
+      --blue: #0ea5e9;
+      --teal: #14b8a6;
+      --gold: #f59e0b;
+      --green: #10b981;
+      --light: #f1f5f9;
+      --text: #1e293b;
+      --muted: #64748b;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--light); color: var(--text); direction: rtl; }
+
+    nav { background: var(--navy); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    nav .logo { color: white; font-weight: 700; font-size: 1.1rem; }
+    nav .logo span { color: var(--teal); }
+    nav .badge { background: var(--teal); color: white; font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-weight: 600; }
+
+    .hero { background: linear-gradient(135deg, #0f172a 0%, #1a2744 50%, #0f172a 100%); color: white; padding: 5rem 2rem 4rem; text-align: center; }
+    .hero .tag { display: inline-block; background: rgba(16,185,129,0.15); border: 1px solid var(--green); color: var(--green); font-size: 0.8rem; padding: 0.3rem 1rem; border-radius: 999px; margin-bottom: 1.5rem; font-weight: 600; }
+    .hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; line-height: 1.3; max-width: 750px; margin: 0 auto 1.5rem; }
+    .hero h1 span { color: var(--gold); }
+    .hero p { font-size: 1.1rem; color: #94a3b8; max-width: 580px; margin: 0 auto; line-height: 1.8; }
+
+    .section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
+    .section-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--blue); margin-bottom: 0.75rem; }
+    .section h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; margin-bottom: 1rem; color: var(--navy); }
+    .section .subtitle { color: var(--muted); font-size: 1rem; line-height: 1.8; max-width: 680px; margin-bottom: 2.5rem; }
+
+    .pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .pain-card { background: white; border-radius: 16px; padding: 1.75rem; border-right: 4px solid #ef4444; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .pain-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .pain-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--navy); }
+    .pain-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+    .opportunity-card { background: white; border-radius: 16px; padding: 1.75rem; border-right: 4px solid var(--gold); box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .opportunity-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .opportunity-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--navy); }
+    .opportunity-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+    .divider { text-align: center; padding: 2rem; font-size: 2rem; color: var(--muted); }
+
+    .solutions { background: var(--navy); padding: 4rem 2rem; }
+    .solutions-inner { max-width: 900px; margin: 0 auto; }
+    .solutions-inner .section-label { color: var(--teal); }
+    .solutions-inner h2 { color: white; }
+    .solutions-inner .subtitle { color: #94a3b8; }
+
+    .solution-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .solution-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.75rem; }
+    .solution-card .icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .solution-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: white; }
+    .solution-card p { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
+    .solution-card .check { color: var(--teal); font-weight: 700; font-size: 0.85rem; margin-top: 0.75rem; }
+
+    .mockup-section { padding: 4rem 2rem; max-width: 900px; margin: 0 auto; }
+    .mockup-section h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; }
+    .mockup-section .subtitle { color: var(--muted); margin-bottom: 2.5rem; }
+
+    .browser { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+    .browser-bar { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.5rem; direction: ltr; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot.red { background: #ef4444; }
+    .dot.yellow { background: #f59e0b; }
+    .dot.green { background: #22c55e; }
+    .url-bar { flex: 1; background: #e2e8f0; border-radius: 6px; padding: 0.35rem 0.75rem; font-size: 0.8rem; color: var(--muted); margin: 0 1rem; direction: ltr; }
+
+    .mock-site { background: white; direction: rtl; }
+    .mock-nav { background: #0f172a; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .mock-nav .name { color: white; font-weight: 800; font-size: 1.1rem; letter-spacing: 1px; }
+    .mock-nav .name span { color: var(--gold); }
+    .mock-nav .links { display: flex; gap: 1.5rem; }
+    .mock-nav .links span { color: #94a3b8; font-size: 0.85rem; }
+    .mock-hero { padding: 3rem 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; background: linear-gradient(135deg, #fefce8 0%, white 100%); }
+    .mock-hero .copy h2 { font-size: 1.5rem; font-weight: 800; color: var(--navy); line-height: 1.4; margin-bottom: 0.75rem; }
+    .mock-hero .copy p { color: #64748b; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+    .mock-btn { display: inline-block; background: var(--gold); color: white; padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
+    .mock-features { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+    .mock-badge { background: #fefce8; color: #92400e; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600; }
+    .mock-img { background: linear-gradient(135deg, #fde68a, #fca5a5); height: 180px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    .mock-packages { background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 1rem 2rem; display: flex; gap: 1rem; align-items: center; }
+    .package-pill { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.8rem; font-weight: 600; color: var(--navy); }
+    .package-pill.featured { background: var(--gold); color: white; border-color: var(--gold); }
+    .mock-chat { background: white; border-top: 1px solid #f1f5f9; padding: 1rem 2rem; display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; direction: ltr; }
+    .chat-bubble { background: var(--gold); color: white; font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 8px; }
+    .chat-dot { width: 36px; height: 36px; background: #0f172a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; }
+
+    .stats { background: #f8fafc; padding: 3rem 2rem; }
+    .stats-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; text-align: center; }
+    .stat-num { font-size: 2.5rem; font-weight: 800; color: var(--navy); }
+    .stat-num span { color: var(--gold); }
+    .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
+
+    .quote-section { padding: 3rem 2rem; max-width: 700px; margin: 0 auto; text-align: center; }
+    .quote-text { font-size: 1.2rem; font-style: italic; color: var(--muted); line-height: 1.8; margin-bottom: 1rem; border-right: 4px solid var(--gold); padding-right: 1.5rem; text-align: right; }
+    .quote-source { font-weight: 600; color: var(--navy); font-size: 0.9rem; }
+
+    .cta-section { background: linear-gradient(135deg, #0f172a, #1a2744); padding: 5rem 2rem; text-align: center; color: white; }
+    .cta-section h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: 1rem; }
+    .cta-section p { color: #94a3b8; font-size: 1rem; max-width: 560px; margin: 0 auto 2.5rem; line-height: 1.8; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--gold); color: white; padding: 0.9rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; border: none; cursor: pointer; }
+    .btn-secondary { background: transparent; color: white; padding: 0.9rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; border: 2px solid rgba(255,255,255,0.3); cursor: pointer; text-decoration: none; }
+    .cta-note { color: #475569; font-size: 0.8rem; margin-top: 1.5rem; }
+
+    footer { background: #020817; color: #475569; text-align: center; padding: 2rem; font-size: 0.85rem; }
+    footer span { color: var(--teal); }
+
+    @media (max-width: 600px) {
+      .mock-hero { grid-template-columns: 1fr; }
+      .mock-nav .links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">יוני אלוני <span>אוטומציה ו-AI</span></div>
+  <div class="badge">נבנה במיוחד עבורכם · חינם</div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="tag">מותאם אישית ל-Alex Art</div>
+  <h1>צילום חתונות מרגש.<br/>לידים שנאבדים <span>ללא מענה מיידי.</span></h1>
+  <p>בנינו את העמוד הזה במיוחד לאלכס — כדי להראות מה קורה כשכישרון אמיתי פוגש מערכת שלא מפספסת אף ליד.</p>
+</div>
+
+<!-- PAIN POINTS -->
+<div class="section">
+  <div class="section-label">מה שמצאנו</div>
+  <h2>הצילומים שלכם מדהימים. האתר לא מוכר אותם מספיק.</h2>
+  <p class="subtitle">Alex Art מציע צילומי חתונה מהלב, עם גישה דוקומנטרית שלקוחות מאוהבים בה. אבל שוק צלמי החתונות בישראל תחרותי מאוד — ומי שלא עונה מהר, מפסיד.</p>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="icon">⏰</div>
+      <h3>פניות שלא מקבלות מענה מיידי</h3>
+      <p>זוג שמחפש צלם לחתונה שולח בקשות ל-5-7 צלמים בו-זמנית. מי שעונה ראשון — סוגר. מי שעונה אחרי שעה? מאחר מדי.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">💰</div>
+      <h3>הצגת מחירים לא ברורה</h3>
+      <p>חבילות מ-5,990 ₪ — אבל מה כלול? הזוג לא יודע בלי ליצור קשר. כל שאלה שדורשת פנייה היא חיכוך שגורם לחלק לוותר.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">🎬</div>
+      <h3>הפרדה בין סטילס לוידאו</h3>
+      <p>זוגות רוצים לדעת בדיוק מה הם מקבלים. אין דף ברור שמסביר את ההבדלים, המחירים ואפשרויות ה-bundle.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">🔄</div>
+      <h3>אין מנגנון follow-up</h3>
+      <p>זוג שהתעניין לפני חודש — מה קרה לו? אין מערכת שמחזירה אותו. רוב הלידים מתקררים ונאבדים לגמרי.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider">↓</div>
+
+<!-- SOLUTIONS -->
+<div class="solutions">
+  <div class="solutions-inner">
+    <div class="section-label">מה נוכל לבנות עבורכם</div>
+    <h2 style="color:white;">כישרון של Alex Art — עם מנוע לידים שעובד 24/7.</h2>
+    <p class="subtitle">אנחנו לא מחליפים את הקסם שאתם יוצרים מאחורי העדשה. אנחנו דואגים שכל ליד יהפוך ללקוח.</p>
+
+    <div class="solution-grid">
+      <div class="solution-card">
+        <div class="icon">⚡</div>
+        <h3>AI שסוגר פגישות ב-WhatsApp</h3>
+        <p>כל זוג שפונה מקבל תגובה תוך 30 שניות: "שלום! ראיתי שאתם מחפשים צלם לחתונה. מתי נוח לשיחה קצרה?" — ואז קביעת פגישה אוטומטית.</p>
+        <div class="check">✓ אפס לידים שנאבדים</div>
+      </div>
+      <div class="solution-card">
+        <div class="icon">💎</div>
+        <h3>דף מחירים ושקיפות מלאה</h3>
+        <p>חבילות ברורות עם מה שכלול, הבדלים בין סטילס לוידאו ואפשרויות combo — זוגות שיודעים מה הם קונים מחליטים מהר יותר.</p>
+        <div class="check">✓ יותר פגישות, פחות שאלות</div>
+      </div>
+      <div class="solution-card">
+        <div class="icon">📧</div>
+        <h3>סדרת follow-up אוטומטית</h3>
+        <p>ליד שלא סגר? מקבל אחרי שבוע הודעה עם תמונה מרגשת + הנחה מוגבלת בזמן. 40% מהלידים שנאבדים חוזרים עם follow-up נכון.</p>
+        <div class="check">✓ עובד בזמן שאתם בצילום</div>
+      </div>
+      <div class="solution-card">
+        <div class="icon">🌟</div>
+        <h3>אתר שמספר את הסיפור שלכם</h3>
+        <p>גלריה רגשית, סרטון showreel, ביקורות מוטמעות ו-CTA ברור בכל גלילה — אתר שמוכר את החוויה לפני שדיברתם עם הזוג.</p>
+        <div class="check">✓ מוכן ב-7 ימים</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOCKUP -->
+<div class="mockup-section">
+  <div class="section-label">תצוגה מקדימה</div>
+  <h2>כך יכול להיראות האתר החדש שלכם</h2>
+  <p class="subtitle">עיצבנו את המוקאפ הזה במיוחד ל-Alex Art — הסגנון הדוקומנטרי שלכם, הרגשות האמיתיים, עם תשתית שמוכרת.</p>
+
+  <div class="browser">
+    <div class="browser-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <div class="url-bar">alexart.co.il — עיצוב חדש · יוני אלוני אוטומציה</div>
+    </div>
+    <div class="mock-site">
+      <div class="mock-nav">
+        <div class="name">Alex<span>Art</span> Photography</div>
+        <div class="links">
+          <span>חתונות</span>
+          <span>גלריה</span>
+          <span>חבילות</span>
+          <span>צרו קשר</span>
+        </div>
+      </div>
+      <div class="mock-hero">
+        <div class="copy">
+          <h2>הרגעים האמיתיים ביותר של החיים שלכם — מתועדים לנצח.</h2>
+          <p>צילום חתונות דוקומנטרי | סטילס + וידאו | ישראל וחו"ל | חבילות מ-5,990 ₪</p>
+          <div class="mock-btn">הציעו לי מחיר</div>
+          <div class="mock-features">
+            <div class="mock-badge">✓ תגובה תוך שעה</div>
+            <div class="mock-badge">✓ תיק עבודות פתוח</div>
+            <div class="mock-badge">✓ ביקורות אמיתיות</div>
+          </div>
+        </div>
+        <div class="mock-img">💍📸</div>
+      </div>
+      <div class="mock-packages">
+        <div class="package-pill">סטילס בלבד</div>
+        <div class="package-pill featured">סטילס + וידאו ✨</div>
+        <div class="package-pill">וידאו בלבד</div>
+      </div>
+      <div class="mock-chat">
+        <div class="chat-bubble">שלום! מחפשים צלם לחתונה? 💍</div>
+        <div class="chat-dot">💬</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div>
+      <div class="stat-num">7<span>x</span></div>
+      <div class="stat-label">יותר סיכוי לסגור אם עונים תוך 5 דקות מהפנייה</div>
+    </div>
+    <div>
+      <div class="stat-num">40<span>%</span></div>
+      <div class="stat-label">מהלידים שנאבדו חוזרים עם follow-up אוטומטי</div>
+    </div>
+    <div>
+      <div class="stat-num">24<span>/7</span></div>
+      <div class="stat-label">ה-AI שלנו עונה לזוגות — גם בשבת בצהרים</div>
+    </div>
+    <div>
+      <div class="stat-num">5,990<span>₪</span></div>
+      <div class="stat-label">ממחיר הכניסה — עם אתר שמצדיק אותו מרגע ראשון</div>
+    </div>
+  </div>
+</div>
+
+<!-- QUOTE -->
+<div class="quote-section">
+  <div class="quote-text">"שלחנו להם הודעה וחיכינו יום שלם לתשובה. בינתיים סגרנו עם מישהו אחר."</div>
+  <div class="quote-source">— זוג שהתעניין ב-Alex Art, 2025</div>
+  <p style="color:var(--muted);font-size:0.9rem;margin-top:1rem;">עם AI שעונה תוך 30 שניות — הסיפור הזה לא קורה יותר.</p>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>הכישרון שלכם שם.<br/>תנו לנו לדאוג ש<em>אף ליד לא יברח.</em></h2>
+  <p>שוק צלמי החתונות בישראל מתחרה מדי מכדי לאבד לידים. עם המערכת הנכונה, כל פנייה נסגרת — ואתם יכולים להתרכז בלעשות מה שאתם הכי טובים בו.</p>
+  <div class="cta-buttons">
+    <a class="btn-primary" href="https://wa.me/972XXXXXXXXX?text=שלום+יוני,+ראיתי+את+העמוד+שבנית+ל-Alex+Art+ואני+מעוניין+לשמוע+עוד" target="_blank">דבר איתי בוואטסאפ</a>
+    <a class="btn-secondary" href="https://cal.com/yoniautomation/אוטומציה-עסקית">קבעו שיחת היכרות</a>
+  </div>
+  <div class="cta-note">ללא התחייבות. ללא עלות. שיחה של 15 דקות.</div>
+</div>
+
+<footer>
+  נבנה בקפידה על-ידי <span>יוני אלוני אוטומציה ובינה מלאכותי</span> · עמוד זה נוצר במיוחד ל-Alex Art Photography · 2026
+</footer>
+
+</body>
+</html>
