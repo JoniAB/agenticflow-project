@@ -76,6 +76,15 @@
     .btn-gold{background:var(--accent);color:#1a1507}.btn-ghost{background:rgba(245,158,11,.15);color:#F5E6A3;border:2px solid rgba(245,158,11,.5)}
     .footer{background:#1a1507;border-top:2px solid var(--accent);color:rgba(245,230,163,.5);padding:22px 48px;font-size:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
     @media(max-width:680px){.header,.hero{padding:20px 22px}.exec{margin:24px 22px}.wrap{padding:0 22px 48px}.score-card{grid-template-columns:1fr;text-align:center}.bar-row{grid-template-columns:110px 1fr 44px}.rec-card{grid-template-columns:46px 1fr}.rec-pts{display:none}.pot-score .num{font-size:50px}.pot-row{gap:24px}.footer{flex-direction:column;text-align:center}}
+    .preview-teaser{background:linear-gradient(135deg,#FFF8E8,#FFFBF0);border:2px solid #F5D87A;border-radius:18px;padding:38px;text-align:center;margin-bottom:32px;}
+    .ai-widget{position:fixed;left:20px;bottom:32px;z-index:9999;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .ai-widget-btn{width:62px;height:62px;background:linear-gradient(135deg,#0984E3,#6C5CE7);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;animation:aiFloatAnim 3s ease-in-out infinite;transition:transform .2s;}
+    .ai-widget-btn:hover{transform:scale(1.12);}
+    .ai-widget-btn::before{content:'';position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(9,132,227,.55);animation:aiRing 2s ease-out infinite;}
+    .ai-widget-btn::after{content:'';position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(9,132,227,.25);animation:aiRing 2s ease-out .6s infinite;}
+    .ai-widget-label{background:linear-gradient(135deg,#0984E3,#6C5CE7);color:#fff;font-size:11px;font-weight:700;padding:5px 13px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 16px rgba(9,132,227,.4);}
+    @keyframes aiFloatAnim{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+    @keyframes aiRing{0%{transform:scale(1);opacity:.65;}100%{transform:scale(1.9);opacity:0;}}
   </style>
 </head>
 <body>
@@ -160,11 +169,18 @@
       </div>
     </div>
 
+    <div class="preview-teaser">
+      <div style="font-size:2.8rem;margin-bottom:14px">🐾🐶</div>
+      <h4 style="font-size:20px;font-weight:800;color:#1a1507;margin-bottom:10px">עוד לא ראיתם את האתר שבנינו בשבילכם?</h4>
+      <p style="font-size:15px;color:#5a7080;margin-bottom:22px;line-height:1.75;max-width:480px;margin-left:auto;margin-right:auto">הכנו לכם הדגמה מלאה של סוכן AI — בדיוק איך שיראה במרכז שלכם, כולל שיחת WhatsApp חיה.</p>
+      <a href="index.html" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#E17055,#FDCB6E);color:#1a1507;padding:13px 30px;border-radius:32px;font-size:15px;font-weight:800;text-decoration:none;transition:transform .2s" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">🐶 ראו את ההדגמה האישית ←</a>
+    </div>
+
     <div class="cta-box">
       <h3>בנינו עבורכם נבנה במיוחד בשבילך</h3>
       <p>תראו בדיוק איך הבוט מסנן שאלות לילה ומציג את 136 הביקורות שלכם — עבור מרכז ענבר ספציפית.</p>
-      <a href="index.html" class="btn btn-gold">← ראו את ההדגמה האישית</a>
-      <a href="https://cal.com/yoniautomation/אוטומציה-עסקית" class="btn btn-ghost">📅 קבעו שיחת היכרות</a>
+      <a href="index.html" target="_blank" class="btn btn-gold">← ראו את ההדגמה האישית</a>
+      <a href="https://cal.com/yoniautomation/אוטומציה-עסקית" target="_blank" class="btn btn-ghost">📅 קבעו שיחת היכרות</a>
     </div>
   </div>
 
@@ -172,5 +188,10 @@
     <span>יוני אלוני אוטומציה ו-AI | yoniautomation@gmail.com</span>
     <span>דוח זה הוכן בלעדית עבור מרכז וטרינרי ענבר | אפריל 2026</span>
   </footer>
+
+  <a href="https://cal.com/yoniautomation/אוטומציה-עסקית" target="_blank" class="ai-widget" title="קבעו פגישה עכשיו">
+    <div class="ai-widget-btn">🤖</div>
+    <div class="ai-widget-label">קבעו פגישה</div>
+  </a>
 </body>
 </html>

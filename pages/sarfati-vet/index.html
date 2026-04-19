@@ -79,7 +79,7 @@
     }
     .hero-bg{
       position:absolute; inset:0;
-      background-image: url('https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=1400&q=80&fit=crop');
+      background-image: url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1400&q=80&fit=crop');
       background-size:cover; background-position:center;
       filter:brightness(.25) saturate(.8);
     }
@@ -277,6 +277,16 @@
       .sol-wrap{ padding:28px 20px; }
       .cta-wrap{ padding:36px 20px; }
     }
+
+    /* AI FLOAT WIDGET */
+    .ai-widget{position:fixed;left:20px;bottom:32px;z-index:9999;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .ai-widget-btn{width:62px;height:62px;background:linear-gradient(135deg,#0984E3,#6C5CE7);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;animation:aiFloatAnim 3s ease-in-out infinite;transition:transform .2s;}
+    .ai-widget-btn:hover{transform:scale(1.12);}
+    .ai-widget-btn::before{content:'';position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(9,132,227,.55);animation:aiRing 2s ease-out infinite;}
+    .ai-widget-btn::after{content:'';position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(9,132,227,.25);animation:aiRing 2s ease-out .6s infinite;}
+    .ai-widget-label{background:linear-gradient(135deg,#0984E3,#6C5CE7);color:#fff;font-size:11px;font-weight:700;padding:5px 13px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 16px rgba(9,132,227,.4);}
+    @keyframes aiFloatAnim{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+    @keyframes aiRing{0%{transform:scale(1);opacity:.65;}100%{transform:scale(1.9);opacity:0;}}
   </style>
 </head>
 <body>
@@ -303,7 +313,7 @@
 </section>
 
 <div class="img-strip">
-  <img src="https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=1400&q=80&fit=crop" alt="בית חולים וטרינרי ד"ר צרפתי" loading="lazy">
+  <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1400&q=80&fit=crop" alt="טיפול אוהב בחיות מחמד" loading="lazy">
   <div class="img-strip-overlay">
     <h3>כל בעל חיית מחמד רוצה מענה מיידי.<br><em>עכשיו אפשר לתת לו — 24/7, בלי להרים טלפון.</em></h3>
   </div>
@@ -399,13 +409,18 @@
     <h2>רוצים לראות את זה על בית החולים שלכם?</h2>
     <p>15 דקות שיחה ואני מראה לכם בדיוק כיצד הבוט יעבוד בסביבה שלכם — ומה זה חוסך לצוות.</p>
     <div class="cta-btns">
-      <a href="https://wa.me/972544416277?text=היי+יוני,+ראיתי+את+ההדגמה+של+בית+חולים+צרפתי" class="btn btn-wa">💬 שלחו לנו WhatsApp</a>
-      <a href="https://cal.com/yoniautomation/אוטומציה-עסקית" class="btn btn-book">📅 קבעו שיחת היכרות</a>
+      <a href="https://wa.me/972544416277?text=היי+יוני,+ראיתי+את+ההדגמה+של+בית+חולים+צרפתי" class="btn btn-wa" target="_blank">💬 שלחו לנו WhatsApp</a>
+      <a href="https://cal.com/yoniautomation/אוטומציה-עסקית" class="btn btn-book" target="_blank">📅 קבעו שיחת היכרות</a>
     </div>
   </div>
 </div>
 
 <footer>יוני אלוני אוטומציה ו-AI | הדגמה זו הוכנה בלעדית עבור בית חולים וטרינרי ד"ר צרפתי | פתח תקווה | 2026</footer>
+
+<a href="https://cal.com/yoniautomation/אוטומציה-עסקית" target="_blank" class="ai-widget" title="קבעו פגישה עכשיו">
+  <div class="ai-widget-btn">🤖</div>
+  <div class="ai-widget-label">קבעו פגישה</div>
+</a>
 
 </body>
 </html>
