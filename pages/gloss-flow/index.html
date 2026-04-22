@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Gloss & Flow — Nail Studio</title>
+  <title>Gloss & Flow — סטודיו ציפורניים</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
@@ -25,7 +25,7 @@
           },
           fontFamily: {
             serif: ['Playfair Display', 'Georgia', 'serif'],
-            sans:  ['Inter', 'system-ui', 'sans-serif'],
+            sans:  ['Heebo', 'system-ui', 'sans-serif'],
           },
         }
       }
@@ -33,8 +33,8 @@
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; padding: 0; }
-    body { background-color: #FAF7F2; font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    html, body { height: 100%; margin: 0; padding: 0; direction: rtl; }
+    body { background-color: #FAF7F2; font-family: 'Heebo', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
 
     .gold-gradient  { background: linear-gradient(135deg, #D4AF37 0%, #EDD95A 50%, #B8960C 100%); }
     .nude-gradient  { background: linear-gradient(135deg, #E8D5C4 0%, #D4B896 100%); }
@@ -43,7 +43,7 @@
     .slot-btn:disabled span.slot-label { text-decoration: line-through; }
 
     input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
-    input[type="date"] { color-scheme: light; }
+    input[type="date"] { color-scheme: light; direction: ltr; text-align: right; }
 
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
@@ -83,13 +83,13 @@ const { useState, useEffect, useMemo, useCallback, useRef } = React;
 /* ─────────────────────────────  DATA  ────────────────────────────────────── */
 
 const SERVICES = [
-  { id: 'gel-mani',    name: 'Gel Manicure',        duration: 90,  price: 150, emoji: '💅', desc: 'Long-lasting color & mirror shine' },
-  { id: 'classic',     name: 'Classic Manicure',     duration: 60,  price: 90,  emoji: '✨', desc: 'Clean, elegant, timeless finish' },
-  { id: 'pedicure',    name: 'Pedicure',             duration: 60,  price: 120, emoji: '🌸', desc: 'Relaxing full foot treatment' },
-  { id: 'gel-pedi',    name: 'Gel Pedicure',         duration: 90,  price: 170, emoji: '🌿', desc: 'Premium long-wear pedicure' },
-  { id: 'nail-art',    name: 'Nail Art',             duration: 120, price: 200, emoji: '🎨', desc: 'Custom artistic nail designs' },
-  { id: 'acrylic',     name: 'Acrylic Extensions',   duration: 120, price: 220, emoji: '💎', desc: 'Full set sculpted extensions' },
-  { id: 'mani-pedi',   name: 'Mani + Pedi Combo',   duration: 150, price: 240, emoji: '👑', desc: 'Complete hands & feet luxury' },
+  { id: 'gel-mani',  name: "ג'ל מניקור",           duration: 90,  price: 150, emoji: '💅', desc: 'צבע עמיד עם ברק מראה' },
+  { id: 'classic',   name: 'מניקור קלאסי',          duration: 60,  price: 90,  emoji: '✨', desc: 'גימור נקי ואלגנטי' },
+  { id: 'pedicure',  name: 'פדיקור',                duration: 60,  price: 120, emoji: '🌸', desc: 'טיפול מפנק לכפות הרגליים' },
+  { id: 'gel-pedi',  name: "ג'ל פדיקור",            duration: 90,  price: 170, emoji: '🌿', desc: "פדיקור עמיד ג'ל פרימיום" },
+  { id: 'nail-art',  name: 'ציפורניים אמנותיות',   duration: 120, price: 200, emoji: '🎨', desc: 'עיצובים אמנותיים מותאמים אישית' },
+  { id: 'acrylic',   name: 'אקריליק',               duration: 120, price: 220, emoji: '💎', desc: 'סט מלא ציפורניים מגולפות' },
+  { id: 'mani-pedi', name: 'קומבו מניקור + פדיקור', duration: 150, price: 240, emoji: '👑', desc: 'טיפול מלא לידיים ולרגליים' },
 ];
 
 const TIME_SLOTS = [
@@ -100,10 +100,10 @@ const TIME_SLOTS = [
 ];
 
 const STATUS_META = {
-  pending:   { label: 'Pending',   cls: 'bg-amber-50  text-amber-700  border-amber-200'  },
-  confirmed: { label: 'Confirmed', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  completed: { label: 'Completed', cls: 'bg-slate-50  text-slate-500  border-slate-200'  },
-  cancelled: { label: 'Cancelled', cls: 'bg-red-50    text-red-500    border-red-200'    },
+  pending:   { label: 'ממתין לאישור', cls: 'bg-amber-50  text-amber-700  border-amber-200'  },
+  confirmed: { label: 'מאושר',        cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  completed: { label: 'הושלם',        cls: 'bg-slate-50  text-slate-500  border-slate-200'  },
+  cancelled: { label: 'בוטל',         cls: 'bg-red-50    text-red-500    border-red-200'    },
 };
 
 const LS_KEY     = 'glossflow_v1_appointments';
@@ -111,12 +111,16 @@ const ADMIN_PASS = 'admin123';
 
 /* ─────────────────────────────  HELPERS  ─────────────────────────────────── */
 
-const loadAppts  = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; } };
-const saveAppts  = a  => localStorage.setItem(LS_KEY, JSON.stringify(a));
-const genId      = () => Math.random().toString(36).slice(2,9).toUpperCase();
-const todayStr   = () => new Date().toISOString().split('T')[0];
-const fmtDate    = s  => { if (!s) return ''; const [y,m,d] = s.split('-'); return `${d}/${m}/${y}`; };
-const fmtLong    = s  => { if (!s) return ''; const d = new Date(s+'T12:00:00'); return d.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' }); };
+const loadAppts = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; } };
+const saveAppts = a  => localStorage.setItem(LS_KEY, JSON.stringify(a));
+const genId     = () => Math.random().toString(36).slice(2,9).toUpperCase();
+const todayStr  = () => new Date().toISOString().split('T')[0];
+const fmtDate   = s  => { if (!s) return ''; const [y,m,d] = s.split('-'); return `${d}/${m}/${y}`; };
+const fmtLong   = s  => {
+  if (!s) return '';
+  const d = new Date(s + 'T12:00:00');
+  return d.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+};
 
 /* ──────────────────────────────  ICONS  ──────────────────────────────────── */
 
@@ -128,16 +132,14 @@ const ICON_PATHS = {
   x:            <><path d="M18 6 6 18"/><path d="m6 6 12 12"/></>,
   shield:       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>,
   list:         <><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></>,
-  chevronLeft:  <path d="m15 18-6-6 6-6"/>,
   chevronRight: <path d="m9 18 6-6-6-6"/>,
-  arrowRight:   <><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></>,
+  chevronLeft:  <path d="m15 18-6-6 6-6"/>,
+  arrowLeft:    <><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></>,
   sparkles:     <><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></>,
   user:         <><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>,
   lock:         <><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>,
   unlock:       <><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></>,
   info:         <><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></>,
-  star:         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>,
-  filter:       <><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></>,
   search:       <><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></>,
 };
 
@@ -154,7 +156,7 @@ function Ic({ n, size = 20, cls = '' }) {
 /* ─────────────────────────────  UI ATOMS  ────────────────────────────────── */
 
 function GoldBtn({ children, onClick, disabled, small, outline, className = '' }) {
-  const base = `font-sans font-semibold tracking-wide transition-all duration-200 flex items-center justify-center gap-2 rounded-2xl`;
+  const base = `font-sans font-semibold transition-all duration-200 flex items-center justify-center gap-2 rounded-2xl`;
   const size = small ? 'px-4 py-2.5 text-xs' : 'w-full py-4 text-sm';
   const variant = outline
     ? 'border-2 border-gold text-gold-dark hover:bg-gold/5 bg-transparent'
@@ -183,7 +185,7 @@ function Header({ adminUnlocked, onAdminToggle }) {
           </div>
           <div>
             <p className="font-serif text-[18px] font-semibold text-stone-800 leading-none">Gloss & Flow</p>
-            <p className="text-[9px] tracking-[0.22em] text-nude-darker uppercase font-sans mt-0.5">Nail Studio</p>
+            <p className="text-[9px] tracking-[0.15em] text-nude-darker uppercase font-sans mt-0.5">סטודיו ציפורניים</p>
           </div>
         </div>
         <button
@@ -195,7 +197,7 @@ function Header({ adminUnlocked, onAdminToggle }) {
           }`}
         >
           <Ic n={adminUnlocked ? 'unlock' : 'lock'} size={11} />
-          {adminUnlocked ? 'Admin On' : 'Admin'}
+          {adminUnlocked ? 'מנהל פעיל' : 'מנהל'}
         </button>
       </div>
     </header>
@@ -206,9 +208,9 @@ function Header({ adminUnlocked, onAdminToggle }) {
 
 function BottomNav({ activeTab, onTabChange, adminUnlocked }) {
   const tabs = [
-    { id: 'book',  label: 'Book',      icon: 'sparkles' },
-    { id: 'my',    label: 'My Visits', icon: 'user'     },
-    ...(adminUnlocked ? [{ id: 'admin', label: 'Dashboard', icon: 'shield' }] : []),
+    { id: 'book',  label: 'הזמנה',    icon: 'sparkles' },
+    { id: 'my',    label: 'הביקורים שלי', icon: 'user' },
+    ...(adminUnlocked ? [{ id: 'admin', label: 'לוח בקרה', icon: 'shield' }] : []),
   ];
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 bg-cream/95 backdrop-blur-md border-t border-nude/60 bottom-safe">
@@ -222,7 +224,7 @@ function BottomNav({ activeTab, onTabChange, adminUnlocked }) {
             }`}
           >
             <Ic n={t.icon} size={21} />
-            <span className="text-[10px] font-sans font-medium tracking-wide">{t.label}</span>
+            <span className="text-[10px] font-sans font-medium">{t.label}</span>
             <div className={`w-1 h-1 rounded-full transition-all ${activeTab === t.id ? 'bg-gold' : 'bg-transparent'}`} />
           </button>
         ))}
@@ -237,28 +239,28 @@ function ServiceCard({ svc, selected, onSelect }) {
   return (
     <button
       onClick={() => onSelect(svc)}
-      className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 active:scale-[0.98] ${
+      className={`w-full text-right p-4 rounded-2xl border-2 transition-all duration-200 active:scale-[0.98] ${
         selected ? 'border-gold bg-gold/5 shadow-sm' : 'border-nude/70 bg-white hover:border-nude-dark'
       }`}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-start gap-3">
-          <span className="text-[26px] leading-none mt-0.5">{svc.emoji}</span>
-          <div>
-            <p className="font-serif text-stone-800 font-medium text-[15px]">{svc.name}</p>
-            <p className="text-stone-400 text-xs font-sans mt-0.5 leading-snug">{svc.desc}</p>
-            <span className="inline-flex items-center gap-1 mt-1.5 text-[11px] text-stone-400 font-sans">
-              <Ic n="clock" size={11} /> {svc.duration} min
-            </span>
-          </div>
-        </div>
-        <div className="text-right shrink-0">
+        <div className="text-left shrink-0">
           <p className="font-serif text-gold-dark font-semibold text-[17px]">₪{svc.price}</p>
-          <div className={`w-5 h-5 rounded-full mt-2 ml-auto flex items-center justify-center transition-all ${
+          <div className={`w-5 h-5 rounded-full mt-2 mr-auto flex items-center justify-center transition-all ${
             selected ? 'gold-gradient' : 'border-2 border-nude'
           }`}>
             {selected && <Ic n="check" size={11} cls="text-white" />}
           </div>
+        </div>
+        <div className="flex items-start gap-3 flex-1">
+          <div className="flex-1">
+            <p className="font-sans text-stone-800 font-semibold text-[15px]">{svc.name}</p>
+            <p className="text-stone-400 text-xs font-sans mt-0.5 leading-snug">{svc.desc}</p>
+            <span className="inline-flex items-center gap-1 mt-1.5 text-[11px] text-stone-400 font-sans">
+              <Ic n="clock" size={11} /> {svc.duration} דק׳
+            </span>
+          </div>
+          <span className="text-[26px] leading-none mt-0.5">{svc.emoji}</span>
         </div>
       </div>
     </button>
@@ -289,7 +291,7 @@ function TimeSlotGrid({ slots, taken, selected, onSelect }) {
             <span className={`slot-label block text-xs font-sans font-medium ${
               isTaken ? 'text-stone-300' : isActive ? 'text-white' : 'text-stone-600'
             }`}>{slot}</span>
-            {isTaken && <span className="block text-[9px] text-stone-300 mt-0.5">taken</span>}
+            {isTaken && <span className="block text-[9px] text-stone-300 mt-0.5">תפוס</span>}
           </button>
         );
       })}
@@ -305,39 +307,39 @@ function AppointmentCard({ appt, onStatusChange, isAdmin }) {
   const available = nexts[appt.status] || [];
 
   const actionMeta = {
-    confirmed: { label: '✓ Confirm',  cls: 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100' },
-    completed: { label: '★ Complete', cls: 'bg-slate-50   border-slate-200   text-slate-600   hover:bg-slate-100'   },
-    cancelled: { label: '✕ Cancel',   cls: 'bg-red-50     border-red-200     text-red-500     hover:bg-red-100'     },
+    confirmed: { label: '✓ אשרי',    cls: 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100' },
+    completed: { label: '★ הושלם',   cls: 'bg-slate-50   border-slate-200   text-slate-600   hover:bg-slate-100'   },
+    cancelled: { label: '✕ בטלי',    cls: 'bg-red-50     border-red-200     text-red-500     hover:bg-red-100'     },
   };
 
   return (
     <div className="bg-white rounded-2xl border border-nude/60 p-4 shadow-sm fade-up">
       <div className="flex items-start justify-between gap-2 mb-2">
-        <div className="flex items-start gap-2.5">
-          <span className="text-xl mt-0.5">{svc?.emoji || '💅'}</span>
-          <div>
-            <p className="font-serif text-stone-800 font-medium text-[15px]">{svc?.name || appt.serviceName}</p>
+        <div className="text-left shrink-0">
+          <StatusBadge status={appt.status} />
+          <p className="text-gold-dark font-serif font-semibold text-[15px] mt-1.5">₪{svc?.price ?? appt.price}</p>
+        </div>
+        <div className="flex items-start gap-2.5 flex-1 justify-end">
+          <div className="text-right">
+            <p className="font-sans text-stone-800 font-semibold text-[15px]">{svc?.name || appt.serviceName}</p>
             {isAdmin && (
               <p className="text-xs text-stone-400 font-sans mt-0.5">
                 {appt.clientName} &middot; {appt.clientPhone}
               </p>
             )}
           </div>
-        </div>
-        <div className="text-right shrink-0">
-          <StatusBadge status={appt.status} />
-          <p className="text-gold-dark font-serif font-semibold text-[15px] mt-1.5">₪{svc?.price ?? appt.price}</p>
+          <span className="text-xl mt-0.5">{svc?.emoji || '💅'}</span>
         </div>
       </div>
 
-      <div className="flex items-center gap-4 text-xs text-stone-400 font-sans pl-8 mb-1">
-        <span className="flex items-center gap-1"><Ic n="calendar" size={11}/> {fmtDate(appt.date)}</span>
-        <span className="flex items-center gap-1"><Ic n="clock" size={11}/> {appt.time}</span>
-        <span className="flex items-center gap-1"><Ic n="clock" size={11}/> {svc?.duration ?? appt.duration} min</span>
+      <div className="flex items-center gap-4 text-xs text-stone-400 font-sans justify-end mb-1">
+        <span className="flex items-center gap-1">{svc?.duration ?? appt.duration} דק׳ <Ic n="clock" size={11}/></span>
+        <span className="flex items-center gap-1">{appt.time} <Ic n="clock" size={11}/></span>
+        <span className="flex items-center gap-1">{fmtDate(appt.date)} <Ic n="calendar" size={11}/></span>
       </div>
 
       {appt.notes && (
-        <p className="text-xs text-stone-400 font-sans pl-8 mt-1 italic">"{appt.notes}"</p>
+        <p className="text-xs text-stone-400 font-sans pr-8 mt-1 italic text-right">״{appt.notes}״</p>
       )}
 
       {isAdmin && available.length > 0 && (
@@ -354,7 +356,7 @@ function AppointmentCard({ appt, onStatusChange, isAdmin }) {
         </div>
       )}
 
-      <p className="text-[10px] text-stone-200 font-sans mt-2 pl-0">#{appt.id}</p>
+      <p className="text-[10px] text-stone-200 font-sans mt-2 text-left">#{appt.id}</p>
     </div>
   );
 }
@@ -384,8 +386,8 @@ function AdminModal({ onClose, onSuccess }) {
           <div className="w-14 h-14 rounded-full gold-gradient flex items-center justify-center mx-auto mb-3 shadow-md">
             <Ic n="shield" size={24} cls="text-white" />
           </div>
-          <h3 className="font-serif text-xl text-stone-800">Admin Access</h3>
-          <p className="text-stone-400 text-sm font-sans mt-1">Enter your admin password to continue</p>
+          <h3 className="font-sans text-xl font-bold text-stone-800">כניסת מנהל</h3>
+          <p className="text-stone-400 text-sm font-sans mt-1">הכניסי סיסמת מנהל להמשך</p>
         </div>
         <form onSubmit={submit}>
           <input
@@ -393,17 +395,18 @@ function AdminModal({ onClose, onSuccess }) {
             type="password"
             value={pass}
             onChange={e => setPass(e.target.value)}
-            placeholder="Password"
-            className={`w-full bg-white border-2 rounded-2xl px-4 py-3.5 text-stone-800 font-sans text-sm outline-none transition-all ${
+            placeholder="סיסמה"
+            dir="ltr"
+            className={`w-full bg-white border-2 rounded-2xl px-4 py-3.5 text-stone-800 font-sans text-sm outline-none transition-all text-center ${
               err ? 'border-red-300' : 'border-nude focus:border-gold'
             }`}
           />
-          {err && <p className="text-red-400 text-xs font-sans mt-2 text-center">Incorrect password. Try again.</p>}
+          {err && <p className="text-red-400 text-xs font-sans mt-2 text-center">סיסמה שגויה. נסי שוב.</p>}
           <GoldBtn className="mt-4">
-            <Ic n="unlock" size={15} /> Unlock Dashboard
+            <Ic n="unlock" size={15} /> פתחי לוח בקרה
           </GoldBtn>
         </form>
-        <p className="text-center text-stone-300 text-[11px] font-sans mt-3">Hint: admin123</p>
+        <p className="text-center text-stone-300 text-[11px] font-sans mt-3" dir="ltr">Hint: admin123</p>
       </div>
     </div>
   );
@@ -412,14 +415,14 @@ function AdminModal({ onClose, onSuccess }) {
 /* ──────────────────────────────  BOOK SCREEN  ────────────────────────────── */
 
 function BookScreen({ appointments, onBook }) {
-  const [step, setStep]             = useState(1);
-  const [svc, setSvc]               = useState(null);
-  const [date, setDate]             = useState('');
-  const [time, setTime]             = useState('');
-  const [name, setName]             = useState('');
-  const [phone, setPhone]           = useState('');
-  const [notes, setNotes]           = useState('');
-  const [booked, setBooked]         = useState(null);
+  const [step, setStep]   = useState(1);
+  const [svc, setSvc]     = useState(null);
+  const [date, setDate]   = useState('');
+  const [time, setTime]   = useState('');
+  const [name, setName]   = useState('');
+  const [phone, setPhone] = useState('');
+  const [notes, setNotes] = useState('');
+  const [booked, setBooked] = useState(null);
 
   const min = todayStr();
 
@@ -447,64 +450,64 @@ function BookScreen({ appointments, onBook }) {
     setName(''); setPhone(''); setNotes(''); setBooked(null);
   }
 
-  /* ── Success screen ── */
+  /* ── מסך הצלחה ── */
   if (step === 5 && booked) {
     return (
       <div className="flex flex-col items-center px-6 pt-12 pb-28 text-center fade-up">
         <div className="w-24 h-24 rounded-full gold-gradient flex items-center justify-center mb-6 shadow-xl">
           <Ic n="check" size={40} cls="text-white check-pop" />
         </div>
-        <h2 className="font-serif text-2xl text-stone-800 mb-1">You're all set!</h2>
+        <h2 className="font-sans text-2xl font-bold text-stone-800 mb-1">!הכל מוכן</h2>
         <p className="text-stone-500 font-sans text-sm">{svc?.name}</p>
-        <p className="text-stone-400 font-sans text-xs mt-1">{fmtLong(date)} at {time}</p>
+        <p className="text-stone-400 font-sans text-xs mt-1">{fmtLong(date)} בשעה {time}</p>
 
-        <div className="w-full max-w-xs bg-white rounded-2xl border border-nude/60 p-4 mt-6 text-left shadow-sm">
+        <div className="w-full max-w-xs bg-white rounded-2xl border border-nude/60 p-4 mt-6 shadow-sm">
           {[
-            ['Service',  svc?.name],
-            ['Client',   name],
-            ['Phone',    phone],
-            ['Date',     fmtDate(date)],
-            ['Time',     time],
-            ['Duration', `${svc?.duration} min`],
+            ['שירות',  svc?.name],
+            ['שם',     name],
+            ['טלפון',  phone],
+            ['תאריך',  fmtDate(date)],
+            ['שעה',    time],
+            ["משך",    `${svc?.duration} דק׳`],
           ].map(([k,v]) => (
             <div key={k} className="flex justify-between py-1.5 border-b border-nude/30 last:border-0">
-              <span className="text-xs text-stone-400 font-sans">{k}</span>
               <span className="text-xs text-stone-700 font-sans font-medium">{v}</span>
+              <span className="text-xs text-stone-400 font-sans">{k}</span>
             </div>
           ))}
           <div className="flex justify-between pt-2.5 mt-1">
-            <span className="text-sm text-stone-600 font-sans font-medium">Total</span>
             <span className="text-[17px] text-gold-dark font-serif font-semibold">₪{svc?.price}</span>
+            <span className="text-sm text-stone-600 font-sans font-medium">סה״כ</span>
           </div>
         </div>
 
         <div className="mt-4 w-full max-w-xs bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center gap-2.5">
+          <p className="text-xs text-amber-700 font-sans text-right flex-1">ההזמנה שלך <strong>ממתינה לאישור</strong> — ניצור קשר בקרוב!</p>
           <Ic n="info" size={15} cls="text-amber-500 shrink-0" />
-          <p className="text-xs text-amber-700 font-sans">Your booking is <strong>Pending</strong> — we'll confirm it shortly!</p>
         </div>
 
-        <div className="w-full max-w-xs mt-6 flex flex-col gap-3">
-          <GoldBtn onClick={reset}>Book Another Appointment</GoldBtn>
+        <div className="w-full max-w-xs mt-6">
+          <GoldBtn onClick={reset}>הזמני שוב</GoldBtn>
         </div>
       </div>
     );
   }
 
-  /* ── Progress bar ── */
-  const stepLabels = ['Service', 'Date & Time', 'Your Info'];
+  const stepLabels = ['שירות', 'תאריך ושעה', 'פרטים'];
 
   return (
     <div className="pb-28 max-w-lg mx-auto">
       {/* Hero Banner */}
       {step === 1 && (
-        <div className="relative overflow-hidden px-5 pt-7 pb-6 bg-gradient-to-br from-nude/60 via-cream to-cream">
-          <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-gold/8 -translate-y-8 translate-x-8" />
-          <div className="absolute bottom-0 left-0 w-20 h-20 rounded-full bg-nude translate-y-8 -translate-x-5 opacity-60" />
-          <p className="text-[10px] uppercase tracking-[0.25em] text-nude-darker font-sans mb-1 relative">Welcome to</p>
+        <div className="relative overflow-hidden px-5 pt-7 pb-6 bg-gradient-to-bl from-nude/60 via-cream to-cream">
+          <div className="absolute top-0 left-0 w-32 h-32 rounded-full bg-gold/8 -translate-y-8 -translate-x-8" />
+          <div className="absolute bottom-0 right-0 w-20 h-20 rounded-full bg-nude translate-y-8 translate-x-5 opacity-60" />
+          <p className="text-[10px] uppercase tracking-[0.25em] text-nude-darker font-sans mb-1 relative">ברוכה הבאה ל</p>
           <h2 className="font-serif text-[32px] font-medium text-stone-800 leading-tight relative">
-            Gloss & Flow<br/>Nail Studio
+            Gloss & Flow<br/>
+            <span className="text-[22px]">סטודיו ציפורניים</span>
           </h2>
-          <p className="text-stone-400 text-sm font-sans mt-2 relative">Select a service to start booking</p>
+          <p className="text-stone-400 text-sm font-sans mt-2 relative">בחרי שירות כדי להתחיל</p>
         </div>
       )}
 
@@ -533,10 +536,10 @@ function BookScreen({ appointments, onBook }) {
           })}
         </div>
 
-        {/* ── Step 1: Service ── */}
+        {/* ── שלב 1: שירות ── */}
         {step === 1 && (
           <div className="fade-up">
-            <h3 className="font-serif text-xl text-stone-800 mb-4">Choose a Service</h3>
+            <h3 className="font-sans text-xl font-bold text-stone-800 mb-4">בחרי שירות</h3>
             <div className="flex flex-col gap-3">
               {SERVICES.map(s => (
                 <ServiceCard key={s.id} svc={s} selected={svc?.id === s.id} onSelect={setSvc} />
@@ -545,26 +548,26 @@ function BookScreen({ appointments, onBook }) {
             {svc && (
               <div className="mt-6">
                 <GoldBtn onClick={() => setStep(2)}>
-                  Continue <Ic n="arrowRight" size={16} />
+                  <Ic n="arrowLeft" size={16} /> המשך
                 </GoldBtn>
               </div>
             )}
           </div>
         )}
 
-        {/* ── Step 2: Date & Time ── */}
+        {/* ── שלב 2: תאריך ושעה ── */}
         {step === 2 && (
           <div className="fade-up">
             <button onClick={() => setStep(1)} className="flex items-center gap-1 text-stone-400 text-sm font-sans mb-4 hover:text-stone-600 transition-colors">
-              <Ic n="chevronLeft" size={16} /> Back
+              חזרה <Ic n="chevronRight" size={16} />
             </button>
-            <h3 className="font-serif text-xl text-stone-800 mb-1">Pick Date & Time</h3>
-            <p className="text-stone-400 text-xs font-sans mb-5 flex items-center gap-2">
+            <h3 className="font-sans text-xl font-bold text-stone-800 mb-1">בחרי תאריך ושעה</h3>
+            <p className="text-stone-400 text-xs font-sans mb-5 flex items-center gap-2 justify-end">
+              ₪{svc?.price} &middot; {svc?.duration} דק׳ &middot; {svc?.name}
               <span className="text-base">{svc?.emoji}</span>
-              {svc?.name} &middot; {svc?.duration} min &middot; ₪{svc?.price}
             </p>
 
-            <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-2">Select Date</label>
+            <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-2 text-right">בחרי תאריך</label>
             <input
               type="date"
               min={min}
@@ -576,12 +579,12 @@ function BookScreen({ appointments, onBook }) {
             {date && (
               <div className="fade-up">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans">Available Times</label>
                   {takenSlots.length > 0 && (
                     <span className="text-[10px] text-stone-300 font-sans flex items-center gap-1">
-                      <Ic n="info" size={10} /> {takenSlots.length} slot{takenSlots.length !== 1 ? 's' : ''} taken
+                      <Ic n="info" size={10} /> {takenSlots.length} שעות תפוסות
                     </span>
                   )}
+                  <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans">שעות פנויות</label>
                 </div>
                 <TimeSlotGrid slots={TIME_SLOTS} taken={takenSlots} selected={time} onSelect={setTime} />
               </div>
@@ -590,75 +593,78 @@ function BookScreen({ appointments, onBook }) {
             {date && time && (
               <div className="mt-6">
                 <GoldBtn onClick={() => setStep(3)}>
-                  Continue <Ic n="arrowRight" size={16} />
+                  <Ic n="arrowLeft" size={16} /> המשך
                 </GoldBtn>
               </div>
             )}
           </div>
         )}
 
-        {/* ── Step 3: Client Info ── */}
+        {/* ── שלב 3: פרטי לקוחה ── */}
         {step === 3 && (
           <div className="fade-up">
             <button onClick={() => setStep(2)} className="flex items-center gap-1 text-stone-400 text-sm font-sans mb-4 hover:text-stone-600 transition-colors">
-              <Ic n="chevronLeft" size={16} /> Back
+              חזרה <Ic n="chevronRight" size={16} />
             </button>
-            <h3 className="font-serif text-xl text-stone-800 mb-1">Your Details</h3>
-            <p className="text-stone-400 text-xs font-sans mb-5">
-              {fmtDate(date)} at {time}
+            <h3 className="font-sans text-xl font-bold text-stone-800 mb-1">הפרטים שלך</h3>
+            <p className="text-stone-400 text-xs font-sans mb-5 text-right">
+              {fmtDate(date)} בשעה {time}
             </p>
 
             <div className="flex flex-col gap-4">
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-2">Full Name *</label>
+                <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-2 text-right">שם מלא *</label>
                 <input
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  placeholder="Your name"
-                  className="w-full bg-white border-2 border-nude rounded-2xl px-4 py-3.5 text-stone-800 font-sans text-sm outline-none focus:border-gold transition-all"
+                  placeholder="שמך המלא"
+                  className="w-full bg-white border-2 border-nude rounded-2xl px-4 py-3.5 text-stone-800 font-sans text-sm outline-none focus:border-gold transition-all text-right"
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-2">Phone Number *</label>
+                <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-2 text-right">מספר טלפון *</label>
                 <input
                   type="tel"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   placeholder="050-000-0000"
-                  className="w-full bg-white border-2 border-nude rounded-2xl px-4 py-3.5 text-stone-800 font-sans text-sm outline-none focus:border-gold transition-all"
+                  dir="ltr"
+                  className="w-full bg-white border-2 border-nude rounded-2xl px-4 py-3.5 text-stone-800 font-sans text-sm outline-none focus:border-gold transition-all text-center"
                 />
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-2">Notes <span className="normal-case tracking-normal text-stone-300">(optional)</span></label>
+                <label className="block text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-2 text-right">
+                  הערות <span className="normal-case tracking-normal text-stone-300">(אופציונלי)</span>
+                </label>
                 <textarea
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
-                  placeholder="Allergies, color preferences, special requests…"
+                  placeholder="אלרגיות, העדפות צבע, בקשות מיוחדות..."
                   rows={3}
-                  className="w-full bg-white border-2 border-nude rounded-2xl px-4 py-3 text-stone-800 font-sans text-sm outline-none focus:border-gold transition-all resize-none"
+                  className="w-full bg-white border-2 border-nude rounded-2xl px-4 py-3 text-stone-800 font-sans text-sm outline-none focus:border-gold transition-all resize-none text-right"
                 />
               </div>
             </div>
 
-            {/* Summary Card */}
+            {/* כרטיס סיכום */}
             <div className="mt-5 bg-white rounded-2xl border border-nude/60 p-4 shadow-sm">
-              <p className="font-serif text-stone-700 font-medium text-sm mb-3">Booking Summary</p>
+              <p className="font-sans text-stone-700 font-semibold text-sm mb-3 text-right">סיכום הזמנה</p>
               <div className="space-y-2">
                 {[
-                  ['Service',  svc?.name],
-                  ['Date',     fmtDate(date)],
-                  ['Time',     time],
-                  ['Duration', `${svc?.duration} min`],
+                  ['שירות',  svc?.name],
+                  ['תאריך',  fmtDate(date)],
+                  ['שעה',    time],
+                  ['משך',    `${svc?.duration} דק׳`],
                 ].map(([k,v]) => (
                   <div key={k} className="flex justify-between text-sm font-sans">
-                    <span className="text-stone-400">{k}</span>
                     <span className="text-stone-700 font-medium">{v}</span>
+                    <span className="text-stone-400">{k}</span>
                   </div>
                 ))}
                 <div className="flex justify-between pt-2 border-t border-nude/40 mt-1">
-                  <span className="text-stone-600 font-sans font-semibold text-sm">Total</span>
                   <span className="text-gold-dark font-serif font-bold text-[17px]">₪{svc?.price}</span>
+                  <span className="text-stone-600 font-sans font-semibold text-sm">סה״כ</span>
                 </div>
               </div>
             </div>
@@ -668,7 +674,7 @@ function BookScreen({ appointments, onBook }) {
                 disabled={!name.trim() || !phone.trim()}
                 onClick={handleBook}
               >
-                <Ic n="sparkles" size={16} /> Confirm Booking
+                <Ic n="sparkles" size={16} /> אשרי הזמנה
               </GoldBtn>
             </div>
           </div>
@@ -681,8 +687,8 @@ function BookScreen({ appointments, onBook }) {
 /* ────────────────────────────  MY SCREEN  ────────────────────────────────── */
 
 function MyScreen({ appointments }) {
-  const [phone, setPhone]   = useState('');
-  const [searched, setSearhed] = useState(false);
+  const [phone, setPhone]     = useState('');
+  const [searched, setSearched] = useState(false);
 
   const myAppts = useMemo(() => {
     if (!phone.trim() || !searched) return [];
@@ -695,22 +701,23 @@ function MyScreen({ appointments }) {
   const upcoming = myAppts.filter(a => !['completed','cancelled'].includes(a.status) && a.date >= todayStr());
   const past     = myAppts.filter(a => ['completed','cancelled'].includes(a.status) || a.date < todayStr());
 
-  function handleSearch(e) { e.preventDefault(); setSearhed(true); }
+  function handleSearch(e) { e.preventDefault(); setSearched(true); }
 
   return (
     <div className="pb-28 px-4 pt-6 max-w-lg mx-auto">
-      <h2 className="font-serif text-2xl text-stone-800 mb-1">My Appointments</h2>
-      <p className="text-stone-400 text-sm font-sans mb-6">Enter your phone number to view bookings</p>
+      <h2 className="font-sans text-2xl font-bold text-stone-800 mb-1 text-right">ההזמנות שלי</h2>
+      <p className="text-stone-400 text-sm font-sans mb-6 text-right">הכניסי מספר טלפון לצפייה בהזמנות</p>
 
-      <form onSubmit={handleSearch} className="flex gap-2 mb-6">
+      <form onSubmit={handleSearch} className="flex gap-2 mb-6 flex-row-reverse">
         <div className="flex-1 relative">
-          <Ic n="phone" size={15} cls="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-300 pointer-events-none" />
+          <Ic n="phone" size={15} cls="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-300 pointer-events-none" />
           <input
             type="tel"
             value={phone}
-            onChange={e => { setPhone(e.target.value); setSearhed(false); }}
+            onChange={e => { setPhone(e.target.value); setSearched(false); }}
             placeholder="050-000-0000"
-            className="w-full bg-white border-2 border-nude rounded-2xl pl-9 pr-4 py-3.5 text-stone-800 font-sans text-sm outline-none focus:border-gold transition-all"
+            dir="ltr"
+            className="w-full bg-white border-2 border-nude rounded-2xl pr-9 pl-4 py-3.5 text-stone-800 font-sans text-sm outline-none focus:border-gold transition-all text-center"
           />
         </div>
         <GoldBtn small disabled={!phone.trim()} className="px-5 py-3.5 rounded-2xl">
@@ -723,8 +730,8 @@ function MyScreen({ appointments }) {
           <div className="w-16 h-16 rounded-full nude-gradient flex items-center justify-center mx-auto mb-4">
             <Ic n="calendar" size={24} cls="text-nude-darker" />
           </div>
-          <p className="font-serif text-stone-600 text-lg">No bookings found</p>
-          <p className="text-stone-400 text-sm font-sans mt-1">No appointments for this number</p>
+          <p className="font-sans text-stone-600 text-lg font-bold">לא נמצאו הזמנות</p>
+          <p className="text-stone-400 text-sm font-sans mt-1">אין הזמנות למספר זה</p>
         </div>
       )}
 
@@ -732,7 +739,7 @@ function MyScreen({ appointments }) {
         <div className="fade-up">
           {upcoming.length > 0 && (
             <div className="mb-6">
-              <p className="text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-3">Upcoming ({upcoming.length})</p>
+              <p className="text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-3 text-right">קרובות ({upcoming.length})</p>
               <div className="flex flex-col gap-3">
                 {upcoming.map(a => <AppointmentCard key={a.id} appt={a} isAdmin={false} />)}
               </div>
@@ -740,14 +747,14 @@ function MyScreen({ appointments }) {
           )}
           {past.length > 0 && (
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-3">History ({past.length})</p>
+              <p className="text-[10px] uppercase tracking-widest text-stone-400 font-sans mb-3 text-right">היסטוריה ({past.length})</p>
               <div className="flex flex-col gap-3">
                 {past.map(a => <AppointmentCard key={a.id} appt={a} isAdmin={false} />)}
               </div>
             </div>
           )}
           <p className="text-center text-stone-300 text-xs font-sans mt-5">
-            {myAppts.length} total appointment{myAppts.length !== 1 ? 's' : ''}
+            {myAppts.length} הזמנות בסה״כ
           </p>
         </div>
       )}
@@ -757,8 +764,8 @@ function MyScreen({ appointments }) {
           <div className="w-20 h-20 rounded-full nude-gradient flex items-center justify-center mx-auto mb-5 shadow-sm">
             <Ic n="user" size={30} cls="text-nude-darker" />
           </div>
-          <p className="font-serif text-stone-600 text-xl">Find Your Bookings</p>
-          <p className="text-stone-400 text-sm font-sans mt-1.5">Search by phone number above</p>
+          <p className="font-sans text-stone-600 text-xl font-bold">מצאי את ההזמנות שלך</p>
+          <p className="text-stone-400 text-sm font-sans mt-1.5">חפשי לפי מספר טלפון למעלה</p>
         </div>
       )}
     </div>
@@ -768,8 +775,8 @@ function MyScreen({ appointments }) {
 /* ────────────────────────────  ADMIN SCREEN  ─────────────────────────────── */
 
 function AdminScreen({ appointments, onStatusChange }) {
-  const [filter, setFilter]     = useState('all');
-  const [dateFilter, setDateF]  = useState('');
+  const [filter, setFilter]  = useState('all');
+  const [dateFilter, setDateF] = useState('');
 
   const filtered = useMemo(() => {
     let list = [...appointments];
@@ -785,44 +792,44 @@ function AdminScreen({ appointments, onStatusChange }) {
   const confirmed = appointments.filter(a => a.status === 'confirmed').length;
 
   const filterBtns = [
-    { val:'all',       label:'All',       count: appointments.length },
-    { val:'pending',   label:'Pending',   count: pending },
-    { val:'confirmed', label:'Confirmed', count: confirmed },
-    { val:'completed', label:'Done',      count: appointments.filter(a=>a.status==='completed').length },
-    { val:'cancelled', label:'Cancelled', count: appointments.filter(a=>a.status==='cancelled').length },
+    { val:'all',       label:'הכל',     count: appointments.length },
+    { val:'pending',   label:'ממתין',   count: pending },
+    { val:'confirmed', label:'מאושר',   count: confirmed },
+    { val:'completed', label:'הושלם',   count: appointments.filter(a=>a.status==='completed').length },
+    { val:'cancelled', label:'בוטל',    count: appointments.filter(a=>a.status==='cancelled').length },
   ];
 
   return (
     <div className="pb-28 pt-6 max-w-lg mx-auto">
       <div className="px-4">
         <div className="flex items-center justify-between mb-1">
-          <h2 className="font-serif text-2xl text-stone-800">Dashboard</h2>
           <span className="flex items-center gap-1.5 text-[11px] font-sans text-gold-dark bg-gold/10 px-2.5 py-1 rounded-full border border-gold/30">
-            <Ic n="shield" size={11} /> Admin
+            <Ic n="shield" size={11} /> מנהל
           </span>
+          <h2 className="font-sans text-2xl font-bold text-stone-800">לוח בקרה</h2>
         </div>
-        <p className="text-stone-400 text-sm font-sans mb-5">{fmtLong(today)}</p>
+        <p className="text-stone-400 text-sm font-sans mb-5 text-right">{fmtLong(today)}</p>
 
-        {/* Stats */}
+        {/* סטטיסטיקות */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="bg-white rounded-2xl border border-nude/60 p-3.5 text-center shadow-sm">
             <p className="font-serif text-[28px] text-stone-800 leading-none">{todayList.length}</p>
-            <p className="text-[10px] uppercase tracking-wider text-stone-400 font-sans mt-1">Today</p>
+            <p className="text-[10px] text-stone-400 font-sans mt-1">היום</p>
           </div>
           <div className="bg-white rounded-2xl border border-amber-200 p-3.5 text-center shadow-sm">
             <p className="font-serif text-[28px] text-amber-600 leading-none">{pending}</p>
-            <p className="text-[10px] uppercase tracking-wider text-stone-400 font-sans mt-1">Pending</p>
+            <p className="text-[10px] text-stone-400 font-sans mt-1">ממתין</p>
           </div>
           <div className="bg-white rounded-2xl border border-nude/60 p-3.5 text-center shadow-sm">
             <p className="font-serif text-[22px] text-gold-dark leading-none mt-1">₪{revenue}</p>
-            <p className="text-[10px] uppercase tracking-wider text-stone-400 font-sans mt-1">Revenue</p>
+            <p className="text-[10px] text-stone-400 font-sans mt-1">הכנסה</p>
           </div>
         </div>
       </div>
 
-      {/* Filter Bar */}
+      {/* סרגל סינון */}
       <div className="px-4 mb-2">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1 flex-row-reverse">
           {filterBtns.map(({ val, label, count }) => (
             <button
               key={val}
@@ -833,15 +840,15 @@ function AdminScreen({ appointments, onStatusChange }) {
                   : 'bg-white border-nude/70 text-stone-500 hover:border-nude-dark'
               }`}
             >
-              {label}
               <span className={`text-[10px] ${filter === val ? 'text-white/70' : 'text-stone-300'}`}>{count}</span>
+              {label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Date Filter */}
-      <div className="px-4 mb-5 flex items-center gap-2">
+      {/* סינון לפי תאריך */}
+      <div className="px-4 mb-5 flex items-center gap-2 flex-row-reverse">
         <Ic n="calendar" size={14} cls="text-stone-300" />
         <input
           type="date"
@@ -851,20 +858,20 @@ function AdminScreen({ appointments, onStatusChange }) {
         />
         {dateFilter && (
           <button onClick={() => setDateF('')} className="text-xs text-stone-400 font-sans hover:text-stone-600 transition-colors">
-            Clear
+            נקה
           </button>
         )}
       </div>
 
-      {/* List */}
+      {/* רשימת הזמנות */}
       <div className="px-4 flex flex-col gap-3">
         {filtered.length === 0 ? (
           <div className="text-center py-14 fade-up">
             <div className="w-16 h-16 rounded-full nude-gradient flex items-center justify-center mx-auto mb-4">
               <Ic n="list" size={24} cls="text-nude-darker" />
             </div>
-            <p className="font-serif text-stone-600 text-lg">No appointments</p>
-            <p className="text-stone-400 text-xs font-sans mt-1">Try a different filter</p>
+            <p className="font-sans text-stone-600 text-lg font-bold">אין הזמנות</p>
+            <p className="text-stone-400 text-xs font-sans mt-1">נסי פילטר אחר</p>
           </div>
         ) : (
           filtered.map(a => (
@@ -886,14 +893,8 @@ function App() {
 
   useEffect(() => { saveAppts(appointments); }, [appointments]);
 
-  function handleBook(appt) {
-    setAppts(prev => [...prev, appt]);
-  }
-
-  function handleStatus(id, status) {
-    setAppts(prev => prev.map(a => a.id === id ? { ...a, status } : a));
-  }
-
+  function handleBook(appt) { setAppts(prev => [...prev, appt]); }
+  function handleStatus(id, status) { setAppts(prev => prev.map(a => a.id === id ? { ...a, status } : a)); }
   function toggleAdmin() {
     if (adminOn) { setAdminOn(false); if (tab === 'admin') setTab('book'); }
     else setModal(true);
@@ -902,15 +903,12 @@ function App() {
   return (
     <div className="min-h-screen bg-cream">
       <Header adminUnlocked={adminOn} onAdminToggle={toggleAdmin} />
-
       <main className="max-w-lg mx-auto">
         {tab === 'book'  && <BookScreen  appointments={appointments} onBook={handleBook} />}
         {tab === 'my'    && <MyScreen    appointments={appointments} />}
         {tab === 'admin' && adminOn && <AdminScreen appointments={appointments} onStatusChange={handleStatus} />}
       </main>
-
       <BottomNav activeTab={tab} onTabChange={setTab} adminUnlocked={adminOn} />
-
       {showModal && (
         <AdminModal
           onClose={() => setModal(false)}
