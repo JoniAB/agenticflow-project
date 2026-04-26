@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>יוני אלוני AI – אוטומציות לעסקים</title>
+  <meta name="description" content="אוטומציות וסוכני AI לעסקים. פשוט, מהיר, עובד 24/7.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --hero-bg:  #5865F2;
+      --hero-dk:  #404EED;
+      --dark1:    #23272A;
+      --dark2:    #2B2D31;
+      --dark3:    #313338;
+      --cream:    #F9F9F9;
+      --yellow:   #FFF5C7;
+      --lavender: #EAECFF;
+      --pink:     #FFF0F8;
+      --blurple:  #5865F2;
+      --blurple2: #4752C4;
+      --yellow-b: #FEE75C;
+      --green:    #57F287;
+      --red:      #ED4245;
+      --white:    #FFFFFF;
+      --mdk:      #B9BBBE;
+      --mlt:      #6B6F76;
+      --r-btn:    28px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Rubik', 'Poppins', sans-serif;
+      background: var(--dark1);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── UTILS ─── */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+    @media (max-width: 768px) { .wrap { padding: 0 20px; } }
+
+    /* ─── SCROLL REVEAL ─── */
+    .fi   { opacity:0; transform:translateY(44px);   transition:opacity .75s cubic-bezier(.23,1,.32,1), transform .75s cubic-bezier(.23,1,.32,1); }
+    .fi-r { opacity:0; transform:translateX(72px);   transition:opacity .75s cubic-bezier(.23,1,.32,1), transform .75s cubic-bezier(.23,1,.32,1); }
+    .fi-l { opacity:0; transform:translateX(-72px);  transition:opacity .75s cubic-bezier(.23,1,.32,1), transform .75s cubic-bezier(.23,1,.32,1); }
+    .fi-s { opacity:0; transform:scale(.92) translateY(24px); transition:opacity .75s cubic-bezier(.23,1,.32,1), transform .75s cubic-bezier(.23,1,.32,1); }
+    .fi.v, .fi-r.v, .fi-l.v, .fi-s.v { opacity:1; transform:none; }
+
+    /* ─── WAVE ─── */
+    .wave { display: block; width: 100%; overflow: hidden; line-height: 0; }
+    .wave svg { display: block; width: 100%; animation: wave-drift 7s ease-in-out infinite; }
+    @keyframes wave-drift {
+      0%,100% { transform: translateY(0) scaleX(1); }
+      50%      { transform: translateY(-6px) scaleX(1.008); }
+    }
+
+    /* ─── STARS ─── */
+    .star-field { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .star-field .s {
+      position: absolute; color: rgba(255,255,255,0.6); font-size: var(--sz,14px);
+      animation: star-float var(--d,3s) ease-in-out infinite var(--dl,0s);
+    }
+    @keyframes star-float {
+      0%,100% { opacity:.2; transform:scale(.85) translate(0,0); }
+      40%     { opacity:.95; transform:scale(1.25) translate(var(--mx,5px), var(--my,-7px)); }
+      70%     { opacity:.45; transform:scale(1.0)  translate(calc(var(--mx,5px)*-.5), 3px); }
+    }
+
+    /* ─── NAV ─── */
+    #nav {
+      position: fixed; top: 0; inset-inline: 0; z-index: 300;
+      background: rgba(35,39,42,0);
+      backdrop-filter: blur(0px);
+      padding: 20px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.35s, backdrop-filter 0.35s, padding 0.35s, box-shadow 0.35s;
+    }
+    #nav.on {
+      background: rgba(35,39,42,0.94);
+      backdrop-filter: blur(20px);
+      padding: 14px 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    @media (max-width: 768px) { #nav, #nav.on { padding-inline: 20px; } }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.125rem;
+    }
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--blurple);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem;
+      transition: transform .3s cubic-bezier(.23,1,.32,1);
+    }
+    .nav-logo:hover .nav-logo-icon { transform: rotate(15deg) scale(1.1); }
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .nav-links a { font-size: 0.9375rem; font-weight: 500; color: var(--white); opacity: 0.85; transition: opacity 0.15s; }
+    .nav-links a:hover { opacity: 1; }
+    @media (max-width: 900px) { .nav-links { display: none; } }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      font-family: 'Rubik', sans-serif; font-weight: 700;
+      padding: 10px 22px; border-radius: var(--r-btn);
+      border: none; cursor: pointer; font-size: 0.9375rem;
+      transition: transform .2s cubic-bezier(.23,1,.32,1), box-shadow .2s, filter .2s, background .2s;
+      white-space: nowrap;
+    }
+    .btn:hover  { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0) scale(.97); }
+    .btn-login  { background: transparent; color: var(--white); }
+    .btn-login:hover { text-decoration: underline; }
+    .btn-cta    { background: var(--white); color: var(--dark1); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .btn-cta:hover  { box-shadow: 0 10px 30px rgba(0,0,0,0.35); filter: brightness(1.05); }
+    .btn-blurple    { background: var(--blurple); color: var(--white); }
+    .btn-blurple:hover { background: var(--blurple2); box-shadow: 0 8px 28px rgba(88,101,242,0.6); }
+    .btn-dark   { background: var(--dark1); color: var(--white); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .btn-dark:hover { box-shadow: 0 10px 28px rgba(0,0,0,0.45); }
+    .btn-lg     { padding: 16px 36px; font-size: 1.125rem; border-radius: 32px; }
+    .btn-outline-w { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.3); }
+    .btn-outline-w:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.65); }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative; overflow: hidden;
+      background: linear-gradient(180deg, #3242D6 0%, var(--hero-dk) 28%, var(--hero-bg) 65%, #7C90DB 100%);
+      background-size: 100% 280%;
+      animation: hero-shift 14s ease-in-out infinite;
+      padding: 140px 40px 0;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    @keyframes hero-shift {
+      0%,100% { background-position: 0% 0%; }
+      50%      { background-position: 0% 65%; }
+    }
+    @media (max-width: 768px) { #hero { padding: 120px 20px 0; } }
+
+    /* Hero entrance — staggered, no .fi needed */
+    @keyframes hero-in   { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes hero-shot { from { opacity:0; transform:translateY(64px) scale(.96); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+    .hero-text { position: relative; z-index: 2; max-width: 860px; margin: 0 auto; text-align: center; padding-bottom: 48px; }
+
+    .hero-h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      font-weight: 900; line-height: 1.1; letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      opacity:0; animation: hero-in .95s cubic-bezier(.23,1,.32,1) .1s both;
+    }
+    .hero-p {
+      font-size: clamp(1.0625rem, 2vw, 1.3125rem);
+      font-weight: 400; line-height: 1.7; color: rgba(255,255,255,0.88);
+      max-width: 640px; margin: 0 auto 36px;
+      opacity:0; animation: hero-in .95s cubic-bezier(.23,1,.32,1) .32s both;
+    }
+    .hero-btns {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px;
+      opacity:0; animation: hero-in .95s cubic-bezier(.23,1,.32,1) .52s both;
+    }
+
+    /* App screenshot in hero */
+    .hero-screenshot {
+      position: relative; z-index: 2;
+      max-width: 1000px; margin: 0 auto;
+      border-radius: 20px 20px 0 0; overflow: hidden;
+      box-shadow: 0 -20px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.07);
+      opacity:0; animation: hero-shot 1.15s cubic-bezier(.23,1,.32,1) .72s both;
+    }
+    .app-window {
+      background: var(--dark2);
+      display: grid; grid-template-columns: 72px 240px 1fr 200px;
+      height: 440px;
+    }
+    @media (max-width: 900px) {
+      .app-window { grid-template-columns: 72px 1fr; height: 360px; }
+      .app-channels, .app-members { display: none; }
+    }
+    @media (max-width: 560px) {
+      .app-window { grid-template-columns: 1fr; height: 300px; }
+      .app-guilds { display: none; }
+    }
+
+    /* Guilds */
+    .app-guilds {
+      background: var(--dark1);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 12px 0; gap: 8px;
+    }
+    .guild-icon {
+      width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; transition: border-radius .2s, transform .2s;
+    }
+    .guild-icon:hover { border-radius: 16px; transform: scale(1.08); }
+    .guild-active { border-radius: 16px; background: var(--blurple); }
+    .guild-other  { background: var(--dark2); }
+    .guild-sep { width: 32px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 1px; }
+
+    /* Channels */
+    .app-channels { background: var(--dark2); padding: 16px 8px; overflow: hidden; }
+    .ch-server { font-size: 0.875rem; font-weight: 700; padding: 4px 8px; margin-bottom: 12px; }
+    .ch-category {
+      font-size: 0.6875rem; font-weight: 700; color: var(--mdk);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 4px 8px; margin-top: 12px; margin-bottom: 4px;
+    }
+    .ch-item {
+      display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 4px;
+      font-size: 0.9375rem; color: var(--mdk); cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .ch-item:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+    .ch-item.active { background: rgba(255,255,255,0.1); color: var(--white); }
+    .ch-hash { font-size: 1.25rem; opacity: 0.6; }
+    .ch-badge {
+      margin-inline-start: auto; background: var(--red); color: white;
+      font-size: 0.6875rem; font-weight: 700; padding: 2px 6px; border-radius: 100px;
+    }
+
+    /* Chat */
+    .app-chat { display: flex; flex-direction: column; }
+    .chat-header {
+      background: var(--dark2); border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+      font-size: 0.9375rem; font-weight: 700; flex-shrink: 0;
+    }
+    .chat-scroll {
+      flex: 1; padding: 16px; overflow: hidden; display: flex; flex-direction: column; gap: 12px;
+    }
+    /* Sequential message entrance */
+    @keyframes msg-in { from { opacity:0; transform:translateX(14px); } to { opacity:1; transform:translateX(0); } }
+    .hero-msgs .msg { opacity:0; animation: msg-in .45s cubic-bezier(.23,1,.32,1) both; }
+    .hero-msgs .msg:nth-child(1) { animation-delay: .9s; }
+    .hero-msgs .msg:nth-child(2) { animation-delay: 1.75s; }
+    .hero-msgs .msg:nth-child(3) { animation-delay: 2.65s; }
+    .hero-msgs .msg:nth-child(4) { animation-delay: 3.5s; }
+
+    .msg { display: flex; gap: 12px; align-items: flex-start; }
+    .msg-av {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 1.125rem;
+    }
+    .msg-av-bot  { background: var(--blurple); }
+    .msg-av-user { background: #3BA55C; }
+    .msg-content .msg-name { font-size: 0.875rem; font-weight: 700; margin-bottom: 2px; }
+    .msg-content .msg-name.bot-name  { color: #8EA0FF; }
+    .msg-content .msg-name.user-name { color: #3BA55C; }
+    .msg-text { font-size: 0.9375rem; line-height: 1.5; color: rgba(255,255,255,0.9); }
+    .msg-embed {
+      margin-top: 8px; background: var(--dark1);
+      border-inline-start: 3px solid var(--blurple);
+      border-radius: 0 8px 8px 0; padding: 10px 12px;
+      font-size: 0.875rem; max-width: 300px;
+    }
+    .msg-embed .embed-title { font-weight: 700; margin-bottom: 4px; color: var(--white); }
+    .msg-embed .embed-text  { color: var(--mdk); line-height: 1.45; }
+    .chat-input-wrap { padding: 0 16px 12px; flex-shrink: 0; }
+    .chat-input { background: var(--dark3); border-radius: 8px; padding: 11px 16px; font-size: 0.9375rem; color: var(--mdk); }
+
+    /* Typing indicator */
+    @keyframes typing-dot { 0%,80%,100%{opacity:.3;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+    .typing-dots span { display:inline-block; width:6px;height:6px; border-radius:50%; background:var(--mdk); margin:0 2px; animation:typing-dot 1.2s ease-in-out infinite; }
+    .typing-dots span:nth-child(2){animation-delay:.2s}
+    .typing-dots span:nth-child(3){animation-delay:.4s}
+
+    /* Members */
+    .app-members { background: var(--dark2); padding: 16px 8px; overflow: hidden; }
+    .mem-section { font-size: 0.6875rem; font-weight: 700; color: var(--mdk); letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 8px; margin-bottom: 6px; }
+    .mem-item { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: background .15s; }
+    .mem-item:hover { background: rgba(255,255,255,0.06); }
+    .mem-av { width: 28px; height: 28px; border-radius: 50%; position: relative; display: flex; align-items: center; justify-content: center; font-size: 0.875rem; }
+    .mem-status { position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--dark2); }
+    .online { background: #3BA55C; }
+    .away   { background: #FAA61A; }
+    .mem-name { font-size: 0.875rem; color: var(--mdk); }
+
+    /* ─── BANNER ─── */
+    #banner { background: var(--white); padding: 100px 40px; text-align: center; }
+    @media (max-width: 768px) { #banner { padding: 70px 20px; } }
+    .banner-h {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 3.5rem);
+      font-weight: 900; color: var(--dark1); line-height: 1.15;
+      letter-spacing: -0.02em; max-width: 900px; margin: 0 auto 24px;
+    }
+    .banner-p { font-size: clamp(1.0625rem, 1.8vw, 1.25rem); color: var(--mlt); line-height: 1.75; max-width: 700px; margin: 0 auto 36px; }
+
+    /* ─── FEATURE SECTIONS ─── */
+    .feature-section { padding: 80px 40px; position: relative; overflow: hidden; }
+    @media (max-width: 768px) { .feature-section { padding: 60px 20px; } }
+
+    .feature-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; gap: 64px;
+    }
+    @media (max-width: 900px) { .feature-inner { flex-direction: column !important; gap: 40px; } }
+
+    .feature-text { flex: 0 0 440px; }
+    @media (max-width: 900px) { .feature-text { flex: auto; } }
+    .feature-visual { flex: 1; min-width: 0; }
+
+    /* Discord-style gradient card */
+    .feat-card {
+      border-radius: 28px;
+      padding: 40px 32px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 420px; position: relative; overflow: hidden;
+    }
+    .feat-card-1 { background: linear-gradient(145deg, #1a0a2e 0%, #3b0764 40%, #7e22ce 75%, #be185d 100%); }
+    .feat-card-2 { background: linear-gradient(145deg, #0c1a3a 0%, #1e3a8a 45%, #2563eb 75%, #7c3aed 100%); }
+
+    .feat-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; opacity: 0.7; }
+    .feat-h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+      font-weight: 900; line-height: 1.15; letter-spacing: -0.02em;
+      margin-bottom: 16px; text-transform: uppercase;
+    }
+    .feat-p { font-size: clamp(1rem, 1.6vw, 1.1875rem); line-height: 1.75; margin-bottom: 28px; font-weight: 400; }
+    .feat-link {
+      font-size: 1rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;
+      border-bottom: 1px solid currentColor; padding-bottom: 2px; transition: opacity .15s, gap .2s;
+    }
+    .feat-link:hover { opacity: 0.75; gap: 10px; }
+
+    .feat-dark    { background: var(--dark1); color: var(--white); }
+    .feat-dark .feat-p     { color: var(--mdk); }
+    .feat-dark .feat-label { color: rgba(255,255,255,0.55); }
+    .feat-yellow  { background: var(--yellow); color: var(--dark1); }
+    .feat-yellow .feat-p    { color: var(--mlt); }
+    .feat-yellow .feat-label{ color: rgba(35,39,42,0.5); }
+    .feat-lavender{ background: var(--lavender); color: var(--dark1); }
+    .feat-lavender .feat-p     { color: var(--mlt); }
+    .feat-lavender .feat-label { color: rgba(35,39,42,0.5); }
+    .feat-dark2   { background: var(--dark2); color: var(--white); }
+    .feat-dark2 .feat-p    { color: var(--mdk); }
+    .feat-dark2 .feat-label{ color: rgba(255,255,255,0.55); }
+    .feat-pink    { background: var(--pink); color: var(--dark1); }
+    .feat-pink .feat-p     { color: var(--mlt); }
+
+    /* ─── FLOAT ANIMATION (feature visuals) ─── */
+    @keyframes float-bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+    .float-c { animation: float-bob 7s ease-in-out infinite; }
+
+    /* ─── CARD MOCKUPS ─── */
+    .mock-card       { border-radius:16px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,.3); }
+    .mock-card-light { box-shadow: 0 16px 48px rgba(0,0,0,.15); }
+
+    /* Scheduling */
+    .sched-card { background:var(--dark2); border-radius:16px; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,.35); }
+    .sched-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .sched-title  { font-size:1rem; font-weight:700; }
+    .sched-date   { font-size:.875rem; color:var(--mdk); }
+    .sched-item   { display:flex; align-items:center; gap:12px; padding:12px; border-radius:10px; margin-bottom:8px; }
+    .sched-item.green-bg  { background:rgba(87,242,135,.1); }
+    .sched-item.blue-bg   { background:rgba(88,101,242,.12); }
+    .sched-item.yellow-bg { background:rgba(254,231,92,.12); }
+    .sched-dot  { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .sched-info { flex:1; }
+    .sched-name { font-size:.9375rem; font-weight:600; }
+    .sched-time { font-size:.8125rem; color:var(--mdk); }
+    .sched-status { font-size:.75rem; font-weight:700; padding:3px 10px; border-radius:100px; }
+    .status-confirmed { background:rgba(87,242,135,.2); color:var(--green); }
+    .status-auto      { background:rgba(88,101,242,.2); color:#8EA0FF; }
+    .sched-notif {
+      display:flex; align-items:center; gap:10px;
+      background:rgba(35,39,42,.5); border:1px solid rgba(87,242,135,.3);
+      border-radius:10px; padding:10px 14px; margin-top:12px;
+      font-size:.875rem; color:var(--green);
+    }
+
+    /* CRM */
+    .crm-card   { background:var(--dark2); border-radius:16px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+    .crm-header { background:var(--dark1); padding:14px 18px; display:flex; align-items:center; justify-content:space-between; font-size:.9375rem; font-weight:700; }
+    .crm-tag    { font-size:.75rem; background:rgba(88,101,242,.2); color:#8EA0FF; padding:3px 10px; border-radius:100px; font-weight:700; }
+    .crm-row    { display:flex; align-items:center; gap:12px; padding:13px 18px; border-bottom:1px solid rgba(255,255,255,.04); transition:background .15s; }
+    .crm-row:last-child { border-bottom:none; }
+    .crm-row:hover { background: rgba(255,255,255,.03); }
+    .crm-av     { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+    .crm-info   { flex:1; }
+    .crm-name   { font-size:.9375rem; font-weight:600; }
+    .crm-biz    { font-size:.8125rem; color:var(--mdk); }
+    .crm-score  { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .score-bar  { width:60px; height:6px; border-radius:3px; background:rgba(255,255,255,.1); overflow:hidden; }
+    .score-fill { height:100%; border-radius:3px; }
+    .score-num  { font-size:.8125rem; font-weight:700; min-width:30px; text-align:center; }
+    .hot-badge  { font-size:.75rem; background:rgba(237,66,69,.2); color:var(--red); padding:2px 8px; border-radius:100px; font-weight:700; }
+
+    /* Content */
+    .content-card    { background:var(--dark2); border-radius:16px; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,.3); color:var(--white); }
+    .content-header  { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+    .content-icon    { width:36px; height:36px; background:var(--blurple); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.125rem; }
+    .content-title   { font-weight:700; }
+    .content-subtitle{ font-size:.8125rem; color:var(--mdk); }
+    .content-prompt  { background:var(--dark1); border-radius:10px; padding:12px; font-size:.875rem; color:var(--mdk); margin-bottom:14px; }
+    .content-prompt .label { font-size:.75rem; color:var(--blurple); font-weight:700; margin-bottom:4px; }
+    .content-output  { background:rgba(88,101,242,.07); border:1px solid rgba(88,101,242,.2); border-radius:10px; padding:12px; font-size:.875rem; line-height:1.65; margin-bottom:12px; }
+    .content-output .label { font-size:.75rem; color:var(--blurple); font-weight:700; margin-bottom:6px; }
+    .content-actions { display:flex; gap:8px; }
+    .content-btn  { flex:1; padding:9px; border-radius:8px; font-size:.8125rem; font-weight:700; border:none; cursor:pointer; font-family:'Rubik',sans-serif; transition:filter .15s, transform .15s; }
+    .content-btn:hover { filter:brightness(1.1); transform:translateY(-1px); }
+    .cb-pub  { background:var(--blurple); color:white; }
+    .cb-copy { background:rgba(255,255,255,.07); color:var(--mdk); }
+
+    /* Proposal */
+    .proposal-card { background:var(--white); border-radius:16px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.15); }
+    .prop-header   { background:var(--blurple); padding:16px 20px; color:white; }
+    .prop-logo     { font-size:.9375rem; font-weight:700; margin-bottom:2px; }
+    .prop-sub      { font-size:.8125rem; opacity:.8; }
+    .prop-body     { padding:20px; }
+    .prop-greeting { font-size:1rem; font-weight:700; color:var(--dark1); margin-bottom:10px; }
+    .prop-text     { font-size:.875rem; color:var(--mlt); line-height:1.65; margin-bottom:16px; }
+    .prop-package  { border:2px solid var(--blurple); border-radius:12px; padding:16px; margin-bottom:12px; }
+    .prop-pack-title{ font-weight:700; color:var(--blurple); margin-bottom:4px; font-size:.9375rem; }
+    .prop-pack-price{ font-size:1.25rem; font-weight:900; color:var(--dark1); margin-bottom:8px; }
+    .prop-features  { list-style:none; font-size:.8125rem; color:var(--mlt); }
+    .prop-features li::before { content:'✓ '; color:var(--blurple); font-weight:700; }
+    .prop-cta-btn  { width:100%; background:var(--blurple); color:white; border:none; border-radius:10px; padding:13px; font-size:.9375rem; font-weight:700; cursor:pointer; font-family:'Rubik',sans-serif; transition:background .15s, transform .15s; }
+    .prop-cta-btn:hover { background:var(--blurple2); transform:translateY(-2px); }
+
+    /* ─── STATS ─── */
+    #stats { background: var(--dark1); padding: 100px 0; }
+    .stats-title {
+      font-family: 'Poppins', sans-serif; text-align: center;
+      font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 900; letter-spacing: -0.02em;
+      margin-bottom: 64px; text-transform: uppercase;
+    }
+    .stats-title .hl { color: var(--yellow-b); }
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0; border:1px solid rgba(255,255,255,.06); border-radius:16px; overflow:hidden; }
+    @media (max-width: 700px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+    .stat-box { padding:48px 32px; text-align:center; border-inline-start:1px solid rgba(255,255,255,.06); transition:background .25s; }
+    .stat-box:hover { background:rgba(255,255,255,.03); }
+    .stat-box:first-child { border-inline-start:none; }
+    @media (max-width: 700px) {
+      .stat-box:nth-child(3){ border-inline-start:none; border-top:1px solid rgba(255,255,255,.06); }
+      .stat-box:nth-child(4){ border-top:1px solid rgba(255,255,255,.06); }
+    }
+    .stat-num { font-family:'Poppins',sans-serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; letter-spacing:-.03em; margin-bottom:10px; line-height:1; transition:transform .3s; }
+    .stat-box:hover .stat-num { transform:scale(1.06); }
+    .stat-label { font-size:.9375rem; color:var(--mdk); font-weight:500; line-height:1.5; }
+
+    /* ─── CTA ─── */
+    #cta-section {
+      background: linear-gradient(135deg, #3040D0 0%, var(--hero-dk) 25%, var(--blurple) 55%, #7C90DB 80%, #9B59B6 100%);
+      background-size: 300% 300%;
+      animation: cta-pulse 9s ease infinite;
+      padding: 100px 40px; text-align: center; position: relative; overflow: hidden;
+    }
+    @keyframes cta-pulse {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+    /* CTA ambient glow */
+    #cta-section::before {
+      content:''; position:absolute; inset:-50%; border-radius:50%;
+      background:radial-gradient(circle, rgba(88,101,242,.25) 0%, transparent 65%);
+      animation: glow-drift 8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes glow-drift { 0%,100%{transform:scale(1) translate(0,0)} 50%{transform:scale(1.2) translate(5%,3%)} }
+
+    .cta-h { font-family:'Poppins',sans-serif; font-size:clamp(2.5rem,6vw,4.5rem); font-weight:900; letter-spacing:-.02em; line-height:1.1; margin-bottom:16px; text-transform:uppercase; position:relative; z-index:1; }
+    .cta-sub { font-size:1.125rem; color:rgba(255,255,255,.85); line-height:1.7; max-width:600px; margin:0 auto 44px; position:relative; z-index:1; }
+    .cta-form-wrap { max-width:480px; margin:0 auto; display:flex; flex-direction:column; gap:14px; position:relative; z-index:1; }
+    .cta-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media (max-width: 480px) { .cta-row { grid-template-columns:1fr; } }
+    .cta-inp {
+      background:rgba(0,0,0,.25); border:2px solid rgba(255,255,255,.15);
+      border-radius:14px; color:white; font-family:'Rubik',sans-serif; font-size:1rem;
+      padding:14px 18px; width:100%; text-align:right;
+      transition:border-color .2s, background .2s, box-shadow .2s;
+    }
+    .cta-inp:focus { outline:none; border-color:rgba(255,255,255,.55); background:rgba(0,0,0,.35); box-shadow:0 0 0 4px rgba(255,255,255,.08); }
+    .cta-inp::placeholder { color:rgba(255,255,255,.3); }
+    .cta-sub-btn {
+      width:100%; background:var(--white); color:var(--blurple2);
+      font-family:'Rubik',sans-serif; font-weight:900; font-size:1.125rem;
+      padding:16px; border-radius:100px; border:none; cursor:pointer;
+      transition:transform .2s cubic-bezier(.23,1,.32,1), box-shadow .2s;
+      box-shadow:0 4px 24px rgba(0,0,0,.3); position:relative; z-index:1;
+    }
+    .cta-sub-btn:hover { transform:translateY(-3px); box-shadow:0 12px 36px rgba(0,0,0,.35); }
+    .cta-sub-btn:active { transform:translateY(0) scale(.98); }
+    .cta-trust-row { display:flex; justify-content:center; gap:24px; margin-top:18px; flex-wrap:wrap; position:relative; z-index:1; }
+    .cta-trust-row span { font-size:.875rem; color:rgba(255,255,255,.55); display:flex; align-items:center; gap:5px; }
+    .cta-trust-row span::before { content:'✓'; color:var(--green); }
+    .success-wrap { display:none; background:rgba(255,255,255,.1); border-radius:20px; padding:32px; position:relative; z-index:1; }
+    .success-wrap.show { display:block; animation: hero-in .6s cubic-bezier(.23,1,.32,1) both; }
+    .success-wrap h3 { font-size:1.5rem; font-weight:800; margin-bottom:8px; }
+    .success-wrap p  { font-size:1rem; opacity:.8; }
+
+    /* ─── FOOTER ─── */
+    footer { background:var(--dark1); border-top:1px solid rgba(255,255,255,.05); padding:60px 40px 40px; }
+    @media (max-width: 768px) { footer { padding:40px 20px; } }
+    .foot-top { display:grid; grid-template-columns:1.5fr repeat(4,1fr); gap:40px; margin-bottom:48px; }
+    @media (max-width: 900px) { .foot-top { grid-template-columns:1fr 1fr; } }
+    @media (max-width: 500px) { .foot-top { grid-template-columns:1fr; } }
+    .foot-brand .foot-logo-text { font-family:'Poppins',sans-serif; font-weight:900; font-size:1.25rem; letter-spacing:-.01em; color:var(--white); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+    .foot-brand p { font-size:.875rem; color:var(--mdk); line-height:1.65; margin-bottom:16px; max-width:240px; }
+    .foot-col h4 { font-size:.75rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--white); margin-bottom:16px; }
+    .foot-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+    .foot-col ul li a { font-size:.9375rem; color:var(--mdk); transition:color .15s, padding-inline-end .2s; display:inline-block; }
+    .foot-col ul li a:hover { color:var(--white); padding-inline-end:4px; }
+    .foot-bottom { border-top:1px solid rgba(255,255,255,.07); padding-top:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+    .foot-copy { font-size:.8125rem; color:rgba(255,255,255,.3); }
+    .foot-cta-btn { background:var(--blurple); color:var(--white); padding:11px 24px; border-radius:var(--r-btn); font-weight:700; font-size:.9375rem; border:none; cursor:pointer; transition:background .15s, transform .15s; }
+    .foot-cta-btn:hover { background:var(--blurple2); transform:translateY(-2px); }
+
+    /* ─── PAIN POINTS ACCORDION ─── */
+    .pain-section { background:var(--dark1); padding:80px 40px; }
+    @media(max-width:768px){ .pain-section{ padding:60px 20px; } }
+
+    .pain-intro { text-align:center; margin-bottom:52px; }
+    .pain-eyebrow { font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blurple);margin-bottom:14px; }
+    .pain-title { font-family:'Poppins',sans-serif;font-size:clamp(1.875rem,3.8vw,2.875rem);font-weight:900;letter-spacing:-.02em;line-height:1.15; }
+    .pain-title .hl { color:var(--yellow-b); }
+
+    .pain-list { max-width:900px; margin:0 auto; }
+
+    .pain-row:first-child { border-top-color: rgba(255,255,255,.15) !important; }
+    .pain-row {
+      border-bottom:1px solid rgba(255,255,255,.15);
+      cursor:pointer;
+      transition:background .2s;
+    }
+    .pain-row:first-child { border-top:1px solid rgba(255,255,255,.15); }
+
+    .pain-row-head {
+      display:flex; align-items:center; gap:20px;
+      padding:20px 6px;
+      transition:padding .3s cubic-bezier(.23,1,.32,1);
+    }
+    .pain-row:hover .pain-row-head, .pain-row.open .pain-row-head { padding-bottom:10px; }
+
+    .pain-num {
+      font-family:'Poppins',sans-serif; font-size:1rem; font-weight:900;
+      color:rgba(88,101,242,.4); min-width:32px; transition:color .25s;
+      flex-shrink:0;
+    }
+    .pain-row:hover .pain-num, .pain-row.open .pain-num { color:var(--blurple); }
+
+    .pain-q {
+      flex:1; font-size:clamp(.9375rem,1.7vw,1.125rem);
+      font-weight:700; line-height:1.45; color:var(--white);
+    }
+
+    .pain-toggle {
+      font-size:.8125rem; font-weight:700; color:rgba(255,255,255,.35);
+      display:flex; align-items:center; gap:5px; flex-shrink:0;
+      transition:color .25s;
+    }
+    .pain-toggle .pt-arrow {
+      display:inline-block;
+      transition:transform .35s cubic-bezier(.23,1,.32,1);
+    }
+    .pain-row:hover .pain-toggle, .pain-row.open .pain-toggle { color:var(--blurple); }
+    .pain-row:hover .pain-toggle .pt-arrow, .pain-row.open .pain-toggle .pt-arrow { transform:rotate(90deg); }
+
+    .pain-body {
+      overflow:hidden; max-height:0;
+      transition:max-height .45s cubic-bezier(.23,1,.32,1), opacity .35s;
+      opacity:0;
+    }
+    .pain-row:hover .pain-body, .pain-row.open .pain-body { max-height:140px; opacity:1; }
+
+    .pain-sol {
+      display:flex; align-items:flex-start; gap:14px;
+      padding:4px 6px 22px calc(32px + 20px);
+    }
+    @media(max-width:600px){ .pain-sol{ padding-inline-start:0; } }
+
+    .pain-sol-ic {
+      width:34px; height:34px; border-radius:9px; background:rgba(88,101,242,.15);
+      display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;
+      margin-top:2px;
+    }
+    .pain-sol-text { flex:1; }
+    .pain-sol-label { font-size:.6875rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blurple);margin-bottom:6px; }
+    .pain-sol-p { font-size:.9375rem; color:rgba(255,255,255,.72); line-height:1.65; }
+    .pain-sol-tag {
+      display:inline-flex; align-items:center; gap:4px; margin-top:8px;
+      font-size:.75rem; font-weight:700;
+      background:rgba(87,242,135,.1); color:var(--green);
+      padding:3px 10px; border-radius:100px;
+    }
+
+    /* ─── CRM WINDOW ─── */
+    .crm-app {
+      background: #1a1c1f;
+      display: grid;
+      grid-template-columns: 56px 210px 1fr;
+      height: 460px;
+      border-radius: 12px 12px 0 0;
+    }
+    @media (max-width: 860px) { .crm-app { grid-template-columns: 56px 1fr; } .crm-left { display:none; } }
+    @media (max-width: 560px) { .crm-app { grid-template-columns: 1fr; height:340px; } .crm-icons { display:none; } }
+
+    /* Icon nav */
+    .crm-icons { background:#111214; display:flex; flex-direction:column; align-items:center; padding:12px 0; gap:4px; border-inline-end:1px solid rgba(255,255,255,.05); }
+    .crm-logo-ic { width:38px;height:38px; background:var(--blurple); border-radius:10px; display:flex;align-items:center;justify-content:center; font-size:1.1rem; margin-bottom:6px; }
+    .crm-sep-line { width:28px;height:1px;background:rgba(255,255,255,.1);margin:4px 0; }
+    .ci { width:40px;height:38px; display:flex;align-items:center;justify-content:center; border-radius:8px; cursor:pointer; border:none; background:transparent; font-size:1rem; color:var(--mdk); position:relative; transition:background .15s,color .15s; }
+    .ci:hover,.ci-active { background:rgba(88,101,242,.2); color:white; }
+    .ci-dot { position:absolute;top:5px;left:5px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid #111214; }
+
+    /* Left panel */
+    .crm-left { background:#1e2124; border-inline-end:1px solid rgba(255,255,255,.05); display:flex;flex-direction:column;overflow:hidden; }
+    .crm-workspace { padding:12px 14px; font-size:.8125rem;font-weight:800;color:white; border-bottom:1px solid rgba(255,255,255,.06); display:flex;align-items:center;gap:7px; }
+    .crm-mini-kpis { display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.06); }
+    .mk { background:rgba(255,255,255,.04);border-radius:7px;padding:7px 8px;text-align:center; }
+    .mk.hot { background:rgba(237,66,69,.08); }
+    .mk-n { font-size:1rem;font-weight:900;color:white;line-height:1; }
+    .mk-l { font-size:.575rem;color:var(--mdk);text-transform:uppercase;letter-spacing:.05em;margin-top:2px; }
+    .crm-cat { font-size:.575rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mdk);padding:10px 10px 4px; }
+    .crm-nav { flex:1;overflow-y:auto;padding:4px 6px; }
+    .crm-a { display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:6px;font-size:.8125rem;color:var(--mdk);cursor:pointer;transition:background .15s,color .15s;margin-bottom:1px;user-select:none; }
+    .crm-a:hover { background:rgba(255,255,255,.06);color:white; }
+    .crm-active.crm-a { background:rgba(88,101,242,.2);color:white; }
+    .crm-badge { margin-inline-start:auto;background:var(--red);color:white;font-size:.575rem;font-weight:800;padding:1px 5px;border-radius:8px; }
+    .crm-live { padding:9px 11px;border-top:1px solid rgba(255,255,255,.06);background:rgba(87,242,135,.04); }
+    .crm-live-title { font-size:.575rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:5px;display:flex;align-items:center;gap:5px; }
+    .crm-live-title::before { content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 2s infinite;flex-shrink:0; }
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+    .crm-live-row { font-size:.6875rem;color:rgba(255,255,255,.5);padding:2px 0; }
+
+    /* Main area */
+    .crm-main { background:#2b2d31;display:flex;flex-direction:column;overflow:hidden;min-width:0; }
+    .crm-view { display:none;flex-direction:column;flex:1;overflow:hidden; }
+    .crm-active.crm-view { display:flex; }
+    .crm-topbar { background:#2b2d31;border-bottom:1px solid rgba(255,255,255,.06);padding:9px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0; }
+    .crm-view-name { font-size:.875rem;font-weight:800;color:white; }
+    .ai-live-pill { display:inline-flex;align-items:center;gap:4px;background:rgba(87,242,135,.12);border:1px solid rgba(87,242,135,.2);color:var(--green);font-size:.625rem;font-weight:700;padding:2px 7px;border-radius:100px; }
+    .crm-date-lbl { font-size:.6875rem;color:var(--mdk);margin-inline-start:auto; }
+
+    /* KPI cards */
+    .kpi-row { display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:10px 14px;flex-shrink:0; }
+    @media (max-width:600px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+    .kc { background:rgba(255,255,255,.04);border-radius:9px;padding:9px 11px;border:1px solid rgba(255,255,255,.06);transition:background .2s; }
+    .kc:hover { background:rgba(255,255,255,.07); }
+    .kc-n { font-size:1.125rem;font-weight:900;font-family:'Poppins',sans-serif;line-height:1; }
+    .kc-l { font-size:.5625rem;color:var(--mdk);text-transform:uppercase;letter-spacing:.06em;margin-top:3px; }
+    .kc-t { font-size:.625rem;color:var(--green);margin-top:3px; }
+
+    /* Leads */
+    .leads-filters { display:flex;gap:4px;padding:7px 14px 3px;flex-shrink:0;flex-wrap:wrap; }
+    .lf { padding:3px 10px;border-radius:100px;font-size:.6875rem;font-weight:700;background:rgba(255,255,255,.06);color:var(--mdk);cursor:pointer;border:none;font-family:'Rubik',sans-serif;transition:background .15s,color .15s; }
+    .lf:hover,.lf-active { background:var(--blurple);color:white; }
+    .leads-scroll { flex:1;overflow-y:auto;padding:0 6px 8px; }
+    .leads-tbl { width:100%;border-collapse:collapse;font-family:'Rubik',sans-serif; }
+    .leads-tbl th { font-size:.5625rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--mdk);padding:5px 7px;text-align:right;border-bottom:1px solid rgba(255,255,255,.06); }
+    .leads-tbl td { padding:7px 7px;font-size:.75rem;color:rgba(255,255,255,.85);border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle; }
+    .leads-tbl tr:hover td { background:rgba(255,255,255,.03);cursor:pointer; }
+    .lnc { display:flex;align-items:center;gap:7px; }
+    .lav { width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6875rem;font-weight:800;color:white;flex-shrink:0; }
+    .ln { font-weight:700;font-size:.8125rem; }
+    .lsub { font-size:.625rem;color:var(--mdk); }
+    .lbiz { font-size:.75rem;color:var(--mdk); }
+    .lact { font-size:.6875rem;color:rgba(255,255,255,.6); }
+    .sc-w { display:flex;align-items:center;gap:5px; }
+    .sc-b { width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden; }
+    .sc-f { height:100%;border-radius:2px; }
+    .sp { display:inline-flex;align-items:center;gap:3px;font-size:.625rem;font-weight:700;padding:2px 7px;border-radius:100px; }
+    .sp-hot  { background:rgba(237,66,69,.15);color:#FF7675; }
+    .sp-warm { background:rgba(250,166,26,.15);color:#FAA61A; }
+    .sp-new  { background:rgba(88,101,242,.15);color:#8EA0FF; }
+    .sp-done { background:rgba(87,242,135,.15);color:var(--green); }
+    .sp-cold { background:rgba(185,187,190,.1);color:var(--mdk); }
+    .ab { padding:2px 9px;border-radius:5px;font-size:.625rem;font-weight:700;border:none;cursor:pointer;font-family:'Rubik',sans-serif;transition:filter .15s; }
+    .ab:hover { filter:brightness(1.2); }
+    .ab-b { background:rgba(88,101,242,.2);color:#8EA0FF; }
+    .ab-g { background:rgba(87,242,135,.12);color:var(--green); }
+
+    /* Calendar */
+    .cal-grid { flex:1;display:grid;grid-template-columns:44px repeat(5,1fr);grid-auto-rows:1fr;padding:0 10px;overflow:hidden; }
+    .cal-hdr { font-size:.625rem;font-weight:700;color:var(--mdk);text-align:center;padding:6px 4px;border-bottom:1px solid rgba(255,255,255,.06);text-transform:uppercase; }
+    .cal-time { font-size:.6rem;color:var(--mdk);display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(255,255,255,.04); }
+    .cal-cell { border-bottom:1px solid rgba(255,255,255,.04);border-inline-start:1px solid rgba(255,255,255,.04);padding:3px; }
+    .cal-ev { border-radius:5px;padding:3px 5px;font-size:.625rem;font-weight:700;display:flex;align-items:center; }
+    .ai-ev  { background:rgba(87,242,135,.15);color:var(--green); }
+    .man-ev { background:rgba(88,101,242,.2);color:#8EA0FF; }
+
+    /* Messages */
+    .msgs-layout { flex:1;display:grid;grid-template-columns:140px 1fr;overflow:hidden; }
+    .msgs-list { border-inline-end:1px solid rgba(255,255,255,.06);overflow-y:auto; }
+    .ml-item { display:flex;align-items:center;gap:7px;padding:8px 10px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(255,255,255,.04); }
+    .ml-item:hover,.ml-active { background:rgba(255,255,255,.05); }
+    .ml-av { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:white;flex-shrink:0; }
+    .ml-name { font-size:.75rem;font-weight:700; }
+    .ml-prev { font-size:.625rem;color:var(--mdk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px; }
+    .ml-badge { margin-inline-start:auto;background:var(--red);color:white;font-size:.575rem;font-weight:800;padding:1px 5px;border-radius:8px;flex-shrink:0; }
+    .msgs-chat { display:flex;flex-direction:column;overflow:hidden; }
+    .mc-header { padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:8px;flex-shrink:0; }
+    .mc-scroll { flex:1;padding:10px 12px;overflow:hidden;display:flex;flex-direction:column;gap:8px; }
+
+    /* Reports */
+    .bar-chart { display:flex;flex-direction:column;gap:8px; }
+    .bar-row { display:flex;align-items:center;gap:8px; }
+    .bar-lbl { font-size:.6875rem;color:var(--mdk);min-width:44px;text-align:right; }
+    .bar-wrap { flex:1;display:flex;align-items:center;gap:6px; }
+    .bar-fill { height:18px;border-radius:4px;transition:width .8s cubic-bezier(.23,1,.32,1); }
+    .bar-val { font-size:.6875rem;font-weight:700;color:white; }
+
+    /* AI Settings */
+    .aiset-list { flex:1;overflow-y:auto;padding:8px 14px; }
+    .aiset-row { display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05); }
+    .ais-icon { width:34px;height:34px;background:rgba(255,255,255,.06);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0; }
+    .ais-info { flex:1; }
+    .ais-name { font-size:.8125rem;font-weight:700;color:white; }
+    .ais-desc { font-size:.6875rem;color:var(--mdk);margin-top:2px; }
+    .toggle { width:36px;height:20px;border-radius:10px;background:rgba(255,255,255,.15);cursor:pointer;position:relative;transition:background .25s;flex-shrink:0; }
+    .toggle::after { content:'';position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:white;transition:transform .25s; }
+    .toggle.on { background:var(--green); }
+    .toggle.on::after { transform:translateX(-16px); }
+
+    /* ─── REDUCED MOTION ─── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    /* ── iPhone / WhatsApp simulator ── */
+    .iphone-wrap {
+      position:relative; width:280px; margin:0 auto;
+    }
+    /* Power button (right side) */
+    .iphone-wrap::after {
+      content:''; position:absolute;
+      right:-4px; top:130px;
+      width:4px; height:68px;
+      background:#3a3a3c; border-radius:0 3px 3px 0;
+    }
+    /* Volume buttons (left side) */
+    .iphone-wrap::before {
+      content:''; position:absolute;
+      left:-4px; top:100px;
+      width:4px; height:36px;
+      background:#3a3a3c; border-radius:3px 0 0 3px;
+      box-shadow: 0 52px 0 #3a3a3c;
+    }
+    .iphone-frame {
+      background:#1c1c1e;
+      border-radius:52px;
+      padding:12px;
+      box-shadow:
+        0 0 0 1px #555,
+        0 0 0 3px #1c1c1e,
+        0 0 0 5px #3a3a3c,
+        0 0 0 7px #1c1c1e,
+        0 40px 100px rgba(0,0,0,.7),
+        inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .iphone-screen {
+      background:#0d1117;
+      border-radius:36px;
+      overflow:hidden;
+      height:560px;
+      display:flex; flex-direction:column;
+    }
+    /* Dynamic Island row — green bg to blend with header */
+    .iphone-di-row {
+      background:#065f46;
+      display:flex; justify-content:center;
+      padding:8px 0 4px; flex-shrink:0;
+    }
+    .iphone-di {
+      width:120px; height:32px; background:#000;
+      border-radius:20px;
+      display:flex; align-items:center; justify-content:center;
+      gap:8px;
+    }
+    .iphone-cam {
+      width:10px; height:10px; background:#1c1c1e;
+      border-radius:50%; border:1.5px solid #333;
+      box-shadow: inset 0 0 0 2px #111, 0 0 4px rgba(100,200,255,.25);
+    }
+    .iphone-sensor {
+      width:7px; height:7px; background:#1c1c1e;
+      border-radius:50%; border:1.5px solid #2a2a2a;
+    }
+    .wa-header {
+      background:#065f46;
+      padding:8px 14px 10px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .wa-av {
+      width:36px; height:36px; border-radius:50%;
+      background:#047857;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; flex-shrink:0;
+    }
+    .wa-info { flex:1; }
+    .wa-name { color:#fff; font-size:.8125rem; font-weight:700; font-family:'Rubik',sans-serif; }
+    .wa-online { color:#34d399; font-size:.6rem; margin-top:1px; }
+    .wa-icons { display:flex; gap:14px; color:rgba(255,255,255,.85); font-size:.9rem; }
+    .wa-body {
+      flex:1; overflow-y:auto;
+      padding:10px 10px 6px;
+      display:flex; flex-direction:column; gap:6px;
+      background:#0d1117;
+      direction:rtl;
+      scroll-behavior:smooth;
+    }
+    .wa-body::-webkit-scrollbar { display:none; }
+    .wa-bubble {
+      max-width:78%; padding:7px 10px 4px;
+      border-radius:12px;
+      font-size:.69rem; line-height:1.5;
+      font-family:'Rubik',sans-serif; color:#e8e8e8;
+      position:relative; white-space:pre-wrap;
+    }
+    /* Incoming (bot) — right side in RTL, tail at top-right (near avatar) */
+    .wa-in {
+      background:#374151; align-self:flex-start;
+      border-radius:12px 0 12px 12px;
+      color:#f3f4f6;
+    }
+    /* Outgoing (user) — left side in RTL, tail at top-left */
+    .wa-out {
+      background:#047857; align-self:flex-end;
+      border-radius:0 12px 12px 12px;
+    }
+    /* Row wrapper for incoming messages (shows avatar) */
+    .wa-in-row {
+      display:flex; gap:6px; align-self:flex-start;
+    }
+    .wa-in-row .wa-in { align-self:auto; }
+    .wa-small-av {
+      width:26px; height:26px; border-radius:50%;
+      background:#1f6b60; display:flex; align-items:center;
+      justify-content:center; font-size:.85rem;
+      flex-shrink:0; align-self:flex-end;
+    }
+    .wa-time { font-size:9px; color:rgba(255,255,255,.38); text-align:end; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px; }
+    .wa-ticks { color:#22d3ee; font-size:9px; }
+    .wa-sender { font-size:.6rem; font-weight:700; color:#25d366; margin-bottom:2px; }
+    .wa-typing {
+      background:#374151; align-self:flex-start;
+      border-radius:12px 0 12px 12px;
+      padding:9px 14px;
+      display:flex; gap:4px; align-items:center;
+    }
+    .typing-dot {
+      width:6px; height:6px; border-radius:50%;
+      background:#9CA3AF;
+      animation:typing-bounce 1.2s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay:.2s; }
+    .typing-dot:nth-child(3) { animation-delay:.4s; }
+    @keyframes typing-bounce {
+      0%,60%,100% { transform:translateY(0); }
+      30% { transform:translateY(-6px); }
+    }
+    .wa-footer {
+      background:#1a2530;
+      padding:8px 10px;
+      display:flex; align-items:center; gap:8px;
+      border-top:1px solid rgba(255,255,255,.07);
+      flex-shrink:0;
+    }
+    .wa-input-pill {
+      flex:1; background:#2a3942; border-radius:22px;
+      padding:8px 14px; font-size:.7rem; color:rgba(255,255,255,.7);
+      font-family:'Rubik',sans-serif; border:none; outline:none;
+    }
+    .wa-input-pill::placeholder { color:rgba(255,255,255,.35); }
+    .wa-send {
+      width:36px; height:36px; border-radius:50%;
+      background:#10b981; display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:.85rem; flex-shrink:0; border:none; cursor:pointer;
+    }
+    .wa-reset-btn {
+      display:block; margin:0 auto 10px;
+      background:rgba(255,255,255,.1); color:rgba(255,255,255,.55);
+      border:none; border-radius:20px; padding:5px 14px;
+      font-size:.68rem; font-family:'Rubik',sans-serif; cursor:pointer;
+      transition:background .2s,color .2s;
+    }
+    .wa-reset-btn:hover { background:rgba(255,255,255,.18); color:#fff; }
+    .wa-home-bar {
+      height:20px; background:#0d1117;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .wa-home-bar::after {
+      content:''; width:100px; height:4px;
+      background:rgba(255,255,255,.25); border-radius:2px;
+    }
+    .iphone-ai-badge {
+      position:absolute; top:-14px; left:8px;
+      background:var(--blurple); color:#fff;
+      border-radius:20px; padding:5px 12px;
+      font-size:.72rem; font-weight:700; font-family:'Rubik',sans-serif;
+      white-space:nowrap; z-index:2;
+      box-shadow:0 4px 16px rgba(88,101,242,.5);
+    }
+
+    /* ── Feature tooltips ── */
+    .ftip { position:relative; display:inline-block; }
+    .ftip::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: 0;
+      background: rgba(20,22,26,.97);
+      border: 1px solid rgba(255,255,255,.14);
+      color: #fff;
+      font-size: .75rem;
+      line-height: 1.4;
+      padding: 8px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      max-width: 240px;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+      transition: opacity .2s, transform .2s;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,.35);
+    }
+    .ftip:hover::after { opacity: 1; transform: translateY(0); }
+
+    /* ── Webhook settings modal ── */
+    #wh-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000;
+    }
+    #wh-panel {
+      position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+      background:var(--dark2); border:1px solid rgba(255,255,255,.1);
+      border-radius:16px; width:min(480px,94vw); max-height:80vh;
+      overflow-y:auto; z-index:1001; box-shadow:0 20px 60px rgba(0,0,0,.5);
+      direction:rtl;
+    }
+    #wh-head {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 20px; border-bottom:1px solid rgba(255,255,255,.08);
+      font-size:1rem; font-weight:700; color:#fff;
+    }
+    #wh-head button {
+      background:none; border:none; color:var(--mdk); font-size:1.25rem;
+      cursor:pointer; line-height:1; padding:0;
+    }
+    #wh-head button:hover { color:#fff; }
+    .wh-tabs { display:flex; gap:4px; padding:12px 20px 0; }
+    .wh-tab {
+      background:none; border:none; color:var(--mdk); font-size:.875rem;
+      font-weight:600; padding:8px 16px; border-radius:8px 8px 0 0;
+      cursor:pointer; font-family:inherit;
+      border-bottom:2px solid transparent;
+    }
+    .wh-tab.active { color:#fff; border-bottom-color:var(--blurple); }
+    .wh-tab:hover { color:#fff; }
+    .wh-pane { padding:20px; }
+    .wh-label { font-size:.8125rem; color:var(--mdk); font-weight:600; margin-bottom:6px; display:block; }
+    .wh-input {
+      width:100%; background:var(--dark3); border:1px solid rgba(255,255,255,.1);
+      color:#fff; border-radius:8px; padding:10px 12px; font-size:.875rem;
+      font-family:inherit; box-sizing:border-box; direction:ltr;
+    }
+    .wh-input:focus { outline:2px solid var(--blurple); border-color:transparent; }
+    .wh-save-btn {
+      margin-top:12px; background:var(--blurple); color:#fff; border:none;
+      border-radius:8px; padding:10px 20px; font-size:.875rem; font-weight:700;
+      font-family:inherit; cursor:pointer;
+    }
+    .wh-save-btn:hover { background:var(--blurple2); }
+    .wh-saved-msg { font-size:.75rem; color:var(--green); margin-top:8px; min-height:18px; }
+    .wh-lead-row {
+      display:flex; align-items:center; gap:12px; padding:10px 0;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .wh-lead-row:last-child { border-bottom:none; }
+    .wh-lead-av {
+      width:34px; height:34px; border-radius:50%; background:var(--blurple);
+      display:flex; align-items:center; justify-content:center;
+      font-size:.875rem; font-weight:700; flex-shrink:0;
+    }
+    .wh-lead-info { flex:1; min-width:0; }
+    .wh-lead-name { font-size:.875rem; font-weight:700; color:#fff; }
+    .wh-lead-meta { font-size:.7rem; color:var(--mdk); margin-top:2px; }
+    .wh-resend-btn {
+      background:none; border:1px solid rgba(255,255,255,.15); color:var(--mdk);
+      border-radius:6px; padding:5px 10px; font-size:.75rem; cursor:pointer;
+      font-family:inherit; flex-shrink:0; transition:all .15s;
+    }
+    .wh-resend-btn:hover { background:rgba(255,255,255,.08); color:#fff; }
+    .wh-empty { color:var(--mdk); font-size:.875rem; text-align:center; padding:30px 0; }
+    .btn-gear {
+      background:none; border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.7);
+      border-radius:8px; padding:6px 10px; font-size:1rem; cursor:pointer;
+      transition:all .15s;
+    }
+    .btn-gear:hover { background:rgba(255,255,255,.08); color:#fff; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🤖</div>
+    <span>יוני אלוני AI</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features-1">שירותים</a></li>
+    <li><a href="#stats">תוצאות</a></li>
+    <li><a href="#cta-section">מחירים</a></li>
+    <li><a href="#cta-section">תמיכה</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-gear" onclick="whAuth()" title="הגדרות Webhook">⚙️</button>
+    <button class="btn btn-login" onclick="go('cta-section')">כניסה</button>
+    <button class="btn btn-cta" onclick="go('cta-section')">התחל עכשיו</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <!-- Stars -->
+  <div class="star-field" aria-hidden="true">
+    <span class="s" style="top:10%;right:6%; --sz:20px;--d:2.8s;--dl:0s;  --mx:6px;--my:-8px">✦</span>
+    <span class="s" style="top:20%;left:8%; --sz:12px;--d:3.5s;--dl:0.5s; --mx:-5px;--my:-5px">✦</span>
+    <span class="s" style="top:45%;right:4%;--sz:26px;--d:2.3s;--dl:1s;   --mx:4px;--my:-10px">✦</span>
+    <span class="s" style="top:15%;left:30%;--sz:10px;--d:4s;--dl:0.3s;   --mx:-3px;--my:-4px">✦</span>
+    <span class="s" style="top:65%;left:6%; --sz:16px;--d:3.1s;--dl:0.7s; --mx:-6px;--my:-6px">✦</span>
+    <span class="s" style="top:8%; left:55%;--sz:22px;--d:2.6s;--dl:1.2s; --mx:7px;--my:-9px">✦</span>
+    <span class="s" style="top:55%;right:12%;--sz:14px;--d:3.8s;--dl:0.1s;--mx:5px;--my:-7px">✦</span>
+    <span class="s" style="top:35%;left:2%; --sz:18px;--d:2.9s;--dl:0.9s; --mx:-4px;--my:-8px">✦</span>
+    <span class="s" style="top:75%;left:40%;--sz:8px; --d:4.2s;--dl:0.4s; --mx:3px;--my:-3px">✦</span>
+    <span class="s" style="top:28%;right:22%;--sz:16px;--d:3.3s;--dl:0.6s;--mx:-7px;--my:-5px">✦</span>
+    <span class="s" style="top:80%;right:30%;--sz:11px;--d:3.6s;--dl:1.4s;--mx:5px;--my:-6px">✦</span>
+    <span class="s" style="top:50%;left:22%;--sz:9px; --d:2.7s;--dl:0.2s; --mx:-4px;--my:-7px">✦</span>
+  </div>
+
+  <div class="hero-text">
+    <h1 class="hero-h1">הופכים שעות של עבודה ידנית<br>לאפס מאמץ.</h1>
+    <p class="hero-p">בעזרת סוכני AI ואוטומציה מתקדמת, אנחנו בונים את התשתית הטכנולוגית שמאפשרת לעסק שלך לצמוח על אוטומט. מניהול לידים ועד הצעות מחיר — הכל קורה מעצמו, כדי שאתה תוכל להתמקד במה שחשוב באמת.</p>
+    <div class="hero-btns">
+      <button class="btn btn-cta btn-lg" onclick="go('cta-section')">הורד לעסק שלך ←</button>
+      <button class="btn btn-outline-w btn-lg" onclick="go('features-1')">פתח בדפדפן</button>
+    </div>
+  </div>
+
+  <div class="hero-screenshot fi" style="animation-delay:.72s">
+    <div class="app-window">
+      <div class="app-guilds">
+        <div class="guild-icon guild-active">🤖</div>
+        <div class="guild-sep"></div>
+        <div class="guild-icon guild-other">💅</div>
+        <div class="guild-icon guild-other">🏋️</div>
+        <div class="guild-icon guild-other">🏠</div>
+      </div>
+      <div class="app-channels">
+        <div class="ch-server">יוני אלוני AI</div>
+        <div class="ch-category">לידים</div>
+        <div class="ch-item active"><span class="ch-hash">#</span>לידים חמים<span class="ch-badge">3</span></div>
+        <div class="ch-item"><span class="ch-hash">#</span>פולואפ</div>
+        <div class="ch-item"><span class="ch-hash">#</span>סגרו עסקה</div>
+        <div class="ch-category">תורים</div>
+        <div class="ch-item"><span class="ch-hash">#</span>היום<span class="ch-badge">5</span></div>
+        <div class="ch-item"><span class="ch-hash">#</span>ביטולים</div>
+      </div>
+      <div class="app-chat">
+        <div class="chat-header">
+          <span class="ch-hash" style="color:var(--mdk)">#</span>
+          לידים חמים
+          <span style="margin-inline-start:auto;font-size:.75rem;color:var(--mdk)">3 חמים · 2 בפולואפ</span>
+        </div>
+        <div class="chat-scroll hero-msgs">
+          <div class="msg">
+            <div class="msg-av msg-av-user">💼</div>
+            <div class="msg-content">
+              <span class="msg-name user-name">יעל שמש · מספרה</span>
+              <div class="msg-text">שלחתי הצעת מחיר — ממתינה לתשובה מ-3 שעות</div>
+              <div class="msg-embed"><div class="embed-title">🔥 ציון: 92 · פולואפ אוטומטי בעוד 21 שעות</div></div>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="msg-av msg-av-bot">🤖</div>
+            <div class="msg-content">
+              <span class="msg-name bot-name">סוכן AI</span>
+              <div class="msg-text">📲 שלחתי הודעת מעקב ליעל: "שלום יעל, רק בדיקה — יש שאלות לגבי ההצעה?" ✅</div>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="msg-av" style="background:#FAA61A;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1.125rem;flex-shrink:0">🏋️</div>
+            <div class="msg-content">
+              <span class="msg-name" style="color:#FAA61A">אסף דיין · מאמן כושר</span>
+              <div class="msg-text">ליד חדש — שאל על מחירים ב-WhatsApp</div>
+              <div class="msg-embed"><div class="embed-title">⚡ ציון: 78 · הצעת מחיר נשלחה אוטומטית</div></div>
+            </div>
+          </div>
+          <div class="msg">
+            <div class="msg-av msg-av-bot">🤖</div>
+            <div class="msg-content">
+              <span class="msg-name bot-name">סוכן AI</span>
+              <div class="typing-dots" style="margin-top:6px"><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-wrap">
+          <div class="chat-input">📊 3 לידים חמים ממתינים לפולואפ...</div>
+        </div>
+      </div>
+      <div class="app-members">
+        <div class="mem-section">חמים — 3</div>
+        <div class="mem-item">
+          <div class="mem-av msg-av-user" style="background:var(--blurple);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.875rem;position:relative">💼<div class="mem-status online"></div></div>
+          <span class="mem-name">יעל שמש</span>
+        </div>
+        <div class="mem-item">
+          <div class="mem-av" style="background:#FAA61A;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.875rem;position:relative">🏋️<div class="mem-status away"></div></div>
+          <span class="mem-name">אסף דיין</span>
+        </div>
+        <div class="mem-item">
+          <div class="mem-av" style="background:#3BA55C;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.875rem;position:relative">❄️<div class="mem-status online"></div></div>
+          <span class="mem-name">נועה ברק</span>
+        </div>
+        <div class="mem-section" style="margin-top:10px">פולואפ — 2</div>
+        <div class="mem-item">
+          <div class="mem-av" style="background:#ED4245;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.875rem;position:relative">🏠<div class="mem-status away"></div></div>
+          <span class="mem-name">דן לוי</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- WAVE blurple → dark -->
+<div style="background:var(--blurple)">
+  <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#23272A" d="M0,60 C360,130 720,0 1080,80 C1260,120 1380,30 1440,50 L1440,120 L0,120 Z"/>
+  </svg>
+</div>
+
+<!-- PAIN POINTS -->
+<section class="pain-section">
+  <div class="wrap">
+    <div class="pain-intro fi">
+      <h2 class="pain-title">רוצה להתחיל לעשות את זה <span class="hl">אוטומטית?</span></h2>
+      <p class="banner-p" style="margin-top:16px;margin-bottom:0;color:var(--mdk)">ספר לנו איפה העסק שלך תקוע, ואנחנו נבנה את האוטומציה שתשחרר אותו.</p>
+    </div>
+    <div class="pain-list">
+
+      <div class="pain-row fi" style="transition-delay:.05s" onclick="togglePain(this)">
+        <div class="pain-row-head">
+          <span class="pain-num">01</span>
+          <span class="pain-q">לקוחות שלא מגיעים, רק מבטלים</span>
+          <span class="pain-toggle"><span class="pt-arrow">→</span></span>
+        </div>
+        <div class="pain-body">
+          <div class="pain-sol">
+            <div class="pain-sol-ic">📅</div>
+            <div class="pain-sol-text">
+              <div class="pain-sol-label">הפתרון של AI</div>
+              <p class="pain-sol-p">סוכן AI שולח תזכורות WhatsApp אוטומטיות — יום לפני ושעה לפני כל פגישה. ביטול? מיד מציע זמן חלופי ומלא את המקום.</p>
+              <span class="pain-sol-tag">✓ ביטולים יורדים ב-80%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pain-row fi" style="transition-delay:.1s" onclick="togglePain(this)">
+        <div class="pain-row-head">
+          <span class="pain-num">02</span>
+          <span class="pain-q">ליד שלא ענית תוך 5 דקות — הלך לאחר</span>
+          <span class="pain-toggle"><span class="pt-arrow">→</span></span>
+        </div>
+        <div class="pain-body">
+          <div class="pain-sol">
+            <div class="pain-sol-ic">⚡</div>
+            <div class="pain-sol-text">
+              <div class="pain-sol-label">הפתרון של AI</div>
+              <p class="pain-sol-p">הסוכן עונה תוך שניות — גם בשבת, גם ב-2 בלילה. כל ליד מקבל מענה מיידי, אישי ומדויק, לפני שיגיע למתחרה.</p>
+              <span class="pain-sol-tag">✓ 0 לידים שנאבדים</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pain-row fi" style="transition-delay:.15s" onclick="togglePain(this)">
+        <div class="pain-row-head">
+          <span class="pain-num">03</span>
+          <span class="pain-q">אתה עונה לאותן שאלות 40 פעמים ביום</span>
+          <span class="pain-toggle"><span class="pt-arrow">→</span></span>
+        </div>
+        <div class="pain-body">
+          <div class="pain-sol">
+            <div class="pain-sol-ic">🤖</div>
+            <div class="pain-sol-text">
+              <div class="pain-sol-label">הפתרון של AI</div>
+              <p class="pain-sol-p">הסוכן לומד את כל השאלות הנפוצות בעסק שלך ועונה עליהן לבד — מחירים, זמינות, מיקום, תהליך. אתה רואה רק מה שדורש אותך אישית.</p>
+              <span class="pain-sol-tag">✓ חוסך 3+ שעות ביום</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pain-row fi" style="transition-delay:.2s" onclick="togglePain(this)">
+        <div class="pain-row-head">
+          <span class="pain-num">04</span>
+          <span class="pain-q">לקוח שאל מחיר — ואז נעלם</span>
+          <span class="pain-toggle"><span class="pt-arrow">→</span></span>
+        </div>
+        <div class="pain-body">
+          <div class="pain-sol">
+            <div class="pain-sol-ic">📋</div>
+            <div class="pain-sol-text">
+              <div class="pain-sol-label">הפתרון של AI</div>
+              <p class="pain-sol-p">הסוכן מזהה שאלת מחיר, שולח הצעה מותאמת תוך דקות ועושה פולואפ אוטומטי אחרי 24 שעות. הנחה בזמן הנכון — ללא מגע אדם.</p>
+              <span class="pain-sol-tag">✓ x3 יותר עסקאות נסגרות</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pain-row fi" style="transition-delay:.25s" onclick="togglePain(this)">
+        <div class="pain-row-head">
+          <span class="pain-num">05</span>
+          <span class="pain-q">לידים נכנסים — אף אחד לא עוקב אחריהם</span>
+          <span class="pain-toggle"><span class="pt-arrow">→</span></span>
+        </div>
+        <div class="pain-body">
+          <div class="pain-sol">
+            <div class="pain-sol-ic">🎯</div>
+            <div class="pain-sol-text">
+              <div class="pain-sol-label">הפתרון של AI</div>
+              <p class="pain-sol-p">CRM AI שמדרג כל ליד לפי פוטנציאל, מבצע פולואפ אוטומטי ומתריע לך רק על הלידים החמים — כשהם הכי מוכנים לקנות.</p>
+              <span class="pain-sol-tag">✓ אפס לידים שנופלים בין הכיסאות</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pain-row fi" style="transition-delay:.3s" onclick="togglePain(this)">
+        <div class="pain-row-head">
+          <span class="pain-num">06</span>
+          <span class="pain-q">אין זמן לתוכן, שיווק, ניוזלטר</span>
+          <span class="pain-toggle"><span class="pt-arrow">→</span></span>
+        </div>
+        <div class="pain-body">
+          <div class="pain-sol">
+            <div class="pain-sol-ic">✍️</div>
+            <div class="pain-sol-text">
+              <div class="pain-sol-label">הפתרון של AI</div>
+              <p class="pain-sol-p">סוכן AI כותב ומפרסם פוסטים שבועיים לאינסטגרם ופייסבוק, ניוזלטר חודשי ובלוג — בסגנון שלך, על הנושאים שלך. בלי מגע.</p>
+              <span class="pain-sol-tag">✓ נוכחות דיגיטלית קבועה אוטומטית</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- FEATURE 1: Customer service (dark) -->
+<section id="features-1" class="feature-section feat-dark">
+  <div class="feature-inner">
+    <div class="feature-text fi-r">
+      <div class="feat-label">שירות לקוחות</div>
+      <h2 class="feat-h2">שירות לקוחות שעובד<br>24/7 בלי לישון</h2>
+      <p class="feat-p">השתמש ב-emoji מותאם אישית, סגנון שיחה ייחודי, ותשובות מדויקות לכל שאלה. הסוכן עונה תוך שניות בוואטסאפ, באתר ובמייל — אתה רואה רק מה שדורש אותך.</p>
+      <span class="ftip" data-tip="עונה ללקוחות 24/7 — WhatsApp, מייל ואתר. אתה רואה רק מה שדורש אותך אישית."><a href="#" class="feat-link" style="color:var(--yellow-b)" onclick="go('cta-section');return false">למד עוד →</a></span>
+    </div>
+    <div class="feature-visual fi-l" style="transition-delay:0.18s">
+      <div class="feat-card feat-card-1">
+        <div style="display:flex;flex-direction:column;align-items:center">
+        <button class="wa-reset-btn" onclick="waReset()">↺ אפס שיחה</button>
+        <div class="iphone-wrap">
+          <div class="iphone-ai-badge">✨ AI-Powered</div>
+          <div class="iphone-frame">
+          <div class="iphone-screen">
+            <div class="iphone-di-row">
+              <div class="iphone-di"><div class="iphone-sensor"></div><div class="iphone-cam"></div></div>
+            </div>
+            <div class="wa-header">
+              <div class="wa-av">🤖</div>
+              <div style="flex:1">
+                <div class="wa-name">עוזר AI</div>
+                <div class="wa-online">מחובר</div>
+              </div>
+              <div style="display:flex;gap:16px;align-items:center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255,255,255,.9)"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255,255,255,.9)"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                <span style="color:rgba(255,255,255,.9);font-size:1.3rem;line-height:1;cursor:pointer">⋮</span>
+              </div>
+            </div>
+            <div class="wa-body" id="wa-chat-body"></div>
+            <div class="wa-footer">
+              <button class="wa-send" onclick="waSend()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+              <input type="text" class="wa-input-pill" id="wa-input" placeholder="כתוב הודעה..." dir="rtl" autocomplete="off">
+            </div>
+            <div class="wa-home-bar"></div>
+          </div>
+          </div><!-- /iphone-frame -->
+        </div><!-- /iphone-wrap -->
+        </div><!-- /flex-col wrapper -->
+      </div><!-- /feat-card -->
+    </div>
+  </div>
+</section>
+
+<!-- WAVE dark → yellow -->
+<div style="background:var(--dark1)">
+  <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#FFF5C7" d="M0,60 C360,130 720,0 1080,80 C1260,120 1380,30 1440,50 L1440,120 L0,120 Z"/>
+  </svg>
+</div>
+
+<!-- FEATURE 2: Scheduling (yellow) -->
+<section class="feature-section feat-yellow">
+  <div class="feature-inner" style="flex-direction:row-reverse">
+    <div class="feature-text fi-l">
+      <div class="feat-label">תזמון אוטומטי</div>
+      <h2 class="feat-h2" style="color:var(--dark1)">תורים שמגיעים<br>לבד — בלי שתגע</h2>
+      <p class="feat-p" style="color:var(--mlt)">תזכורות אוטומטיות בוואטסאפ יום לפני ושעה לפני. אישור חוזר בלחיצת כפתור. ביטול? הסוכן מציע מיד זמן חלופי — ומלא את החלל.</p>
+      <span class="ftip" data-tip="תזכורות WhatsApp יום לפני ושעה לפני. ביטול? הסוכן מציע זמן חלופי ומלא את המקום — אוטומטית."><a href="#" class="feat-link" style="color:var(--blurple2)" onclick="go('cta-section');return false">למד עוד →</a></span>
+    </div>
+    <div class="feature-visual fi-r" style="transition-delay:0.18s">
+      <div class="feat-card feat-card-2">
+      <div class="sched-card float-c" style="max-width:400px">
+        <div class="sched-header">
+          <span class="sched-title">📅 לוח תורים — היום</span>
+          <span class="sched-date">יום שלישי, 27.5</span>
+        </div>
+        <div class="sched-item green-bg">
+          <div class="sched-dot" style="background:#57F287"></div>
+          <div class="sched-info"><div class="sched-name">מיכל לוי — מניקור</div><div class="sched-time">10:00–10:45</div></div>
+          <span class="sched-status status-confirmed">✓ אושר</span>
+        </div>
+        <div class="sched-item blue-bg">
+          <div class="sched-dot" style="background:#8EA0FF"></div>
+          <div class="sched-info"><div class="sched-name">רון כהן — פדיקור</div><div class="sched-time">11:00–12:00</div></div>
+          <span class="sched-status status-auto">🤖 אוטומטי</span>
+        </div>
+        <div class="sched-item yellow-bg">
+          <div class="sched-dot" style="background:#FEE75C"></div>
+          <div class="sched-info"><div class="sched-name">דנה שיר — עיצוב שיניים</div><div class="sched-time">14:00–15:00</div></div>
+          <span class="sched-status status-auto">🤖 אוטומטי</span>
+        </div>
+        <div class="sched-notif">
+          📲 נשלחו 8 תזכורות WhatsApp היום · 0 no-shows
+        </div>
+      </div>
+      </div><!-- /feat-card -->
+    </div>
+  </div>
+</section>
+
+
+<!-- WAVE yellow → dark -->
+<div style="background:var(--yellow)">
+  <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#23272A" d="M0,40 C300,120 600,0 900,70 C1100,120 1300,20 1440,60 L1440,120 L0,120 Z"/>
+  </svg>
+</div>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="wrap">
+    <h2 class="stats-title fi">טכנולוגיה <span class="hl">אמינה</span> שמביאה תוצאות</h2>
+    <div class="stats-grid">
+      <div class="stat-box fi-s">
+        <div class="stat-num" style="color:#A78BFA" data-target="50" data-suffix="+">50+</div>
+        <div class="stat-label">עסקים פעילים</div>
+      </div>
+      <div class="stat-box fi-s" style="transition-delay:.1s">
+        <div class="stat-num" style="color:#38BDF8" data-target="15">15</div>
+        <div class="stat-label">שעות חיסכון<br>שבועי לעסק</div>
+      </div>
+      <div class="stat-box fi-s" style="transition-delay:.2s">
+        <div class="stat-num" style="color:#34D399" data-target="72">72</div>
+        <div class="stat-label">שעות מרישום<br>להשקה</div>
+      </div>
+      <div class="stat-box fi-s" style="transition-delay:.3s">
+        <div class="stat-num" style="color:#FB923C" data-target="98" data-suffix="%">98%</div>
+        <div class="stat-label">שביעות רצון<br>לקוחות</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAVE dark → blurple -->
+<div style="background:var(--dark1)">
+  <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#404EED" d="M0,50 C240,130 480,0 720,70 C960,140 1200,10 1440,60 L1440,120 L0,120 Z"/>
+  </svg>
+</div>
+
+<!-- CTA -->
+<section id="cta-section">
+  <div class="wrap">
+    <div class="star-field" style="position:relative;height:0;overflow:visible">
+      <span class="s" style="top:-80px;right:5%; --sz:18px;--d:2.5s;--dl:0s;  --mx:6px;--my:-8px">✦</span>
+      <span class="s" style="top:-60px;left:10%;--sz:12px;--d:3.2s;--dl:0.4s; --mx:-5px;--my:-5px">✦</span>
+      <span class="s" style="top:60px; right:15%;--sz:22px;--d:2.8s;--dl:0.7s;--mx:7px;--my:-9px">✦</span>
+      <span class="s" style="top:40px; left:5%; --sz:14px;--d:3.5s;--dl:1s;   --mx:-4px;--my:-6px">✦</span>
+    </div>
+    <div style="position:relative;z-index:2;max-width:700px;margin:0 auto;text-align:center">
+      <h2 class="cta-h fi">אי אפשר להמשיך<br>בלי AI</h2>
+      <p class="cta-sub fi" style="transition-delay:.15s">השאר פרטים — נחזור אליך תוך שעה ונבנה יחד את הסוכן המתאים לעסק שלך.</p>
+
+      <form id="cf" class="cta-form-wrap fi" style="transition-delay:.3s">
+        <div class="cta-row">
+          <input class="cta-inp" type="text"  id="fn" placeholder="שם מלא" required>
+          <input class="cta-inp" type="tel"   id="fp" placeholder="טלפון"   required>
+        </div>
+        <input class="cta-inp" type="email" id="fe" placeholder="אימייל (אופציונלי)">
+        <button type="submit" class="cta-sub-btn">🚀 הורד לעסק שלי עכשיו</button>
+      </form>
+
+      <div class="success-wrap" id="ok">
+        <h3>🎉 קיבלנו!</h3>
+        <p>נחזור אליך תוך שעה עם תוכנית מותאמת לעסק שלך.</p>
+      </div>
+
+      <div class="cta-trust-row fi" style="transition-delay:.45s">
+        <span>ללא התחייבות</span>
+        <span>שיחה ראשונה חינם</span>
+        <span>השקה תוך 72 שעות</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="foot-logo-text">
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--blurple);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">🤖</div>
+          יוני אלוני AI
+        </div>
+        <p>אוטומציות וסוכני AI לעסקים קטנים. בונה פתרונות שעובדים בשבילך 24/7.</p>
+        <button class="btn btn-cta" onclick="go('cta-section')" style="font-size:0.875rem;padding:9px 20px">התחל עכשיו</button>
+      </div>
+      <div class="foot-col">
+        <h4>שירותים</h4>
+        <ul>
+          <li><a href="#">שירות לקוחות AI</a></li>
+          <li><a href="#">תזמון אוטומטי</a></li>
+          <li><a href="#">תוכן שיווקי</a></li>
+          <li><a href="#">CRM AI</a></li>
+          <li><a href="#">הצעות מחיר</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>חברה</h4>
+        <ul>
+          <li><a href="#">אודות</a></li>
+          <li><a href="#">בלוג</a></li>
+          <li><a href="#">קריירה</a></li>
+          <li><a href="#">לקוחות</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>תמיכה</h4>
+        <ul>
+          <li><a href="#">מרכז עזרה</a></li>
+          <li><a href="#">שאלות נפוצות</a></li>
+          <li><a href="#">צור קשר</a></li>
+          <li><a href="#">WhatsApp</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>משפטי</h4>
+        <ul>
+          <li><a href="#">תנאי שימוש</a></li>
+          <li><a href="#">פרטיות</a></li>
+          <li><a href="#">נגישות</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span class="foot-copy">© 2026 יוני אלוני AI · כל הזכויות שמורות</span>
+      <button class="foot-cta-btn" onclick="go('cta-section')">התחל עכשיו</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── NAV scroll ── */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('on', window.scrollY > 60);
+  }, { passive: true });
+
+  function go(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.querySelectorAll('#nav a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const href = a.getAttribute('href');
+      if (href && href.startsWith('#')) go(href.slice(1));
+    });
+  });
+
+  /* ── Scroll reveal ── */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('v'); io.unobserve(e.target); } });
+  }, { threshold: 0.07, rootMargin: '-10px' });
+  document.querySelectorAll('.fi, .fi-r, .fi-l, .fi-s').forEach(el => io.observe(el));
+
+  /* ── Number count-up ── */
+  function countUp(el) {
+    const target  = parseFloat(el.dataset.target);
+    const suffix  = el.dataset.suffix  || '';
+    const prefix  = el.dataset.prefix  || '';
+    const dur     = 1800;
+    const t0      = performance.now();
+    const tick = now => {
+      const p    = Math.min((now - t0) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + Math.round(ease * target) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+  const statsIo = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.stat-num[data-target]').forEach(countUp);
+        statsIo.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.35 });
+  const statsEl = document.getElementById('stats');
+  if (statsEl) statsIo.observe(statsEl);
+
+  /* ── Pain points accordion ── */
+  function togglePain(row) {
+    const isOpen = row.classList.contains('open');
+    document.querySelectorAll('.pain-row.open').forEach(r => r.classList.remove('open'));
+    if (!isOpen) row.classList.add('open');
+  }
+
+  /* ── CRM navigation ── */
+  function crmSwitch(v) {
+    document.querySelectorAll('.crm-view').forEach(el => el.classList.remove('crm-active'));
+    document.querySelectorAll('.ci').forEach(el => el.classList.remove('ci-active'));
+    document.querySelectorAll('.crm-a').forEach(el => el.classList.remove('crm-active'));
+    const view = document.getElementById('v-' + v);
+    if (view) view.classList.add('crm-active');
+    document.querySelectorAll('[data-v="' + v + '"]').forEach(el => {
+      if (el.classList.contains('ci')) el.classList.add('ci-active');
+      if (el.classList.contains('crm-a')) el.classList.add('crm-active');
+    });
+  }
+  document.querySelectorAll('.ci, .crm-a').forEach(el => {
+    el.addEventListener('click', () => { const v = el.dataset.v; if (v) crmSwitch(v); });
+  });
+  document.querySelectorAll('.lf').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.closest('.leads-filters').querySelectorAll('.lf').forEach(b => b.classList.remove('lf-active'));
+      this.classList.add('lf-active');
+    });
+  });
+  document.querySelectorAll('.toggle').forEach(t => {
+    t.addEventListener('click', function() { this.classList.toggle('on'); });
+  });
+  document.querySelectorAll('.ml-item').forEach(item => {
+    item.addEventListener('click', function() {
+      this.closest('.msgs-list').querySelectorAll('.ml-item').forEach(i => i.classList.remove('ml-active'));
+      this.classList.add('ml-active');
+    });
+  });
+
+  /* ── Form ── */
+  document.getElementById('cf').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('.cta-sub-btn');
+    btn.textContent = 'שולח... 🚀';
+    btn.disabled = true;
+    const lead = {
+      name: document.getElementById('fn').value.trim(),
+      phone: document.getElementById('fp').value.trim(),
+      email: document.getElementById('fe').value.trim(),
+      ts: new Date().toISOString()
+    };
+    const leads = JSON.parse(localStorage.getItem('wh_leads') || '[]');
+    leads.unshift(lead);
+    localStorage.setItem('wh_leads', JSON.stringify(leads));
+    const url = localStorage.getItem('wh_url');
+    if (url) {
+      fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(lead) }).catch(()=>{});
+    }
+    setTimeout(() => {
+      this.style.display = 'none';
+      document.getElementById('ok').classList.add('show');
+    }, 900);
+  });
+
+  /* ── Webhook settings ── */
+  const WH_PASS = 'yoni2026';
+  function whAuth() {
+    if (sessionStorage.getItem('wh_auth') === '1') { whOpen(); return; }
+    const p = prompt('סיסמה:');
+    if (p === WH_PASS) { sessionStorage.setItem('wh_auth', '1'); whOpen(); }
+    else if (p !== null) alert('סיסמה שגויה');
+  }
+  function whOpen() {
+    document.getElementById('wh-modal').style.display = '';
+    document.getElementById('wh-url').value = localStorage.getItem('wh_url') || '';
+    whRenderLeads();
+  }
+  function whClose() { document.getElementById('wh-modal').style.display = 'none'; }
+  function whTab(t) {
+    document.querySelectorAll('.wh-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.wh-pane').forEach(p => p.style.display = 'none');
+    document.querySelector(`.wh-tab[data-t="${t}"]`).classList.add('active');
+    document.getElementById(`wh-pane-${t}`).style.display = '';
+  }
+  function whSave() {
+    const url = document.getElementById('wh-url').value.trim();
+    if (url) localStorage.setItem('wh_url', url);
+    else localStorage.removeItem('wh_url');
+    const msg = document.getElementById('wh-saved-msg');
+    msg.textContent = url ? '✓ נשמר בהצלחה' : 'Webhook נמחק';
+    setTimeout(() => { msg.textContent = ''; }, 2500);
+  }
+  function whSendLead(lead) {
+    const url = localStorage.getItem('wh_url');
+    if (!url) { alert('הגדר קודם כתובת Webhook בהגדרות'); return; }
+    fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(lead) })
+      .then(() => alert('✓ ליד נשלח'))
+      .catch(() => alert('שגיאה בשליחה'));
+  }
+  function whRenderLeads() {
+    const leads = JSON.parse(localStorage.getItem('wh_leads') || '[]');
+    const el = document.getElementById('wh-leads-list');
+    if (!leads.length) { el.innerHTML = '<div class="wh-empty">אין לידים עדיין</div>'; return; }
+    el.innerHTML = leads.map((l, i) => `
+      <div class="wh-lead-row">
+        <div class="wh-lead-av">${l.name.charAt(0)}</div>
+        <div class="wh-lead-info">
+          <div class="wh-lead-name">${l.name}</div>
+          <div class="wh-lead-meta">${l.phone}${l.email ? ' · ' + l.email : ''} · ${new Date(l.ts).toLocaleString('he-IL')}</div>
+        </div>
+        <button class="wh-resend-btn" onclick='whSendLead(${JSON.stringify(l)})'>שלח מחדש</button>
+      </div>`).join('');
+  }
+
+  // ── WhatsApp interactive simulator ──
+  (function(){
+    const BOT_RESPONSES = {
+      'שלום': 'שלום! 👋 אני העוזר החכם. במה אוכל לעזור?\n\n1️⃣ מחירים\n2️⃣ קביעת פגישה\n3️⃣ שאלות כלליות',
+      'היי':  'שלום! 👋 אני העוזר החכם. במה אוכל לעזור?\n\n1️⃣ מחירים\n2️⃣ קביעת פגישה\n3️⃣ שאלות כלליות',
+      'הי':   'שלום! 👋 אני העוזר החכם. במה אוכל לעזור?\n\n1️⃣ מחירים\n2️⃣ קביעת פגישה\n3️⃣ שאלות כלליות',
+      '1':         '💰 החבילות שלנו:\n\n• בסיסי – 990₪/חודש\n• מתקדם – 1,990₪/חודש\n• פרימיום – 3,500₪/חודש\n\nרוצה שנדבר על מה מתאים לך?',
+      'מחירים':    '💰 החבילות שלנו:\n\n• בסיסי – 990₪/חודש\n• מתקדם – 1,990₪/חודש\n• פרימיום – 3,500₪/חודש\n\nרוצה שנדבר על מה מתאים לך?',
+      '2':         '📅 מעולה! מתי נוח לך?\n\n• מחר ב-10:00\n• מחר ב-14:00\n• יום ה׳ ב-11:00',
+      'פגישה':     '📅 מעולה! מתי נוח לך?\n\n• מחר ב-10:00\n• מחר ב-14:00\n• יום ה׳ ב-11:00',
+      'מחר ב-10:00':'✅ נקבע! פגישה למחר ב-10:00.\nתקבל תזכורת שעה לפני. נתראה! 😊',
+      'מחר ב-14:00':'✅ נקבע! פגישה למחר ב-14:00.\nתקבל תזכורת שעה לפני. נתראה! 😊',
+      'כן':        '🎉 מעולה! מה הכי מתאים לך מבחינת תקציב?\n\n• עד 1,000₪/חודש\n• עד 2,000₪/חודש\n• גמיש',
+    };
+    const DEFAULT_REPLY = 'מעניין! 🤔 תן לי לחבר אותך עם נציג שיוכל לעזור יותר. מה מספר הטלפון שלך?';
+    const INIT_MSG = { text: 'שלום! 👋 כתוב "שלום" כדי להתחיל', time: '10:00' };
+
+    function chatBody(){ return document.getElementById('wa-chat-body'); }
+    function chatInput(){ return document.getElementById('wa-input'); }
+
+    function ts(){
+      const n = new Date();
+      return n.getHours() + ':' + String(n.getMinutes()).padStart(2,'0');
+    }
+
+    function getBotReply(text){
+      const t = text.trim();
+      const key = Object.keys(BOT_RESPONSES).find(k => t.includes(k));
+      return key ? BOT_RESPONSES[key] : DEFAULT_REPLY;
+    }
+
+    function showTyping(){
+      const b = chatBody(); if(!b) return;
+      removeTyping();
+      const row = document.createElement('div');
+      row.id = 'wa-typ'; row.className = 'wa-in-row';
+      const av = document.createElement('div');
+      av.className = 'wa-small-av'; av.textContent = '🤖';
+      const dots = document.createElement('div');
+      dots.className = 'wa-typing';
+      dots.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+      row.appendChild(av); row.appendChild(dots);
+      b.appendChild(row);
+      b.scrollTop = b.scrollHeight;
+    }
+
+    function removeTyping(){
+      const el = document.getElementById('wa-typ');
+      if(el) el.remove();
+    }
+
+    function appendMsg(dir, text, time){
+      const b = chatBody(); if(!b) return;
+      removeTyping();
+      let node;
+      if(dir === 'in'){
+        node = document.createElement('div');
+        node.className = 'wa-in-row';
+        node.style.cssText = 'opacity:0;transform:translateY(5px);transition:opacity .25s,transform .25s';
+        const av = document.createElement('div');
+        av.className = 'wa-small-av'; av.textContent = '🤖';
+        const bub = document.createElement('div');
+        bub.className = 'wa-bubble wa-in';
+        const p = document.createElement('p');
+        p.style.cssText = 'margin:0;white-space:pre-wrap';
+        p.textContent = text;
+        const t = document.createElement('div');
+        t.className = 'wa-time'; t.textContent = time;
+        bub.appendChild(p); bub.appendChild(t);
+        node.appendChild(av); node.appendChild(bub);
+      } else {
+        node = document.createElement('div');
+        node.className = 'wa-bubble wa-out';
+        node.style.cssText = 'opacity:0;transform:translateY(5px);transition:opacity .25s,transform .25s';
+        const p = document.createElement('p');
+        p.style.cssText = 'margin:0;white-space:pre-wrap';
+        p.textContent = text;
+        const t = document.createElement('div');
+        t.className = 'wa-time';
+        t.innerHTML = time + ' <span class="wa-ticks">✓✓</span>';
+        node.appendChild(p); node.appendChild(t);
+      }
+      b.appendChild(node);
+      b.scrollTop = b.scrollHeight;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        node.style.opacity='1'; node.style.transform='translateY(0)';
+      }));
+    }
+
+    let isTyping = false;
+
+    window.waSend = function(){
+      const i = chatInput(); if(!i || isTyping) return;
+      const text = i.value.trim(); if(!text) return;
+      i.value = '';
+      appendMsg('out', text, ts());
+      isTyping = true;
+      showTyping();
+      setTimeout(()=>{
+        isTyping = false;
+        appendMsg('in', getBotReply(text), ts());
+      }, 1000 + Math.random()*500);
+    };
+
+    window.waReset = function(){
+      const b = chatBody(); if(!b) return;
+      isTyping = false;
+      b.innerHTML = '';
+      appendMsg('in', INIT_MSG.text, INIT_MSG.time);
+      const i = chatInput(); if(i) i.value = '';
+    };
+
+    function init(){
+      const b = chatBody(); if(!b) return;
+      b.innerHTML = '';
+      appendMsg('in', INIT_MSG.text, INIT_MSG.time);
+      const i = chatInput();
+      if(i) i.addEventListener('keydown', e => {
+        if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); window.waSend(); }
+      });
+    }
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting){ init(); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.3 });
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const sec = document.getElementById('features-1');
+      if(sec) obs.observe(sec);
+    });
+  })();
+</script>
+
+<!-- Webhook settings modal -->
+<div id="wh-modal" style="display:none">
+  <div id="wh-overlay" onclick="whClose()"></div>
+  <div id="wh-panel">
+    <div id="wh-head">
+      <span>⚙️ הגדרות Webhook</span>
+      <button onclick="whClose()">✕</button>
+    </div>
+    <div class="wh-tabs">
+      <button class="wh-tab active" data-t="settings" onclick="whTab('settings')">הגדרות</button>
+      <button class="wh-tab" data-t="leads" onclick="whTab('leads');whRenderLeads()">לידים</button>
+    </div>
+    <div id="wh-pane-settings" class="wh-pane">
+      <label class="wh-label" for="wh-url">כתובת Webhook (POST JSON)</label>
+      <input id="wh-url" class="wh-input" type="url" placeholder="https://hook.make.com/...">
+      <button class="wh-save-btn" onclick="whSave()">שמור</button>
+      <div id="wh-saved-msg" class="wh-saved-msg"></div>
+      <p style="color:var(--mdk);font-size:.75rem;margin-top:16px">כל ליד שנשלח מהטופס יישלח אוטומטית לכתובת זו. ניתן גם לשלוח לידים ידנית מטאב הלידים.</p>
+    </div>
+    <div id="wh-pane-leads" class="wh-pane" style="display:none">
+      <div id="wh-leads-list"></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
