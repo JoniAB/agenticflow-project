@@ -1,3 +1,5 @@
+'use client'
+
 interface PageContent {
   tagline: string
   hero_description: string
