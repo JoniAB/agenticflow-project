@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
 {
   "email_subject": "נושא מייל קצר וספציפי (עד 8 מילים)",
-  "email_body": "מייל cold outreach ב-3-4 משפטים. מתייחס לחולשה ספציפית. מסתיים בהצעה לשיחה של 10 דקות.",
+  "email_body": "מייל cold outreach ב-3-4 משפטים. מתייחס לחולשה ספציפית של העסק. מסתיים בהצעה לשיחה של 10 דקות. אל תכלול לינקים — הם יתווספו אוטומטית בסוף.",
   "page": {
     "template_type": "בחר תבנית: hair-salon (מספרה/סלון שיער/ברבר), vet-clinic (וטרינר/מרפאה לחיות), beauty (ציפורניים/קוסמטיקה/ספא/מכון יופי), auto (מוסך/מכניקה/רכב/גרר/פחחות), photographer (צלם/צילום/וידאו/קמרמן/הפקה), generic (כל שאר התחומים)",
     "brand_color": "צבע HEX ראשי שמתאים לתחום העסק ומרגיש מקצועי (לדוגמה: #1B6CA8 לקליניקה, #2D7D46 לטבע ובריאות, #C0392B לאוכל, #7B2D8B ליופי). אל תשתמש בגוונים בהירים מדי.",
@@ -131,6 +131,14 @@ export async function POST(req: Request) {
       catch { return NextResponse.json({ error: 'bad_json' }, { status: 500 }) }
     }
     const baseUrl   = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://lead-platform-yoni.vercel.app'
+    const pageUrl   = `${baseUrl}/leads/${slug}`
+    const reportUrl = `${baseUrl}/leads/${slug}/report`
+
+    const emailBodyWithLinks = `${generated.email_body}
+
+---
+🔗 העמוד שבנינו עבורך: ${pageUrl}
+📊 הדוח המלא: ${reportUrl}`
 
     // 3. Save to content table
     const { data: content, error: contentErr } = await supabase
@@ -139,9 +147,9 @@ export async function POST(req: Request) {
         company_id:          company.id,
         company_slug:        slug,
         email_subject:       generated.email_subject,
-        email_body:          generated.email_body,
-        page_url:            `${baseUrl}/leads/${slug}`,
-        report_url:          `${baseUrl}/leads/${slug}/report`,
+        email_body:          emailBodyWithLinks,
+        page_url:            pageUrl,
+        report_url:          reportUrl,
         report_content:      JSON.stringify({ page: generated.page, report: generated.report }),
         page_status:         'deployed',
         report_status:       'ready',
@@ -169,7 +177,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       company:         { id: company.id, name: company.name, industry: company.industry },
-      content:         { email_subject: generated.email_subject, page_url: `${baseUrl}/leads/${slug}`, report_url: `${baseUrl}/leads/${slug}/report` },
+      content:         { email_subject: generated.email_subject, page_url: pageUrl, report_url: reportUrl },
       queue_remaining: queueRemaining,
     })
   } catch (err: unknown) {
