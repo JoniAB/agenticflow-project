@@ -72,7 +72,7 @@ export function AutoTemplate({ companyName, contactName, reportUrl, brand, page 
             {page?.hero_description ?? 'זיהינו הזדמנויות ספציפיות לשיפור הנוכחות הדיגיטלית שלך.'}
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '14px 32px', background: orange, color: '#fff', fontFamily: 'Barlow Condensed,sans-serif', fontWeight: 700, fontSize: 16, letterSpacing: '.15em', textTransform: 'uppercase', boxShadow: `0 6px 24px ${orange}50` }}>
+            <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '14px 32px', background: orange, color: '#fff', fontFamily: 'Barlow Condensed,sans-serif', fontWeight: 700, fontSize: 16, letterSpacing: '.15em', textTransform: 'uppercase', boxShadow: `0 6px 24px ${orange}50` }}>
               קבע שיחת ייעוץ חינם ←
             </a>
             {reportUrl && (
@@ -175,7 +175,7 @@ export function AutoTemplate({ companyName, contactName, reportUrl, brand, page 
           <p style={{ fontFamily: 'Barlow,sans-serif', fontSize: 16, color: 'rgba(240,240,240,0.5)', marginBottom: 36, fontWeight: 300 }}>
             שיחה של 10 דקות — ללא התחייבות.
           </p>
-          <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '15px 36px', background: orange, color: '#fff', fontFamily: 'Barlow Condensed,sans-serif', fontWeight: 700, fontSize: 18, letterSpacing: '.12em', textTransform: 'uppercase', boxShadow: `0 8px 28px ${orange}50` }}>
+          <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '15px 36px', background: orange, color: '#fff', fontFamily: 'Barlow Condensed,sans-serif', fontWeight: 700, fontSize: 18, letterSpacing: '.12em', textTransform: 'uppercase', boxShadow: `0 8px 28px ${orange}50` }}>
             קבע שיחה עכשיו ←
           </a>
           <p style={{ marginTop: 24, fontFamily: 'Barlow Condensed,sans-serif', fontSize: 12, color: 'rgba(240,240,240,0.25)', letterSpacing: '.12em' }}>יוני אלוני · aloni.yoni@gmail.com</p>

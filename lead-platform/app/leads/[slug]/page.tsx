@@ -102,7 +102,7 @@ export default async function LeadPage({ params }: { params: Promise<{ slug: str
             {page?.hero_description ?? 'זיהינו הזדמנויות ספציפיות לשיפור הנוכחות הדיגיטלית שלך.'}
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', borderRadius: 10, background: accent, color: '#fff', fontWeight: 700, fontSize: 14, boxShadow: `0 4px 14px ${accent}35` }}>
+            <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 26px', borderRadius: 10, background: accent, color: '#fff', fontWeight: 700, fontSize: 14, boxShadow: `0 4px 14px ${accent}35` }}>
               קבע שיחת ייעוץ חינם →
             </a>
             {reportUrl && (
@@ -174,7 +174,7 @@ export default async function LeadPage({ params }: { params: Promise<{ slug: str
           <p style={{ fontFamily: 'DM Sans,sans-serif', fontSize: 16, color: '#64748b', marginBottom: 32, lineHeight: 1.7 }}>
             שיחה של 10 דקות — ללא התחייבות. ניתוח כנה של מה שאפשר לשפר.
           </p>
-          <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 32px', borderRadius: 10, background: accent, color: '#fff', fontWeight: 700, fontSize: 15, boxShadow: `0 4px 16px ${accent}40` }}>
+          <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 32px', borderRadius: 10, background: accent, color: '#fff', fontWeight: 700, fontSize: 15, boxShadow: `0 4px 16px ${accent}40` }}>
             קבע שיחה עכשיו →
           </a>
           <p style={{ marginTop: 20, fontSize: 12, color: '#94a3b8' }}>יוני אלוני · aloni.yoni@gmail.com</p>

@@ -88,7 +88,7 @@ export function BeautyTemplate({ companyName, contactName, reportUrl, brand, pag
           </p>
 
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-            <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 30px', background: `linear-gradient(135deg, ${rose}, ${roseGold})`, color: '#fff', fontFamily: 'Jost,sans-serif', fontWeight: 600, fontSize: 13, letterSpacing: '.14em', textTransform: 'uppercase', boxShadow: `0 6px 24px rgba(183,110,121,0.45)` }}>
+            <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 30px', background: `linear-gradient(135deg, ${rose}, ${roseGold})`, color: '#fff', fontFamily: 'Jost,sans-serif', fontWeight: 600, fontSize: 13, letterSpacing: '.14em', textTransform: 'uppercase', boxShadow: `0 6px 24px rgba(183,110,121,0.45)` }}>
               קבע שיחת ייעוץ חינם →
             </a>
             {reportUrl && (
@@ -206,7 +206,7 @@ export function BeautyTemplate({ companyName, contactName, reportUrl, brand, pag
           <p style={{ fontFamily: 'Jost,sans-serif', fontSize: 15, color: '#7a4050', marginBottom: 38, fontWeight: 300, lineHeight: 1.85, maxWidth: 400, margin: '0 auto 38px' }}>
             שיחה של 10 דקות — ללא התחייבות.
           </p>
-          <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '14px 34px', background: deep, color: roseGold, fontFamily: 'Jost,sans-serif', fontWeight: 600, fontSize: 13, letterSpacing: '.16em', textTransform: 'uppercase' }}>
+          <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '14px 34px', background: deep, color: roseGold, fontFamily: 'Jost,sans-serif', fontWeight: 600, fontSize: 13, letterSpacing: '.16em', textTransform: 'uppercase' }}>
             קבע שיחה עכשיו →
           </a>
           <p style={{ marginTop: 26, fontFamily: 'Jost,sans-serif', fontSize: 11, color: '#c0a0a8', letterSpacing: '.08em' }}>יוני אלוני · aloni.yoni@gmail.com</p>

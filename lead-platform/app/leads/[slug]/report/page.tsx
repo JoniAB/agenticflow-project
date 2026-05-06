@@ -196,7 +196,7 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
             <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', margin: '0 0 4px' }}>מוכן לפעול לפי הדוח?</p>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,.75)', margin: 0 }}>שיחה חינמית של 10 דקות — ללא התחייבות</p>
           </div>
-          <a href="https://calendly.com"
+          <a href="https://calendly.com/yoniautomation/30min"
             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 22px', borderRadius: 9, background: '#fff', color: brand, fontWeight: 800, fontSize: 14, textDecoration: 'none', flexShrink: 0 }}>
             קבע שיחה →
           </a>

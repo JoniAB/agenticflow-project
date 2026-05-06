@@ -77,7 +77,7 @@ export function HairSalonTemplate({ companyName, contactName, reportUrl, brand, 
             {page?.hero_description ?? 'זיהינו הזדמנויות ספציפיות לשיפור הנוכחות הדיגיטלית שלך.'}
           </p>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-            <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 30px', borderRadius: 2, background: gold, color: dark, fontFamily: 'Raleway,sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.12em', textTransform: 'uppercase' }}>
+            <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 30px', borderRadius: 2, background: gold, color: dark, fontFamily: 'Raleway,sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.12em', textTransform: 'uppercase' }}>
               קבע שיחת ייעוץ חינם →
             </a>
             {reportUrl && (
@@ -193,7 +193,7 @@ export function HairSalonTemplate({ companyName, contactName, reportUrl, brand, 
           <p style={{ fontFamily: 'Raleway,sans-serif', fontSize: 15, color: '#5a4a2a', marginBottom: 36, fontWeight: 300, lineHeight: 1.8 }}>
             שיחה של 10 דקות — ללא התחייבות.
           </p>
-          <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '14px 34px', borderRadius: 2, background: dark, color: gold, fontFamily: 'Raleway,sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.15em', textTransform: 'uppercase' }}>
+          <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '14px 34px', borderRadius: 2, background: dark, color: gold, fontFamily: 'Raleway,sans-serif', fontWeight: 700, fontSize: 13, letterSpacing: '.15em', textTransform: 'uppercase' }}>
             קבע שיחה עכשיו →
           </a>
           <p style={{ marginTop: 24, fontFamily: 'Raleway,sans-serif', fontSize: 12, color: '#9a8a6a', letterSpacing: '.06em' }}>יוני אלוני · aloni.yoni@gmail.com</p>

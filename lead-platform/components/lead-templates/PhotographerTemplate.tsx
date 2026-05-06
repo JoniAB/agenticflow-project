@@ -82,7 +82,7 @@ export function PhotographerTemplate({ companyName, contactName, reportUrl, bran
             {page?.hero_description ?? 'זיהינו הזדמנויות ספציפיות לשיפור הנוכחות הדיגיטלית שלך.'}
           </p>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-            <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 30px', background: gold, color: '#0c0c0c', fontFamily: 'Cinzel,serif', fontWeight: 600, fontSize: 12, letterSpacing: '.15em', textTransform: 'uppercase', boxShadow: `0 6px 20px ${gold}45` }}>
+            <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '13px 30px', background: gold, color: '#0c0c0c', fontFamily: 'Cinzel,serif', fontWeight: 600, fontSize: 12, letterSpacing: '.15em', textTransform: 'uppercase', boxShadow: `0 6px 20px ${gold}45` }}>
               קבע שיחת ייעוץ חינם
             </a>
             {reportUrl && (
@@ -193,7 +193,7 @@ export function PhotographerTemplate({ companyName, contactName, reportUrl, bran
           <p style={{ fontFamily: 'EB Garamond,serif', fontStyle: 'italic', fontSize: 18, color: 'rgba(240,232,216,0.55)', marginBottom: 40, lineHeight: 1.8 }}>
             שיחה של 10 דקות — ללא התחייבות.
           </p>
-          <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 12, padding: '15px 36px', background: gold, color: '#0c0c0c', fontFamily: 'Cinzel,serif', fontWeight: 600, fontSize: 12, letterSpacing: '.2em', textTransform: 'uppercase', boxShadow: `0 8px 28px ${gold}40` }}>
+          <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 12, padding: '15px 36px', background: gold, color: '#0c0c0c', fontFamily: 'Cinzel,serif', fontWeight: 600, fontSize: 12, letterSpacing: '.2em', textTransform: 'uppercase', boxShadow: `0 8px 28px ${gold}40` }}>
             קבע שיחה עכשיו
           </a>
           <p style={{ marginTop: 24, fontFamily: 'Cinzel,serif', fontSize: 11, color: `rgba(240,232,216,0.25)`, letterSpacing: '.12em' }}>יוני אלוני · aloni.yoni@gmail.com</p>

@@ -68,7 +68,7 @@ export function VetClinicTemplate({ companyName, contactName, reportUrl, brand, 
               {page?.hero_description ?? 'זיהינו הזדמנויות ספציפיות לשיפור הנוכחות הדיגיטלית שלך.'}
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 50, background: green, color: '#fff', fontWeight: 700, fontSize: 14, boxShadow: `0 4px 16px ${green}35` }}>
+              <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 50, background: green, color: '#fff', fontWeight: 700, fontSize: 14, boxShadow: `0 4px 16px ${green}35` }}>
                 קבע שיחת ייעוץ חינם →
               </a>
               {reportUrl && (
@@ -194,7 +194,7 @@ export function VetClinicTemplate({ companyName, contactName, reportUrl, brand, 
           <p style={{ fontFamily: 'Nunito,sans-serif', fontSize: 16, color: '#166534', marginBottom: 36, lineHeight: 1.7 }}>
             שיחה של 10 דקות — ללא התחייבות.
           </p>
-          <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '15px 36px', borderRadius: 50, background: green, color: '#fff', fontWeight: 800, fontSize: 16, boxShadow: `0 6px 20px ${green}45` }}>
+          <a href="https://calendly.com/yoniautomation/30min" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '15px 36px', borderRadius: 50, background: green, color: '#fff', fontWeight: 800, fontSize: 16, boxShadow: `0 6px 20px ${green}45` }}>
             קבע שיחה עכשיו 🐾
           </a>
           <p style={{ marginTop: 24, fontSize: 12, color: '#6b7280' }}>יוני אלוני · aloni.yoni@gmail.com</p>
