@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   FileText, Loader2, Mail, CheckCircle2, AlertCircle,
-  ChevronDown, ChevronRight, Building2, ExternalLink, BarChart2,
+  ChevronDown, ChevronRight, Building2, ExternalLink, BarChart2, ArrowRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -17,13 +17,28 @@ interface ContentItem {
   page_status: string | null
   report_status: string | null
   created_at: string
-  companies?: { name: string; industry: string | null }
+  companies?: { name: string; industry: string | null; status: string | null }
 }
 
 type CreateStatus = 'idle' | 'loading' | 'done' | 'no_pending' | 'error'
 
-function ContentCard({ item }: { item: ContentItem }) {
-  const [open, setOpen] = useState(false)
+function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id: string) => void }) {
+  const [open, setOpen]         = useState(false)
+  const [approving, setApproving] = useState(false)
+
+  async function moveToApproval() {
+    setApproving(true)
+    try {
+      await fetch('/api/generate-content/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ company_id: item.company_id }),
+      })
+      onApproved(item.id)
+    } finally {
+      setApproving(false)
+    }
+  }
 
   return (
     <div className="border border-gray-100 rounded-xl bg-white overflow-hidden">
@@ -85,6 +100,19 @@ function ContentCard({ item }: { item: ContentItem }) {
               <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{item.email_body}</p>
             </div>
           )}
+
+          {/* Move to approval */}
+          <div className="pt-1 border-t border-gray-50">
+            <button
+              onClick={moveToApproval}
+              disabled={approving}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white text-xs font-semibold transition-colors"
+            >
+              {approving
+                ? <><Loader2 size={12} className="animate-spin" /> מעביר...</>
+                : <><ArrowRight size={12} /> שלח לאישור</>}
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -225,7 +253,13 @@ export function ContentBoard() {
           </div>
         ) : (
           <div className="space-y-2">
-            {items.map(item => <ContentCard key={item.id} item={item} />)}
+            {items.map(item => (
+              <ContentCard
+                key={item.id}
+                item={item}
+                onApproved={(id) => setItems(prev => prev.filter(i => i.id !== id))}
+              />
+            ))}
           </div>
         )}
       </div>

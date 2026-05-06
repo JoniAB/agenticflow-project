@@ -18,8 +18,9 @@ export async function GET() {
       .select('id', { count: 'exact', head: true })
       .in('status', ['sent', 'replied', 'followup_sent']),
     supabase
-      .from('content')
-      .select('id', { count: 'exact', head: true }),
+      .from('companies')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'content_ready'),
   ])
 
   return NextResponse.json({

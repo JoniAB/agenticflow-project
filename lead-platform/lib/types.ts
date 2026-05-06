@@ -19,6 +19,7 @@ export type CompanyStatus =
   | 'high_score'
   | 'in_research'
   | 'research_incomplete'
+  | 'content_ready'
   | 'awaiting_approval'
   | 'awaiting_followup_approval'
   | 'approved'
@@ -41,6 +42,7 @@ export const STATUS_TO_BOARD: Record<CompanyStatus, BoardId> = {
   research_incomplete:        'B-03',
   high_score:                 'B-04',
   in_research:                'B-05',
+  content_ready:              'B-05',
   awaiting_approval:          'B-06',
   awaiting_followup_approval: 'B-06',
   approved:                   'B-06',

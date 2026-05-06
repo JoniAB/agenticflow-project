@@ -5,7 +5,8 @@ export async function GET() {
   const supabase = getSupabaseAdmin()
   const { data, error } = await supabase
     .from('content')
-    .select('*, companies(name, industry)')
+    .select('*, companies!inner(name, industry, status)')
+    .eq('companies.status', 'content_ready')
     .not('email_subject', 'is', null)
     .order('created_at', { ascending: false })
     .limit(100)

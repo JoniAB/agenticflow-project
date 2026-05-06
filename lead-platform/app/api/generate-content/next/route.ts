@@ -160,10 +160,10 @@ export async function POST(req: Request) {
 
     if (contentErr) return NextResponse.json({ error: contentErr.message }, { status: 500 })
 
-    // 4. Advance company status
+    // 4. Advance company status — content_ready sits between content generation and approval
     await supabase
       .from('companies')
-      .update({ status: 'awaiting_approval' })
+      .update({ status: 'content_ready' })
       .eq('id', company.id)
 
     // 5. Log
