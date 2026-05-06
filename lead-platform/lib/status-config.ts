@@ -58,6 +58,13 @@ export const STATUS_CONFIG: Record<CompanyStatus, StatusConfig> = {
     dot: 'bg-amber-400',
     ring: 'ring-amber-100',
   },
+  content_ready: {
+    label: 'Content Ready',
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-700',
+    dot: 'bg-indigo-500',
+    ring: 'ring-indigo-100',
+  },
   awaiting_approval: {
     label: 'Awaiting Approval',
     bg: 'bg-orange-50',
