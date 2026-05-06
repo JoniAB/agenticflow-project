@@ -44,11 +44,14 @@ export async function POST(req: Request) {
     queueRemaining = queue.length - 1
   }
   const name    = String(company.name ?? '')
-  const slug    = name
+  const rawSlug = name
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-]/g, '')
-    .slice(0, 40) || `lead-${String(company.id).slice(0, 8)}`
+    .replace(/^-+|-+$/, '')   // trim leading/trailing dashes
+    .replace(/-{2,}/g, '-')   // collapse consecutive dashes
+    .slice(0, 40)
+  const slug    = rawSlug || `lead-${String(company.id).slice(0, 8)}`
 
   // 2. Generate all content in one Claude call
   const prompt = `אתה מומחה שיווק ו-AI לעסקים קטנים בישראל. שמך יוני אלוני.
@@ -114,7 +117,19 @@ export async function POST(req: Request) {
     const match = raw.match(/\{[\s\S]*\}/)
     if (!match) return NextResponse.json({ error: 'bad_response' }, { status: 500 })
 
-    const generated = JSON.parse(match[0])
+    // Find the longest valid JSON object prefix — Claude occasionally truncates arrays
+    let jsonStr = match[0]
+    let generated: Record<string, unknown>
+    try {
+      generated = JSON.parse(jsonStr)
+    } catch {
+      // Try trimming to the last complete top-level field by finding the deepest valid parse
+      const lastBrace = jsonStr.lastIndexOf('}')
+      if (lastBrace < 0) return NextResponse.json({ error: 'bad_json' }, { status: 500 })
+      jsonStr = jsonStr.slice(0, lastBrace + 1)
+      try { generated = JSON.parse(jsonStr) }
+      catch { return NextResponse.json({ error: 'bad_json' }, { status: 500 }) }
+    }
     const baseUrl   = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://lead-platform-yoni.vercel.app'
 
     // 3. Save to content table
