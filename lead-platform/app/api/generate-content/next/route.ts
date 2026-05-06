@@ -108,7 +108,7 @@ export async function POST(req: Request) {
   try {
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 3000,
+      max_tokens: 4096,
       system: 'You are a JSON API. Return only valid JSON, no markdown, no extra text.',
       messages: [{ role: 'user', content: prompt }],
     })
