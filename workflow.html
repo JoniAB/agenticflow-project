@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgenticFlow — אוטומציה חכמה לעסקים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #f0ecfc;
+  --card:   #ffffff;
+  --card2:  #f5f2ff;
+  --border: rgba(109,99,255,.13);
+  --white:  #1a1535;
+  --muted:  #6b6390;
+  --dim:    #a09cbd;
+  --primary:#6366f1;
+  --primary2:#4f46e5;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Rubik',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;position:relative}
+
+/* ── ANIMATED BACKGROUND BLOBS ─────────────────── */
+.page-blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:1}
+.blob-1{width:700px;height:700px;background:radial-gradient(circle,rgba(139,92,246,.18),transparent 70%);top:-200px;right:-150px;animation:blob-move-1 28s ease-in-out infinite alternate}
+.blob-2{width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,.14),transparent 70%);bottom:-180px;left:-120px;animation:blob-move-2 22s ease-in-out infinite alternate}
+.blob-3{width:500px;height:500px;background:radial-gradient(circle,rgba(168,139,250,.12),transparent 70%);top:40%;left:30%;animation:blob-move-3 32s ease-in-out infinite alternate}
+@keyframes blob-move-1{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-80px,60px) scale(1.1)}100%{transform:translate(60px,-40px) scale(.95)}}
+@keyframes blob-move-2{0%{transform:translate(0,0) scale(1)}50%{transform:translate(70px,-50px) scale(1.08)}100%{transform:translate(-40px,70px) scale(1.05)}}
+@keyframes blob-move-3{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,40px) scale(.92)}100%{transform:translate(50px,-60px) scale(1.1)}}
+
+/* subtle dot grid */
+.page-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(rgba(109,99,200,.18) 1px,transparent 1px);background-size:32px 32px}
+
+/* all content above blobs */
+nav,main,section,footer,.benefits-strip,.tools-section{position:relative;z-index:1}
+
+/* ── NAV ─────────────────────────────────────── */
+nav{position:fixed;top:0;inset-inline:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(240,236,252,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(109,99,255,.12)}
+.nav-logo{font-family:'Poppins',sans-serif;font-weight:800;font-size:1.2rem;background:linear-gradient(135deg,#6366f1,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.02em}
+.nav-links{display:flex;gap:32px}
+.nav-links a{font-size:.875rem;color:var(--muted);text-decoration:none;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{background:var(--primary);color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:.875rem;font-weight:600;font-family:'Rubik',sans-serif;cursor:pointer;transition:background .2s,transform .15s}
+.nav-cta:hover{background:var(--primary2);transform:translateY(-1px)}
+
+/* ── HERO ─────────────────────────────────────── */
+#hero{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 40px 48px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);border-radius:100px;padding:6px 16px;font-size:.78rem;font-weight:600;color:#a5b4fc;margin-bottom:18px}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:#6366f1;animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.6)}50%{box-shadow:0 0 0 5px rgba(99,102,241,0)}}
+.hero-h1{font-family:'Poppins',sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);font-weight:900;line-height:1.12;letter-spacing:-.03em;margin-bottom:10px}
+.hero-h1 .hl{background:linear-gradient(135deg,#818cf8 0%,#a78bfa 40%,#06b6d4 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-p{font-size:.95rem;color:var(--muted);line-height:1.6;max-width:520px;margin:0 auto 22px}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:.9375rem;font-weight:700;font-family:'Rubik',sans-serif;cursor:pointer;box-shadow:0 8px 32px rgba(99,102,241,.35);transition:transform .2s,box-shadow .2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(99,102,241,.5)}
+.btn-outline{background:rgba(255,255,255,.6);color:#1a1535;border:1px solid rgba(99,102,241,.3);border-radius:12px;padding:14px 32px;font-size:.9375rem;font-weight:600;font-family:'Rubik',sans-serif;cursor:pointer;transition:background .2s,border-color .2s}
+.btn-outline:hover{background:rgba(255,255,255,.9);border-color:rgba(99,102,241,.5)}
+.hero-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+.hero-stat{text-align:center}
+.hero-stat-n{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,#fff,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-stat-l{font-size:.78rem;color:var(--muted);margin-top:2px}
+
+/* ── SECTION HEADER ───────────────────────────── */
+.section-wrap{padding:52px 40px;max-width:1300px;margin:0 auto}
+.section-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);margin-bottom:8px}
+.section-h2{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:900;letter-spacing:-.025em;line-height:1.15;margin-bottom:8px}
+.section-h2 .hl{color:#818cf8}
+.section-p{font-size:.875rem;color:var(--muted);max-width:520px;line-height:1.65}
+
+/* ── FLOW CARDS (outer wrapper) ───────────────── */
+.flows-grid{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+.flow-card{background:rgba(255,255,255,.75);border:1px solid rgba(109,99,255,.15);border-radius:16px;padding:18px 22px 18px;position:relative;overflow:hidden;backdrop-filter:blur(8px);box-shadow:0 2px 16px rgba(99,102,241,.07);transition:border-color .3s,transform .3s,box-shadow .3s}
+.flow-card:hover{border-color:rgba(99,102,241,.35);transform:translateY(-2px);box-shadow:0 6px 28px rgba(99,102,241,.13)}
+.flow-card::before{content:'';position:absolute;top:0;inset-inline-start:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.5),transparent)}
+.flow-meta{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.flow-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);border-radius:100px;padding:3px 10px;font-size:.68rem;font-weight:700;color:#a5b4fc;margin-bottom:4px}
+.flow-title{font-size:1rem;font-weight:800;margin-bottom:3px}
+.flow-desc{font-size:.8rem;color:var(--muted);max-width:420px;line-height:1.5}
+.flow-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tool-badge{display:flex;align-items:center;gap:5px;background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.18);border-radius:8px;padding:5px 10px;font-size:.72rem;font-weight:600;color:#5b57a8}
+
+/* ── MAKE.COM CANVAS ──────────────────────────── */
+.mk-canvas{
+  background:#f7f6f2;
+  background-image:radial-gradient(circle,#c5c3b8 1.2px,transparent 1.2px);
+  background-size:28px 28px;
+  border-radius:10px;
+  padding:18px 28px 20px;
+  overflow-x:auto;
+  border:1px solid rgba(0,0,0,.09);
+  box-shadow:inset 0 1px 4px rgba(0,0,0,.07);
+}
+.mk-canvas::-webkit-scrollbar{height:5px}
+.mk-canvas::-webkit-scrollbar-track{background:transparent}
+.mk-canvas::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:3px}
+
+/* ── FLOW ROW ─────────────────────────────────── */
+.mk-flow{
+  direction:ltr;
+  display:flex;
+  align-items:flex-start;
+  min-width:max-content;
+}
+
+/* ── MODULE NODE ──────────────────────────────── */
+.mk-node{
+  display:flex;flex-direction:column;align-items:center;
+  width:90px;flex-shrink:0;cursor:pointer;
+}
+.mk-circle{
+  width:64px;height:64px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.55rem;
+  box-shadow:0 0 0 3px #fff,0 4px 18px rgba(0,0,0,.22);
+  transition:transform .15s,box-shadow .15s;
+  position:relative;flex-shrink:0;
+}
+.mk-circle:hover{transform:scale(1.1);box-shadow:0 0 0 3px #fff,0 8px 28px rgba(0,0,0,.32)}
+/* run count badge */
+.mk-run{
+  position:absolute;bottom:-3px;right:-5px;
+  background:#fff;border:1.5px solid #ddd;border-radius:10px;
+  padding:1px 6px;font-size:.58rem;font-weight:700;
+  color:#666;font-family:'Poppins',sans-serif;white-space:nowrap;
+  box-shadow:0 1px 4px rgba(0,0,0,.12);
+}
+.mk-name{
+  font-size:.72rem;font-weight:700;color:#1a1a1a;
+  margin-top:9px;text-align:center;max-width:84px;
+  line-height:1.3;font-family:'Rubik',sans-serif;
+}
+.mk-action{
+  font-size:.61rem;color:#888;text-align:center;
+  max-width:84px;margin-top:2px;line-height:1.25;
+  font-family:'Rubik',sans-serif;
+}
+
+/* ── CONNECTOR (dotted) ───────────────────────── */
+.mk-conn{
+  display:flex;align-items:flex-start;
+  padding-top:31px; /* (64/2 - 1) centers line with circle */
+  width:54px;flex-shrink:0;position:relative;
+}
+.mk-conn-line{
+  width:100%;height:2px;
+  background:repeating-linear-gradient(
+    to right,
+    #b0aba0 0,#b0aba0 4px,
+    transparent 4px,transparent 14px
+  );
+  position:relative;
+}
+.mk-conn-line::after{
+  content:'';position:absolute;right:-5px;top:50%;
+  transform:translateY(-50%);
+  border-top:4px solid transparent;
+  border-bottom:4px solid transparent;
+  border-left:7px solid #b0aba0;
+}
+
+/* ── ROUTER / BRANCH ──────────────────────────── */
+.mk-branch-wrap{
+  display:flex;flex-direction:column;
+  justify-content:center;gap:28px;
+  align-self:flex-start;
+  position:relative;
+  padding-top:2px;
+}
+/* vertical dotted line connecting branches */
+.mk-branch-wrap::before{
+  content:'';position:absolute;
+  left:1px;top:32px;
+  height:calc(100% - 64px);
+  width:2px;
+  background:repeating-linear-gradient(
+    to bottom,
+    #b0aba0 0,#b0aba0 4px,
+    transparent 4px,transparent 14px
+  );
+}
+.mk-branch-row{display:flex;align-items:flex-start}
+/* short connector from the vertical line to branch node */
+.mk-conn-branch{
+  display:flex;align-items:flex-start;
+  padding-top:31px;
+  width:44px;flex-shrink:0;
+}
+.mk-conn-branch-line{
+  width:100%;height:2px;
+  background:repeating-linear-gradient(
+    to right,
+    #b0aba0 0,#b0aba0 4px,
+    transparent 4px,transparent 14px
+  );
+  position:relative;
+}
+.mk-conn-branch-line::after{
+  content:'';position:absolute;right:-5px;top:50%;
+  transform:translateY(-50%);
+  border-top:4px solid transparent;
+  border-bottom:4px solid transparent;
+  border-left:7px solid #b0aba0;
+}
+
+/* ── BENEFITS ─────────────────────────────────── */
+.benefits-strip{background:rgba(230,224,255,.4);border-top:1px solid rgba(109,99,255,.12);border-bottom:1px solid rgba(109,99,255,.12);padding:40px 40px}
+.benefits-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+@media(max-width:768px){.benefits-inner{grid-template-columns:1fr}}
+.benefit-card{background:rgba(255,255,255,.8);border:1px solid rgba(109,99,255,.15);border-radius:16px;padding:20px 20px;transition:border-color .25s;box-shadow:0 2px 12px rgba(99,102,241,.06)}
+.benefit-card:hover{border-color:rgba(99,102,241,.35)}
+.benefit-icon{width:40px;height:40px;border-radius:12px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:10px}
+.benefit-h{font-size:1rem;font-weight:700;margin-bottom:8px}
+.benefit-p{font-size:.85rem;color:var(--muted);line-height:1.65}
+
+/* ── TOOLS ────────────────────────────────────── */
+.tools-section{padding:40px 40px}
+.tools-inner{max-width:1300px;margin:0 auto}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:20px}
+.tool-card{background:rgba(255,255,255,.8);border:1px solid rgba(109,99,255,.14);border-radius:12px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:var(--muted);text-align:center;transition:border-color .25s,color .25s;box-shadow:0 1px 8px rgba(99,102,241,.06)}
+.tool-card:hover{border-color:rgba(99,102,241,.4);color:#1a1535}
+.tool-card span{font-size:1.6rem}
+
+/* ── CTA ──────────────────────────────────────── */
+#cta{padding:52px 40px;text-align:center}
+.cta-glow{position:absolute;width:600px;height:400px;background:radial-gradient(ellipse,rgba(99,102,241,.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.cta-card{max-width:680px;margin:0 auto;background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(237,232,255,.9));border:1px solid rgba(99,102,241,.22);border-radius:20px;padding:36px 40px;position:relative;backdrop-filter:blur(8px);box-shadow:0 8px 40px rgba(99,102,241,.12)}
+.cta-h2{font-family:'Poppins',sans-serif;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:900;letter-spacing:-.025em;margin-bottom:16px}
+.cta-p{font-size:.9375rem;color:var(--muted);line-height:1.7;margin-bottom:36px}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* ── FOOTER ───────────────────────────────────── */
+footer{border-top:1px solid rgba(109,99,255,.12);padding:32px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:.8rem;color:var(--dim)}
+
+/* ── SCROLL REVEAL ────────────────────────────── */
+.fi{opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.23,1,.32,1),transform .6s cubic-bezier(.23,1,.32,1)}
+.fi.visible{opacity:1;transform:none}
+
+/* ── RESPONSIVE ───────────────────────────────── */
+@media(max-width:768px){
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .section-wrap,.tools-section{padding:36px 16px}
+  .flow-card{padding:16px 14px}
+  .flow-meta{flex-direction:column}
+  #cta{padding:40px 16px}
+  .cta-card{padding:28px 20px}
+  footer{padding:20px 16px;justify-content:center;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Animated background -->
+<div class="page-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+<div class="page-grid"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AgenticFlow</div>
+  <div class="nav-links">
+    <a href="#flows">פלואו</a>
+    <a href="#tools">כלים</a>
+    <a href="#cta">צור קשר</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">קבל הדגמה</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-badge"><div class="hero-badge-dot"></div>אוטומציה מבוססת AI לעסקים קטנים ובינוניים</div>
+  <h1 class="hero-h1">בנינו את הפלואו.<br><span class="hl">אתה רק גוזר רווחים.</span></h1>
+  <p class="hero-p">כל תהליך עסקי — מניהול לידים ועד שליחת מסמכים — רץ אוטומטי. ראה בדיוק איך כל פלואו עובד, צעד אחר צעד.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.getElementById('flows').scrollIntoView({behavior:'smooth'})">ראה את הפלואו ↓</button>
+    <button class="btn-outline" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">דבר איתנו</button>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-n">15+</div><div class="hero-stat-l">שעות חיסכון בשבוע</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">50+</div><div class="hero-stat-l">עסקים פעילים</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">24/7</div><div class="hero-stat-l">אוטומציה ללא הפסקה</div></div>
+    <div class="hero-stat"><div class="hero-stat-n">3×</div><div class="hero-stat-l">יותר עסקאות נסגרות</div></div>
+  </div>
+</section>
+
+<!-- FLOWS -->
+<section id="flows">
+<div class="section-wrap">
+  <div class="section-eyebrow">הפלואו שלנו</div>
+  <h2 class="section-h2">כל אוטומציה — <span class="hl">שקוף לגמרי</span></h2>
+  <p class="section-p">ראה בדיוק מה קורה מאחורי הקלעים. כל פלואו בנוי ב-Make.com ורץ בזמן אמת.</p>
+
+  <div class="flows-grid">
+
+    <!-- ── FLOW 1: WhatsApp Chatbot ── -->
+    <div class="flow-card fi">
+      <div class="flow-meta">
+        <div class="flow-info">
+          <div class="flow-tag">💬 פלואו 01</div>
+          <div class="flow-title">סוכן WhatsApp חכם</div>
+          <div class="flow-desc">לקוח שולח הודעה — הסוכן מבין, עונה, קובע תור ושולח אישור. הכל תוך שניות, ללא מגע אדם.</div>
+        </div>
+        <div class="flow-tools">
+          <div class="tool-badge">📱 WhatsApp API</div>
+          <div class="tool-badge">🧠 OpenAI</div>
+          <div class="tool-badge">📅 Google Calendar</div>
+        </div>
+      </div>
+
+      <!-- Make.com Canvas -->
+      <div class="mk-canvas">
+        <div class="mk-flow">
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#e91e8c">
+              🔗
+              <div class="mk-run">1,248</div>
+            </div>
+            <div class="mk-name">Webhook</div>
+            <div class="mk-action">Custom webhook</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#25d366">
+              📱
+              <div class="mk-run">1,248</div>
+            </div>
+            <div class="mk-name">WhatsApp</div>
+            <div class="mk-action">Watch messages</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#7c3aed">
+              <span style="font-size:1.1rem;font-weight:800;color:#fff;font-family:monospace">{ }</span>
+              <div class="mk-run">1,248</div>
+            </div>
+            <div class="mk-name">JSON</div>
+            <div class="mk-action">Parse message</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#10a37f">
+              🤖
+              <div class="mk-run">1,241</div>
+            </div>
+            <div class="mk-name">OpenAI</div>
+            <div class="mk-action">Generate reply</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#79c800">
+              🔀
+              <div class="mk-run">1,241</div>
+            </div>
+            <div class="mk-name">Router</div>
+            <div class="mk-action">Route by intent</div>
+          </div>
+
+          <!-- Router branches -->
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-branch-wrap">
+            <!-- Top branch: reply via WhatsApp -->
+            <div class="mk-branch-row">
+              <div class="mk-conn-branch"><div class="mk-conn-branch-line"></div></div>
+              <div class="mk-node">
+                <div class="mk-circle" style="background:#25d366">
+                  💬
+                  <div class="mk-run">834</div>
+                </div>
+                <div class="mk-name">WhatsApp</div>
+                <div class="mk-action">Send a message</div>
+              </div>
+            </div>
+            <!-- Bottom branch: book in calendar -->
+            <div class="mk-branch-row">
+              <div class="mk-conn-branch"><div class="mk-conn-branch-line"></div></div>
+              <div class="mk-node">
+                <div class="mk-circle" style="background:#4285f4">
+                  📅
+                  <div class="mk-run">407</div>
+                </div>
+                <div class="mk-name">Google Calendar</div>
+                <div class="mk-action">Create an event</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FLOW 2: Document Automation ── -->
+    <div class="flow-card fi" style="transition-delay:.1s">
+      <div class="flow-meta">
+        <div class="flow-info">
+          <div class="flow-tag">📄 פלואו 02</div>
+          <div class="flow-title">שליחת מסמכים אוטומטית</div>
+          <div class="flow-desc">לקוח ממלא טופס — חוזה נוצר אוטומטי, נשלח למייל, ומחכה לחתימה. CRM מתעדכן ברגע שנחתם.</div>
+        </div>
+        <div class="flow-tools">
+          <div class="tool-badge">📋 Typeform</div>
+          <div class="tool-badge">🤖 OpenAI</div>
+          <div class="tool-badge">📧 Gmail</div>
+          <div class="tool-badge">✍️ DocuSign</div>
+        </div>
+      </div>
+
+      <div class="mk-canvas">
+        <div class="mk-flow">
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#261f63">
+              📋
+              <div class="mk-run">523</div>
+            </div>
+            <div class="mk-name">Typeform</div>
+            <div class="mk-action">Watch responses</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#7c3aed">
+              <span style="font-size:1.1rem;font-weight:800;color:#fff;font-family:monospace">{ }</span>
+              <div class="mk-run">523</div>
+            </div>
+            <div class="mk-name">JSON</div>
+            <div class="mk-action">Create JSON</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#10a37f">
+              🤖
+              <div class="mk-run">521</div>
+            </div>
+            <div class="mk-name">OpenAI</div>
+            <div class="mk-action">Generate contract</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#fbbc04">
+              <span style="font-size:1.3rem">📁</span>
+              <div class="mk-run">521</div>
+            </div>
+            <div class="mk-name">Google Drive</div>
+            <div class="mk-action">Upload a file</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#ea4335">
+              📧
+              <div class="mk-run">521</div>
+            </div>
+            <div class="mk-name">Gmail</div>
+            <div class="mk-action">Send an email</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#0070f3">
+              ✍️
+              <div class="mk-run">518</div>
+            </div>
+            <div class="mk-name">DocuSign</div>
+            <div class="mk-action">Send envelope</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FLOW 3: Lead Management (BRANCHING) ── -->
+    <div class="flow-card fi" style="transition-delay:.2s">
+      <div class="flow-meta">
+        <div class="flow-info">
+          <div class="flow-tag">🎯 פלואו 03</div>
+          <div class="flow-title">ניהול לידים חכם</div>
+          <div class="flow-desc">ליד נכנס מ-Facebook — AI מדרג ציון, מסווג, ומנתב: לידים חמים מקבלים WhatsApp, פושרים מקבלים אימייל.</div>
+        </div>
+        <div class="flow-tools">
+          <div class="tool-badge">🌐 Facebook Ads</div>
+          <div class="tool-badge">🧠 OpenAI</div>
+          <div class="tool-badge">📱 WhatsApp</div>
+          <div class="tool-badge">📊 HubSpot</div>
+        </div>
+      </div>
+
+      <div class="mk-canvas">
+        <div class="mk-flow">
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#1877f2">
+              📘
+              <div class="mk-run">2,104</div>
+            </div>
+            <div class="mk-name">Facebook Lead Ads</div>
+            <div class="mk-action">Watch lead ads</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#5654d0">
+              🔍
+              <div class="mk-run">2,104</div>
+            </div>
+            <div class="mk-name">Filter</div>
+            <div class="mk-action">Score &gt; 60</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#ff7a59">
+              📊
+              <div class="mk-run">1,876</div>
+            </div>
+            <div class="mk-name">HubSpot</div>
+            <div class="mk-action">Create a contact</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#10a37f">
+              🤖
+              <div class="mk-run">1,876</div>
+            </div>
+            <div class="mk-name">OpenAI</div>
+            <div class="mk-action">Score the lead</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#79c800">
+              🔀
+              <div class="mk-run">1,876</div>
+            </div>
+            <div class="mk-name">Router</div>
+            <div class="mk-action">By lead score</div>
+          </div>
+
+          <!-- Router branches -->
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-branch-wrap">
+            <!-- Top: hot lead → WhatsApp -->
+            <div class="mk-branch-row">
+              <div class="mk-conn-branch"><div class="mk-conn-branch-line"></div></div>
+              <div class="mk-node">
+                <div class="mk-circle" style="background:#25d366">
+                  📱
+                  <div class="mk-run">1,102</div>
+                </div>
+                <div class="mk-name">WhatsApp</div>
+                <div class="mk-action">Hot lead msg</div>
+              </div>
+            </div>
+            <!-- Bottom: warm lead → Gmail → Mailchimp -->
+            <div class="mk-branch-row">
+              <div class="mk-conn-branch"><div class="mk-conn-branch-line"></div></div>
+              <div class="mk-node">
+                <div class="mk-circle" style="background:#ea4335">
+                  📧
+                  <div class="mk-run">774</div>
+                </div>
+                <div class="mk-name">Gmail</div>
+                <div class="mk-action">Nurture email</div>
+              </div>
+              <div class="mk-conn"><div class="mk-conn-line"></div></div>
+              <div class="mk-node">
+                <div class="mk-circle" style="background:#ffe01b">
+                  <span style="font-size:1.3rem">📣</span>
+                  <div class="mk-run" style="color:#444">774</div>
+                </div>
+                <div class="mk-name">Mailchimp</div>
+                <div class="mk-action">Add to sequence</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FLOW 4: Smart Scheduling ── -->
+    <div class="flow-card fi" style="transition-delay:.3s">
+      <div class="flow-meta">
+        <div class="flow-info">
+          <div class="flow-tag">📅 פלואו 04</div>
+          <div class="flow-title">תזמון תורים אוטומטי</div>
+          <div class="flow-desc">לקוח מבקש תור — הסוכן בודק זמינות, קובע, שולח אישור ותזכורת. אפס no-shows.</div>
+        </div>
+        <div class="flow-tools">
+          <div class="tool-badge">📅 Google Calendar</div>
+          <div class="tool-badge">📱 WhatsApp</div>
+          <div class="tool-badge">🔔 Twilio SMS</div>
+        </div>
+      </div>
+
+      <div class="mk-canvas">
+        <div class="mk-flow">
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#e91e8c">
+              🔗
+              <div class="mk-run">687</div>
+            </div>
+            <div class="mk-name">Webhook</div>
+            <div class="mk-action">Appointment request</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#7c3aed">
+              <span style="font-size:1.1rem;font-weight:800;color:#fff;font-family:monospace">{ }</span>
+              <div class="mk-run">687</div>
+            </div>
+            <div class="mk-name">JSON</div>
+            <div class="mk-action">Parse date/time</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#4285f4">
+              📅
+              <div class="mk-run">685</div>
+            </div>
+            <div class="mk-name">Google Calendar</div>
+            <div class="mk-action">Search free slots</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#4285f4">
+              📅
+              <div class="mk-run">685</div>
+            </div>
+            <div class="mk-name">Google Calendar</div>
+            <div class="mk-action">Create an event</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#25d366">
+              📲
+              <div class="mk-run">685</div>
+            </div>
+            <div class="mk-name">WhatsApp</div>
+            <div class="mk-action">Send confirmation</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#f22f46">
+              🔔
+              <div class="mk-run">685</div>
+            </div>
+            <div class="mk-name">Twilio SMS</div>
+            <div class="mk-action">Set reminder</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FLOW 5: Marketing Automation ── -->
+    <div class="flow-card fi" style="transition-delay:.4s">
+      <div class="flow-meta">
+        <div class="flow-info">
+          <div class="flow-tag">📣 פלואו 05</div>
+          <div class="flow-title">שיווק אוטומטי</div>
+          <div class="flow-desc">אירוע מפעיל קמפיין — AI כותב תוכן, ממקד קהל ומפרסם בכל הפלטפורמות. אנליטיקס בזמן אמת.</div>
+        </div>
+        <div class="flow-tools">
+          <div class="tool-badge">📊 Meta Ads</div>
+          <div class="tool-badge">🧠 OpenAI</div>
+          <div class="tool-badge">📸 Instagram</div>
+          <div class="tool-badge">📧 Mailchimp</div>
+        </div>
+      </div>
+
+      <div class="mk-canvas">
+        <div class="mk-flow">
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#e91e8c">
+              🔗
+              <div class="mk-run">312</div>
+            </div>
+            <div class="mk-name">Webhook</div>
+            <div class="mk-action">Campaign trigger</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#10a37f">
+              🤖
+              <div class="mk-run">312</div>
+            </div>
+            <div class="mk-name">OpenAI</div>
+            <div class="mk-action">Write post content</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)">
+              📸
+              <div class="mk-run">311</div>
+            </div>
+            <div class="mk-name">Instagram</div>
+            <div class="mk-action">Create a post</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#1877f2">
+              📘
+              <div class="mk-run">311</div>
+            </div>
+            <div class="mk-name">Facebook</div>
+            <div class="mk-action">Boost post</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#ffe01b">
+              <span style="font-size:1.3rem">📣</span>
+              <div class="mk-run" style="color:#444">310</div>
+            </div>
+            <div class="mk-name">Mailchimp</div>
+            <div class="mk-action">Send campaign</div>
+          </div>
+
+          <div class="mk-conn"><div class="mk-conn-line"></div></div>
+
+          <div class="mk-node">
+            <div class="mk-circle" style="background:#5654d0">
+              📈
+              <div class="mk-run">310</div>
+            </div>
+            <div class="mk-name">HTTP</div>
+            <div class="mk-action">Log to analytics</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- BENEFITS -->
+<div class="benefits-strip">
+  <div class="benefits-inner">
+    <div class="benefit-card fi">
+      <div class="benefit-icon">⚡</div>
+      <div class="benefit-h">מהיר להטמעה</div>
+      <div class="benefit-p">תוך 3–5 ימי עסקים הפלואו שלך חי ועובד. אין צורך ב-IT, אין קוד, אין כאב ראש.</div>
+    </div>
+    <div class="benefit-card fi" style="transition-delay:.1s">
+      <div class="benefit-icon">🔒</div>
+      <div class="benefit-h">אמין ובטוח</div>
+      <div class="benefit-p">כל הנתונים מוצפנים. ניטור 24/7 על הפלואו. אם משהו נשבר — אנחנו יודעים לפניך.</div>
+    </div>
+    <div class="benefit-card fi" style="transition-delay:.2s">
+      <div class="benefit-icon">📐</div>
+      <div class="benefit-h">מותאם לעסק שלך</div>
+      <div class="benefit-p">כל פלואו בנוי ספציפית לעסק שלך — שמות, תבניות, לוגיקה עסקית. לא תבנית גנרית.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<section class="tools-section" id="tools">
+  <div class="tools-inner">
+    <div class="section-eyebrow">אינטגרציות</div>
+    <h2 class="section-h2">עובד עם <span class="hl">הכלים שאתה כבר משתמש</span></h2>
+    <p class="section-p">אנחנו מתחברים לכל מה שיש לך — ללא הגירה, ללא פרויקט ענק.</p>
+    <div class="tools-grid">
+      <div class="tool-card fi"><span>📱</span>WhatsApp</div>
+      <div class="tool-card fi" style="transition-delay:.05s"><span>📧</span>Gmail</div>
+      <div class="tool-card fi" style="transition-delay:.1s"><span>📅</span>Google Calendar</div>
+      <div class="tool-card fi" style="transition-delay:.15s"><span>📊</span>HubSpot</div>
+      <div class="tool-card fi" style="transition-delay:.2s"><span>🤖</span>OpenAI GPT-4</div>
+      <div class="tool-card fi" style="transition-delay:.25s"><span>📸</span>Instagram</div>
+      <div class="tool-card fi" style="transition-delay:.3s"><span>📘</span>Facebook Ads</div>
+      <div class="tool-card fi" style="transition-delay:.35s"><span>✍️</span>DocuSign</div>
+      <div class="tool-card fi" style="transition-delay:.4s"><span>📋</span>Typeform</div>
+      <div class="tool-card fi" style="transition-delay:.45s"><span>🔔</span>Twilio</div>
+      <div class="tool-card fi" style="transition-delay:.5s"><span>📣</span>Mailchimp</div>
+      <div class="tool-card fi" style="transition-delay:.55s"><span>⚙️</span>Make.com</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" style="position:relative">
+  <div class="cta-glow"></div>
+  <div class="cta-card fi">
+    <h2 class="cta-h2">מוכן להריץ<br>את הפלואו שלך?</h2>
+    <p class="cta-p">שיחת ייעוץ קצרה — ואנחנו בונים לך פלואו שמתחיל לעבוד תוך שבוע. ללא התחייבות.</p>
+    <div class="cta-btns">
+      <a href="https://wa.me/972527002404" style="text-decoration:none">
+        <button class="btn-primary">📱 כתוב לנו ב-WhatsApp</button>
+      </a>
+      <button class="btn-outline" onclick="window.location.href='mailto:yoniautomation@gmail.com'">✉️ שלח מייל</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="nav-logo">AgenticFlow</div>
+  <div>© 2026 יוני אלוני · כל הזכויות שמורות</div>
+  <div>בנוי עם Make.com + AI 🤖</div>
+</footer>
+
+<script>
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fi').forEach(el => revealObserver.observe(el));
+</script>
+</body>
+</html>

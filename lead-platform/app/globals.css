@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-inter);
+
+  /* Sidebar */
+  --color-sidebar: #0C0D16;
+  --color-sidebar-border: #1B1C30;
+  --color-sidebar-hover: #14152A;
+  --color-sidebar-active: #1E2045;
+  --color-sidebar-text: #787C9E;
+  --color-sidebar-text-active: #FFFFFF;
+
+  /* Content */
+  --color-surface: #F4F5F9;
+  --color-card: #FFFFFF;
+  --color-border: #E4E6EF;
+  --color-border-light: #F0F1F7;
+
+  /* Brand */
+  --color-primary: #5B5BD6;
+  --color-primary-hover: #4A4AC5;
+  --color-primary-light: #EFEFFC;
+
+  /* Text */
+  --color-text-primary: #1A1D2E;
+  --color-text-secondary: #6B6F8A;
+  --color-text-muted: #9CA0B8;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1D3E2;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B8BACF;
+}
+
+/* Board table rows */
+.board-row {
+  transition: background-color 0.1s ease;
+}
+.board-row:hover {
+  background-color: #F8F9FC;
+}
+
+/* View transition: crossfade between pages */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-6px); }
+}
+
+::view-transition-old(root) {
+  animation: 200ms ease fade-out;
+}
+::view-transition-new(root) {
+  animation: 220ms ease fade-in;
+}

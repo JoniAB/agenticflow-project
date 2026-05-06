@@ -1047,8 +1047,7 @@
     <h1 class="hero-h1">הופכים שעות של עבודה ידנית<br>לאפס מאמץ.</h1>
     <p class="hero-p">בעזרת סוכני AI ואוטומציה מתקדמת, אנחנו בונים את התשתית הטכנולוגית שמאפשרת לעסק שלך לצמוח על אוטומט. מניהול לידים ועד הצעות מחיר — הכל קורה מעצמו, כדי שאתה תוכל להתמקד במה שחשוב באמת.</p>
     <div class="hero-btns">
-      <button class="btn btn-cta btn-lg" onclick="go('cta-section')">הורד לעסק שלך ←</button>
-      <button class="btn btn-outline-w btn-lg" onclick="go('features-1')">פתח בדפדפן</button>
+      <a href="https://yonialoniworkflow.vercel.app" target="_blank" rel="noopener" style="text-decoration:none"><button class="btn btn-cta btn-lg">דוגמה לאוטומציות</button></a>
     </div>
   </div>
 
@@ -1279,39 +1278,39 @@
     <div class="feature-visual fi-l" style="transition-delay:0.18s">
       <div class="feat-card feat-card-1">
         <div style="display:flex;flex-direction:column;align-items:center">
-        <button class="wa-reset-btn" onclick="waReset()">↺ אפס שיחה</button>
-        <div class="iphone-wrap">
-          <div class="iphone-ai-badge">✨ AI-Powered</div>
-          <div class="iphone-frame">
-          <div class="iphone-screen">
-            <div class="iphone-di-row">
-              <div class="iphone-di"><div class="iphone-sensor"></div><div class="iphone-cam"></div></div>
-            </div>
-            <div class="wa-header">
-              <div class="wa-av">🤖</div>
-              <div style="flex:1">
-                <div class="wa-name">עוזר AI</div>
-                <div class="wa-online">מחובר</div>
+          <button class="wa-reset-btn" onclick="waReset()">↺ אפס שיחה</button>
+          <div class="iphone-wrap">
+            <div class="iphone-ai-badge">✨ AI-Powered</div>
+            <div class="iphone-frame">
+            <div class="iphone-screen">
+              <div class="iphone-di-row">
+                <div class="iphone-di"><div class="iphone-sensor"></div><div class="iphone-cam"></div></div>
               </div>
-              <div style="display:flex;gap:16px;align-items:center">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255,255,255,.9)"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255,255,255,.9)"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-                <span style="color:rgba(255,255,255,.9);font-size:1.3rem;line-height:1;cursor:pointer">⋮</span>
+              <div class="wa-header">
+                <div class="wa-av">🤖</div>
+                <div style="flex:1">
+                  <div class="wa-name">עוזר AI</div>
+                  <div class="wa-online">מחובר</div>
+                </div>
+                <div style="display:flex;gap:16px;align-items:center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255,255,255,.9)"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(255,255,255,.9)"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                  <span style="color:rgba(255,255,255,.9);font-size:1.3rem;line-height:1;cursor:pointer">⋮</span>
+                </div>
               </div>
+              <div class="wa-body" id="wa-chat-body"></div>
+              <div class="wa-footer">
+                <button class="wa-send" onclick="waSend()">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+                <input type="text" class="wa-input-pill" id="wa-input" placeholder="כתוב הודעה..." dir="rtl" autocomplete="off">
+              </div>
+              <div class="wa-home-bar"></div>
             </div>
-            <div class="wa-body" id="wa-chat-body"></div>
-            <div class="wa-footer">
-              <button class="wa-send" onclick="waSend()">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              </button>
-              <input type="text" class="wa-input-pill" id="wa-input" placeholder="כתוב הודעה..." dir="rtl" autocomplete="off">
             </div>
-            <div class="wa-home-bar"></div>
           </div>
-          </div><!-- /iphone-frame -->
-        </div><!-- /iphone-wrap -->
-        </div><!-- /flex-col wrapper -->
-      </div><!-- /feat-card -->
+        </div>
+      </div>
     </div>
   </div>
 </section>
