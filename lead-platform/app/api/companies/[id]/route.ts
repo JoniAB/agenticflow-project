@@ -17,6 +17,14 @@ export async function GET(_request: NextRequest, { params }: Params) {
   return NextResponse.json(data)
 }
 
+export async function DELETE(_request: NextRequest, { params }: Params) {
+  const { id } = await params
+  const supabase = getSupabaseAdmin()
+  const { error } = await supabase.from('companies').delete().eq('id', id)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ ok: true })
+}
+
 export async function PATCH(request: NextRequest, { params }: Params) {
   const authError = validateAgentKey(request)
   if (authError) return authError

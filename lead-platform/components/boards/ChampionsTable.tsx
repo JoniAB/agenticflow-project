@@ -11,7 +11,7 @@ import {
   ExternalLink, Globe, ChevronDown, ChevronRight,
   Phone, Mail, User, Globe2, MessageCircle, Star,
   CalendarCheck, Image, CheckCircle2, XCircle,
-  Search, Plus, Loader2, AlertCircle, Zap,
+  Search, Plus, Loader2, AlertCircle, Zap, Trash2,
 } from 'lucide-react'
 
 type Filter = 'all' | 'linkedin' | 'google_maps' | 'other'
@@ -275,7 +275,21 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
   const [filter,   setFilter]   = useState<Filter>('all')
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [search,   setSearch]   = useState('')
+  const [deleting, setDeleting] = useState<string | null>(null)
+  const [localRows, setLocalRows] = useState<Company[]>(companies)
   const router = useRouter()
+
+  async function deleteCompany(id: string, name: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    if (!confirm(`למחוק את "${name}"? פעולה זו אינה הפיכה.`)) return
+    setDeleting(id)
+    try {
+      await fetch(`/api/companies/${id}`, { method: 'DELETE' })
+      setLocalRows(prev => prev.filter(c => c.id !== id))
+    } finally {
+      setDeleting(null)
+    }
+  }
 
   // Fetch panel state — lifted here so panel renders full-width
   const [fetchLoading,  setFetchLoading]  = useState(false)
@@ -325,7 +339,7 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
     })
   }
 
-  const bySource = filter === 'all' ? companies : companies.filter(c => c.source === filter)
+  const bySource = filter === 'all' ? localRows : localRows.filter(c => c.source === filter)
   const rows = search.trim()
     ? bySource.filter(c => {
         const q     = search.toLowerCase().replace(/\D/g, '')
@@ -420,7 +434,7 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
 
         <div className="flex items-center gap-1">
           {TABS.map(tab => {
-            const count  = tab.value === 'all' ? companies.length : companies.filter(c => c.source === tab.value).length
+            const count  = tab.value === 'all' ? localRows.length : localRows.filter(c => c.source === tab.value).length
             const active = filter === tab.value
             return (
               <button
@@ -523,6 +537,16 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
                             <Globe size={12} />
                           </a>
                         )}
+                        <button
+                          onClick={e => deleteCompany(c.id, c.name, e)}
+                          disabled={deleting === c.id}
+                          className="p-1 rounded text-gray-300 hover:text-red-500 transition-colors disabled:opacity-40"
+                          title="מחק ליד"
+                        >
+                          {deleting === c.id
+                            ? <Loader2 size={12} className="animate-spin" />
+                            : <Trash2 size={12} />}
+                        </button>
                       </div>
                     </td>
                   </tr>
