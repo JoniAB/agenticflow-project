@@ -76,14 +76,22 @@ export function ApprovalTable({ companies }: { companies: ApprovalRow[] }) {
                   <p className="font-medium text-gray-900">{c.name}</p>
                   {c.industry && <p className="text-xs text-gray-400 mt-0.5">{c.industry}</p>}
                 </td>
-                {/* Page */}
+                {/* Page + Report */}
                 <td className="px-4 py-3.5">
-                  {c.content?.page_url ? (
-                    <a href={c.content.page_url} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-700 font-medium">
-                      <ExternalLink size={12} /> View Page
-                    </a>
-                  ) : <span className="text-gray-400">—</span>}
+                  <div className="flex flex-col gap-1">
+                    {c.content?.page_url ? (
+                      <a href={c.content.page_url} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-700 font-medium text-sm">
+                        <ExternalLink size={12} /> View Page
+                      </a>
+                    ) : <span className="text-gray-400">—</span>}
+                    {c.content?.report_url && (
+                      <a href={c.content.report_url} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-violet-600 hover:text-violet-700 font-medium text-sm">
+                        <ExternalLink size={12} /> View Report
+                      </a>
+                    )}
+                  </div>
                 </td>
                 {/* Email */}
                 <td className="px-4 py-3.5 max-w-[240px]">
