@@ -14,73 +14,133 @@ interface Props {
   page: PageContent | null
 }
 
+const PET_GALLERY = [
+  { id: '1587300003388-59208cc962cb', label: 'כלבים' },
+  { id: '1514888286974-6c03e2ca1dba', label: 'חתולים' },
+  { id: '1548199973-03cce0bbc87b', label: 'טיפול' },
+]
+
 export function VetClinicTemplate({ companyName, contactName, reportUrl, brand, page }: Props) {
-  const forest = brand || '#0a3d2e'
-  const green  = '#2ecc71'
+  const green = brand || '#166534'
+  const mint  = '#f0fdf4'
 
   return (
-    <div dir="rtl" style={{ fontFamily: "'Nunito','Arial',sans-serif", background: '#fff', minHeight: '100vh', color: '#1a2e28' }}>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito:wght@300;400;600;700&display=swap" />
+    <div dir="rtl" style={{ fontFamily: "'Nunito','Arial',sans-serif", background: '#fff', minHeight: '100vh', color: '#14532d' }}>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=Poppins:ital,wght@0,600;0,700;1,400&display=swap" />
       <style>{`
         * { box-sizing: border-box; }
-        .vc { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+        .vc { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
         a { text-decoration: none; }
-        .badge { display: inline-flex; align-items: center; gap: 6px; background: #fff; padding: 7px 14px; border-radius: 30px; font-size: 13px; font-weight: 700; color: ${forest}; box-shadow: 0 2px 10px rgba(10,61,46,0.1); }
+        .pet-card { position: relative; border-radius: 16px; overflow: hidden; }
+        .pet-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
+        .pet-card:hover img { transform: scale(1.05); }
       `}</style>
 
       {/* Nav */}
-      <nav style={{ background: '#fff', borderBottom: '1px solid #e0f5ea', padding: 0 }}>
-        <div className="vc" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
+      <nav style={{ background: '#fff', borderBottom: `2px solid ${green}`, padding: 0, position: 'sticky', top: 0, zIndex: 100 }}>
+        <div className="vc" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 34, height: 34, borderRadius: 50, background: forest, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: 12, fontFamily: 'Poppins' }}>YA</div>
-            <span style={{ fontFamily: 'Poppins,sans-serif', fontWeight: 700, fontSize: 14, color: forest }}>יוני אלוני | AI לעסקים</span>
+            <span style={{ fontSize: 26 }}>🐾</span>
+            <div>
+              <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 14, fontWeight: 700, color: green, lineHeight: 1.1 }}>יוני אלוני</p>
+              <p style={{ fontSize: 10, color: '#6b7280', letterSpacing: '.06em' }}>AI לרפואה וטרינרית</p>
+            </div>
           </div>
-          {reportUrl && (
-            <a href={reportUrl} style={{ fontSize: 13, fontWeight: 700, color: forest }}>צפה בדוח ←</a>
-          )}
+          {reportUrl && <a href={reportUrl} style={{ fontSize: 13, fontWeight: 700, color: green }}>צפה בדוח ←</a>}
         </div>
       </nav>
 
-      {/* Hero */}
-      <section style={{ background: 'linear-gradient(135deg, #f0faf4 0%, #e0f5ea 100%)', padding: '64px 0 56px' }}>
-        <div className="vc" style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 40, alignItems: 'center' }}>
-          <div>
-            <span style={{ display: 'inline-block', background: `${forest}18`, color: forest, padding: '5px 14px', borderRadius: 20, fontSize: 12, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: 18 }}>
-              ניתוח אישי עבור {companyName}
-            </span>
-            <h1 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 'clamp(24px,4vw,44px)', lineHeight: 1.2, fontWeight: 700, color: forest, maxWidth: 560, marginBottom: 16 }}>
+      {/* Hero — split layout */}
+      <section style={{ background: mint, overflow: 'hidden' }}>
+        <div className="vc" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, minHeight: 560, alignItems: 'center' }}>
+          {/* Text side */}
+          <div style={{ padding: '72px 40px 72px 0' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: `${green}15`, border: `1px solid ${green}30`, color: green, padding: '6px 16px', borderRadius: 30, fontSize: 12, fontWeight: 700, marginBottom: 24, letterSpacing: '.06em' }}>
+              🐾 ניתוח אישי עבור {companyName}
+            </div>
+            <h1 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 'clamp(28px,3.8vw,46px)', fontWeight: 700, lineHeight: 1.15, color: '#052e16', maxWidth: 480, marginBottom: 20 }}>
               {page?.tagline ?? `${companyName} — הגיע הזמן לצמוח`}
             </h1>
-            <p style={{ fontSize: 16, lineHeight: 1.8, color: '#4a7c6a', maxWidth: 480, marginBottom: 28, fontWeight: 400 }}>
+            <div style={{ width: 48, height: 4, background: green, borderRadius: 2, marginBottom: 22 }} />
+            <p style={{ fontFamily: 'Nunito,sans-serif', fontSize: 16, color: '#166534', lineHeight: 1.85, maxWidth: 420, marginBottom: 36, fontWeight: 400 }}>
               {page?.hero_description ?? 'זיהינו הזדמנויות ספציפיות לשיפור הנוכחות הדיגיטלית שלך.'}
             </p>
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 24 }}>
-              <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 40, background: forest, color: '#fff', fontWeight: 700, fontSize: 14, fontFamily: 'Poppins,sans-serif' }}>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', borderRadius: 50, background: green, color: '#fff', fontWeight: 700, fontSize: 14, boxShadow: `0 4px 16px ${green}35` }}>
                 קבע שיחת ייעוץ חינם →
               </a>
               {reportUrl && (
-                <a href={reportUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 40, background: '#fff', color: forest, fontWeight: 700, fontSize: 14, border: `2px solid ${forest}` }}>
+                <a href={reportUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 24px', borderRadius: 50, background: '#fff', color: green, fontWeight: 700, fontSize: 14, border: `1.5px solid ${green}` }}>
                   הדוח המלא
                 </a>
               )}
             </div>
           </div>
-          <div style={{ fontSize: '8rem', lineHeight: 1, opacity: .85 }}>🐾</div>
+          {/* Image side */}
+          <div style={{ position: 'relative', height: '100%', minHeight: 520 }}>
+            <img
+              src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&q=85&auto=format&fit=crop&crop=top"
+              alt="vet with dog"
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }}
+              onError={(e) => {
+                const el = e.currentTarget as HTMLImageElement
+                el.style.display = 'none'
+                if (el.parentElement) el.parentElement.style.background = mint
+              }}
+            />
+            <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: 50, background: mint, clipPath: 'polygon(0 0, 100% 0, 0 100%)', zIndex: 1 }} />
+            <div style={{ position: 'absolute', bottom: 32, right: 28, zIndex: 2, background: '#fff', borderRadius: 16, padding: '12px 20px', boxShadow: '0 8px 24px rgba(0,0,0,0.12)', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: 28 }}>🐾</span>
+              <div>
+                <p style={{ fontFamily: 'Poppins,sans-serif', fontWeight: 700, fontSize: 15, color: green, lineHeight: 1.1 }}>4.9 ★</p>
+                <p style={{ fontSize: 11, color: '#6b7280' }}>200+ לקוחות מרוצים</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pet gallery */}
+      <section style={{ padding: '64px 0', background: '#fff' }}>
+        <div className="vc">
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: green, marginBottom: 8 }}>הלקוחות שלנו</p>
+            <h2 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 26, fontWeight: 700, color: '#052e16' }}>החיות שאנחנו אוהבים</h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, height: 240 }}>
+            {PET_GALLERY.map((img, i) => (
+              <div key={i} className="pet-card" style={{ background: mint }}>
+                <img
+                  src={`https://images.unsplash.com/photo-${img.id}?w=600&q=80&auto=format&fit=crop`}
+                  alt={img.label}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+                />
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(5,46,22,0.75), transparent)', padding: '24px 16px 12px' }}>
+                  <span style={{ fontFamily: 'Nunito,sans-serif', fontWeight: 700, color: '#fff', fontSize: 14 }}>{img.label}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Pain points */}
       {page?.pain_points && page.pain_points.length > 0 && (
-        <section style={{ padding: '56px 0', background: '#fff' }}>
+        <section style={{ padding: '64px 0', background: mint }}>
           <div className="vc">
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: '#e74c3c', marginBottom: 6, display: 'block' }}>מה זיהינו</span>
-            <h2 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 26, fontWeight: 700, color: forest, marginBottom: 32 }}>האתגרים שמעכבים אותך</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 16 }}>
+            <div style={{ textAlign: 'center', marginBottom: 40 }}>
+              <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: '#ef4444', marginBottom: 8 }}>מה חסר כרגע</p>
+              <h2 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 26, fontWeight: 700, color: '#052e16' }}>האתגרים שמעכבים אותך</h2>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 20 }}>
               {page.pain_points.map((p, i) => (
-                <div key={i} style={{ background: '#fff', border: '1.5px solid #e0f5ea', borderRadius: 14, padding: '20px', borderRight: '4px solid #e74c3c', transition: 'transform .2s' }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 50, background: '#fff0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e74c3c', fontWeight: 800, fontSize: 14, marginBottom: 12, fontFamily: 'Poppins,sans-serif' }}>{i + 1}</div>
-                  <h3 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 15, fontWeight: 600, color: '#1a2e28', marginBottom: 6 }}>{p.title}</h3>
-                  <p style={{ fontSize: 13, color: '#4a7c6a', lineHeight: 1.65 }}>{p.description}</p>
+                <div key={i} style={{ background: '#fff', borderRadius: 20, padding: '28px 24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', top: 0, right: 0, left: 0, height: 4, background: '#ef4444', borderRadius: '20px 20px 0 0' }} />
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: '#fef2f2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, marginBottom: 16 }}>
+                    {(['❌', '⚠️', '📭'] as const)[i]}
+                  </div>
+                  <h3 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 15, fontWeight: 600, color: '#052e16', marginBottom: 8 }}>{p.title}</h3>
+                  <p style={{ fontFamily: 'Nunito,sans-serif', fontSize: 14, color: '#374151', lineHeight: 1.7 }}>{p.description}</p>
                 </div>
               ))}
             </div>
@@ -90,16 +150,20 @@ export function VetClinicTemplate({ companyName, contactName, reportUrl, brand, 
 
       {/* Solutions */}
       {page?.solutions && page.solutions.length > 0 && (
-        <section style={{ padding: '56px 0', background: '#f0faf4' }}>
+        <section style={{ padding: '64px 0', background: '#fff' }}>
           <div className="vc">
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: forest, marginBottom: 6, display: 'block' }}>הפתרון שלנו</span>
-            <h2 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 26, fontWeight: 700, color: forest, marginBottom: 32 }}>מה נעשה עבורך</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 16 }}>
+            <div style={{ textAlign: 'center', marginBottom: 40 }}>
+              <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', color: green, marginBottom: 8 }}>הפתרון שלנו</p>
+              <h2 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 26, fontWeight: 700, color: '#052e16' }}>מה נעשה עבורך</h2>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 20 }}>
               {page.solutions.map((s, i) => (
-                <div key={i} style={{ background: '#fff', border: '1.5px solid #b8e6cc', borderRadius: 14, padding: '20px' }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 50, background: forest, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 16, marginBottom: 12 }}>✓</div>
-                  <h3 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 15, fontWeight: 600, color: forest, marginBottom: 6 }}>{s.title}</h3>
-                  <p style={{ fontSize: 13, color: '#4a7c6a', lineHeight: 1.65 }}>{s.description}</p>
+                <div key={i} style={{ background: mint, borderRadius: 20, padding: '28px 24px', border: `1.5px solid ${green}20` }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: green, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, marginBottom: 16 }}>
+                    {(['✅', '🚀', '⭐'] as const)[i]}
+                  </div>
+                  <h3 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 15, fontWeight: 600, color: '#052e16', marginBottom: 8 }}>{s.title}</h3>
+                  <p style={{ fontFamily: 'Nunito,sans-serif', fontSize: 14, color: '#374151', lineHeight: 1.7 }}>{s.description}</p>
                 </div>
               ))}
             </div>
@@ -107,30 +171,31 @@ export function VetClinicTemplate({ companyName, contactName, reportUrl, brand, 
         </section>
       )}
 
-      {/* Result promise */}
+      {/* Result */}
       {page?.result_promise && (
-        <section style={{ padding: '36px 0', background: forest }}>
+        <section style={{ padding: '40px 0', background: green }}>
           <div className="vc" style={{ textAlign: 'center' }}>
             <p style={{ fontFamily: 'Poppins,sans-serif', fontSize: 20, fontWeight: 700, color: '#fff', lineHeight: 1.5 }}>
-              🎯 {page.result_promise}
+              🐾 {page.result_promise}
             </p>
           </div>
         </section>
       )}
 
       {/* CTA */}
-      <section style={{ padding: '60px 0', background: '#fff', textAlign: 'center' }}>
+      <section style={{ padding: '64px 0', background: mint, textAlign: 'center' }}>
         <div className="vc">
-          <h2 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 28, fontWeight: 700, color: forest, marginBottom: 12 }}>
+          <span style={{ fontSize: 48 }}>🐕</span>
+          <h2 style={{ fontFamily: 'Poppins,sans-serif', fontSize: 28, fontWeight: 700, color: '#052e16', marginBottom: 12, marginTop: 16 }}>
             {contactName ? `${contactName}, בוא נדבר` : 'מוכן להתחיל?'}
           </h2>
-          <p style={{ fontSize: 15, color: '#4a7c6a', marginBottom: 32, lineHeight: 1.7 }}>
-            שיחה של 10 דקות — ללא התחייבות, ללא מכירות. ניתוח כנה של מה שאפשר לשפר.
+          <p style={{ fontFamily: 'Nunito,sans-serif', fontSize: 16, color: '#166534', marginBottom: 36, lineHeight: 1.7 }}>
+            שיחה של 10 דקות — ללא התחייבות.
           </p>
-          <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '14px 32px', borderRadius: 40, background: forest, color: '#fff', fontWeight: 700, fontSize: 15, fontFamily: 'Poppins,sans-serif' }}>
-            קבע שיחה עכשיו →
+          <a href="https://calendly.com" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '15px 36px', borderRadius: 50, background: green, color: '#fff', fontWeight: 800, fontSize: 16, boxShadow: `0 6px 20px ${green}45` }}>
+            קבע שיחה עכשיו 🐾
           </a>
-          <p style={{ marginTop: 20, fontSize: 12, color: '#a0b8b0' }}>יוני אלוני · aloni.yoni@gmail.com</p>
+          <p style={{ marginTop: 24, fontSize: 12, color: '#6b7280' }}>יוני אלוני · aloni.yoni@gmail.com</p>
         </div>
       </section>
     </div>
