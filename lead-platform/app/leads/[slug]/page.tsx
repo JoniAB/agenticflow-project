@@ -24,7 +24,9 @@ async function getData(slug: string) {
     .from('content')
     .select('*, companies(name, industry, contact_name, domain)')
     .eq('company_slug', slug)
-    .single()
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
   return data
 }
 
