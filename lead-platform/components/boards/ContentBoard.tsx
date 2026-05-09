@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import {
   FileText, Loader2, Mail, CheckCircle2, AlertCircle,
   ChevronDown, ChevronRight, Building2, ExternalLink, BarChart2, ArrowRight,
@@ -20,10 +20,10 @@ interface ContentItem {
   companies?: { name: string; industry: string | null; status: string | null }
 }
 
-type CreateStatus = 'idle' | 'loading' | 'done' | 'no_pending' | 'error'
+type GenStatus = 'idle' | 'loading' | 'done' | 'no_pending' | 'error'
 
 function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id: string) => void }) {
-  const [open, setOpen]         = useState(false)
+  const [open, setOpen]           = useState(false)
   const [approving, setApproving] = useState(false)
 
   async function moveToApproval() {
@@ -70,7 +70,6 @@ function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id:
 
       {open && (
         <div className="px-4 pb-4 border-t border-gray-50 pt-3 space-y-3">
-          {/* Links row */}
           {(item.page_url || item.report_url) && (
             <div className="flex items-center gap-2 flex-wrap">
               {item.page_url && (
@@ -87,7 +86,6 @@ function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id:
               )}
             </div>
           )}
-
           {item.email_subject && (
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1">נושא</p>
@@ -100,8 +98,6 @@ function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id:
               <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{item.email_body}</p>
             </div>
           )}
-
-          {/* Move to approval */}
           <div className="pt-1 border-t border-gray-50">
             <button
               onClick={moveToApproval}
@@ -120,12 +116,15 @@ function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id:
 }
 
 export function ContentBoard() {
-  const [items, setItems]       = useState<ContentItem[]>([])
+  const [items, setItems]           = useState<ContentItem[]>([])
   const [loadingList, setLoadingList] = useState(true)
-  const [status, setStatus]     = useState<CreateStatus>('idle')
-  const [lastName, setLastName] = useState<string | null>(null)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [queueLeft, setQueueLeft] = useState<number | null>(null)
+  const [status, setStatus]         = useState<GenStatus>('idle')
+  const [statusStep, setStatusStep] = useState(0)
+  const [statusMsg, setStatusMsg]   = useState<string | null>(null)
+  const [lastName, setLastName]     = useState<string | null>(null)
+  const [errorMsg, setErrorMsg]     = useState<string | null>(null)
+  const [queueLeft, setQueueLeft]   = useState<number | null>(null)
+  const abortRef = useRef<AbortController | null>(null)
 
   const loadContent = useCallback(async () => {
     setLoadingList(true)
@@ -142,34 +141,90 @@ export function ContentBoard() {
 
   async function createNext() {
     if (status === 'loading') return
+
+    abortRef.current?.abort()
+    const ctrl = new AbortController()
+    abortRef.current = ctrl
+
     setStatus('loading')
+    setStatusStep(0)
+    setStatusMsg('מתחיל...')
     setLastName(null)
     setErrorMsg(null)
 
     try {
-      const res  = await fetch('/api/generate-content/next', { method: 'POST' })
-      const data = await res.json()
+      const res = await fetch('/api/generate-content/next?stream=true', {
+        method: 'POST',
+        signal: ctrl.signal,
+      })
 
-      if (!res.ok) {
+      if (!res.ok || !res.body) {
+        const data = await res.json().catch(() => ({}))
         setErrorMsg(data.error === 'no_credits'
           ? 'אין קרדיטים ב-Anthropic API'
           : (data.error ?? 'שגיאה'))
         setStatus('error')
-      } else if (data.message === 'no_pending') {
-        setStatus('no_pending')
-      } else {
-        setLastName(data.company?.name ?? null)
-        setQueueLeft(data.queue_remaining ?? null)
-        setStatus('done')
-        await loadContent()
+        setTimeout(() => { setStatus('idle'); setErrorMsg(null) }, 5000)
+        return
       }
-    } catch {
-      setErrorMsg('שגיאת רשת')
+
+      const reader  = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const parts = buffer.split('\n\n')
+        buffer = parts.pop() ?? ''
+
+        for (const part of parts) {
+          if (!part.trim()) continue
+          let eventType = ''
+          let eventData = ''
+          for (const line of part.split('\n')) {
+            if (line.startsWith('event: ')) eventType = line.slice(7)
+            else if (line.startsWith('data: ')) eventData = line.slice(6)
+          }
+          if (!eventType || !eventData) continue
+
+          try {
+            const payload = JSON.parse(eventData)
+
+            if (eventType === 'progress') {
+              setStatusStep(payload.step ?? 0)
+              setStatusMsg(payload.message ?? null)
+            } else if (eventType === 'done') {
+              if (payload.message === 'no_pending') {
+                setStatus('no_pending')
+              } else {
+                setLastName(payload.company?.name ?? null)
+                setQueueLeft(payload.queue_remaining ?? null)
+                setStatus('done')
+                await loadContent()
+              }
+              setTimeout(() => { setStatus('idle'); setStatusMsg(null) }, 5000)
+            } else if (eventType === 'error') {
+              setErrorMsg(payload.error === 'no_credits'
+                ? 'אין קרדיטים ב-Anthropic API'
+                : (payload.error ?? 'שגיאה'))
+              setStatus('error')
+              setTimeout(() => { setStatus('idle'); setErrorMsg(null) }, 5000)
+            }
+          } catch { /* ignore malformed SSE */ }
+        }
+      }
+    } catch (e: unknown) {
+      if ((e as Error)?.name === 'AbortError') return
+      setErrorMsg('שגיאת רשת — נסה שוב')
       setStatus('error')
-    } finally {
       setTimeout(() => { setStatus('idle'); setErrorMsg(null) }, 5000)
     }
   }
+
+  const TOTAL_STEPS = 4
 
   const btnLabel =
     status === 'loading'    ? 'יוצר...' :
@@ -211,20 +266,45 @@ export function ContentBoard() {
         </button>
       </div>
 
-      {/* ── Status bar ── */}
-      {status !== 'idle' && (
+      {/* ── Progress panel (visible while loading) ── */}
+      {status === 'loading' && (
+        <div className="mt-5 border border-indigo-100 rounded-2xl bg-indigo-50/40 p-6">
+          <div className="flex flex-col items-center justify-center gap-4">
+            <div className="w-12 h-12 rounded-full border-2 border-indigo-100 flex items-center justify-center">
+              <Loader2 size={20} className="animate-spin text-indigo-500" />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-semibold text-indigo-700 transition-all duration-300">
+                {statusMsg ?? 'מתחיל...'}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">הסוכן עובד, זה יכול לקחת כמה שניות</p>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map(step => (
+                <div
+                  key={step}
+                  className={cn(
+                    'h-1.5 rounded-full transition-all duration-500',
+                    statusStep >= step ? 'w-5 bg-indigo-400' : 'w-1.5 bg-gray-200'
+                  )}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Status bar (done / error / no_pending) ── */}
+      {status !== 'idle' && status !== 'loading' && (
         <div className={cn(
           'mt-4 flex items-start gap-2 rounded-xl px-4 py-3 text-sm',
           status === 'done'       ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
           status === 'no_pending' ? 'bg-gray-50 text-gray-500 border border-gray-100' :
-          status === 'error'      ? 'bg-red-50 text-red-600 border border-red-100' :
-                                    'bg-indigo-50 text-indigo-600 border border-indigo-100'
+                                    'bg-red-50 text-red-600 border border-red-100'
         )}>
-          {status === 'loading' && <Loader2 size={15} className="animate-spin shrink-0 mt-0.5" />}
           {status === 'done'    && <CheckCircle2 size={15} className="shrink-0 mt-0.5" />}
           {status === 'error'   && <AlertCircle  size={15} className="shrink-0 mt-0.5" />}
           <span>
-            {status === 'loading'    && 'הסוכן מייצר אימייל מותאם אישית...'}
             {status === 'done'       && <>נוצר תוכן עבור <strong>{lastName}</strong>{queueLeft != null && queueLeft > 0 ? ` · נשארו ${queueLeft} בתור` : ' · אין עוד בתור'}</>}
             {status === 'no_pending' && 'כל הלקוחות הפוטנציאליים כבר קיבלו תוכן'}
             {status === 'error'      && (errorMsg ?? 'שגיאה — נסה שוב')}
