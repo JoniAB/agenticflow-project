@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { Company, Outreach, Content } from '@/lib/types'
 import { MOCK_OUTREACH } from '@/lib/mock-data'

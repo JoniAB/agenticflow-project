@@ -1,6 +1,6 @@
+export const dynamic = 'force-dynamic'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { Company, Content } from '@/lib/types'
-import { MOCK_APPROVAL } from '@/lib/mock-data'
 import { ApprovalTable } from '@/components/boards/ApprovalTable'
 import { ViewTransition } from 'react'
 
@@ -11,11 +11,10 @@ async function getPendingApproval(): Promise<ApprovalRow[]> {
   const { data } = await supabase
     .from('companies')
     .select('*, content(*)')
-    .in('status', ['awaiting_approval', 'awaiting_followup_approval', 'approved', 'edit_required'])
+    .in('status', ['awaiting_approval', 'awaiting_followup_approval'])
     .order('updated_at', { ascending: false })
 
-  if (!data || data.length === 0) return MOCK_APPROVAL
-  return data.map((row) => ({
+  return (data ?? []).map((row) => ({
     ...row,
     content: Array.isArray(row.content) ? (row.content[0] ?? null) : row.content,
   }))

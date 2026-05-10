@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { ALL_MOCK_COMPANIES } from '@/lib/mock-data'
 import { Dashboard } from '@/components/boards/Dashboard'

@@ -1,6 +1,6 @@
+export const dynamic = 'force-dynamic'
 import { getSupabaseAdmin } from '@/lib/supabase'
 import { Company } from '@/lib/types'
-import { MOCK_CHAMPIONS } from '@/lib/mock-data'
 import { ChampionsTable } from '@/components/boards/ChampionsTable'
 import { ViewTransition } from 'react'
 
@@ -9,11 +9,10 @@ async function getChampions(): Promise<Company[]> {
   const { data } = await supabase
     .from('companies')
     .select('*')
-    .in('status', ['potential', 'high_score'])
+    .in('status', ['potential', 'new'])
     .order('score', { ascending: true })
     .order('created_at', { ascending: false })
-  if (!data || data.length === 0) return MOCK_CHAMPIONS
-  return data
+  return data ?? []
 }
 
 export default async function ChampionsPage() {
