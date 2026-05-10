@@ -8,7 +8,7 @@ export async function GET() {
   // Filtering on embedded tables via .eq('companies.status', ...) is silently unreliable in PostgREST.
   const { data, error } = await supabase
     .from('companies')
-    .select('name, industry, status, content(*)')
+    .select('name, industry, status, notes, contact_name, contact_email, contact_phone, domain, content(*)')
     .eq('status', 'content_ready')
     .order('updated_at', { ascending: false })
     .limit(100)

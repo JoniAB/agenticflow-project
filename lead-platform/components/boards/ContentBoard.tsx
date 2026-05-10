@@ -1,10 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import {
-  FileText, Loader2, Mail, CheckCircle2, AlertCircle,
-  ChevronDown, ChevronRight, Building2, ExternalLink, BarChart2, ArrowRight,
-} from 'lucide-react'
+import { FileText, Loader2, Mail, CheckCircle2, AlertCircle, ChevronDown, ChevronRight, Building2 } from 'lucide-react'
+import { ClientCardContent, type ClientCardData } from '@/components/boards/ClientCard'
 import { cn } from '@/lib/utils'
 
 interface ContentItem {
@@ -17,12 +15,33 @@ interface ContentItem {
   page_status: string | null
   report_status: string | null
   created_at: string
-  companies?: { name: string; industry: string | null; status: string | null }
+  companies?: {
+    name: string; industry: string | null; status: string | null
+    notes?: string | null; contact_name?: string | null
+    contact_email?: string | null; contact_phone?: string | null
+    domain?: string | null
+  }
 }
 
 type GenStatus = 'idle' | 'loading' | 'done' | 'no_pending' | 'error'
 
-function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id: string) => void }) {
+function toCardData(item: ContentItem): ClientCardData {
+  return {
+    notes:         item.companies?.notes,
+    contact_name:  item.companies?.contact_name,
+    contact_email: item.companies?.contact_email,
+    contact_phone: item.companies?.contact_phone,
+    domain:        item.companies?.domain,
+    content: {
+      email_subject: item.email_subject,
+      email_body:    item.email_body,
+      page_url:      item.page_url,
+      report_url:    item.report_url,
+    },
+  }
+}
+
+function ContentRow({ item, onApproved }: { item: ContentItem; onApproved: (id: string) => void }) {
   const [open, setOpen]           = useState(false)
   const [approving, setApproving] = useState(false)
 
@@ -42,11 +61,14 @@ function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id:
 
   return (
     <div className="border border-gray-100 rounded-xl bg-white overflow-hidden">
-      <button
-        onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left"
-      >
-        {open ? <ChevronDown size={14} className="text-gray-400 shrink-0" /> : <ChevronRight size={14} className="text-gray-400 shrink-0" />}
+      {/* Row header */}
+      <div className="flex items-center gap-3 px-4 py-3">
+        <button
+          onClick={() => setOpen(v => !v)}
+          className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
+        >
+          {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        </button>
         <Building2 size={14} className="text-gray-400 shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="font-medium text-gray-900 text-sm truncate">
@@ -65,50 +87,20 @@ function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id:
           <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
             <CheckCircle2 size={10} /> נוצר
           </span>
+          <button
+            onClick={moveToApproval}
+            disabled={approving}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white text-xs font-semibold transition-colors"
+          >
+            {approving ? <><Loader2 size={11} className="animate-spin" /> מעביר...</> : '→ שלח לאישור'}
+          </button>
         </div>
-      </button>
+      </div>
 
+      {/* Expanded client card */}
       {open && (
-        <div className="px-4 pb-4 border-t border-gray-50 pt-3 space-y-3">
-          {(item.page_url || item.report_url) && (
-            <div className="flex items-center gap-2 flex-wrap">
-              {item.page_url && (
-                <a href={item.page_url} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors">
-                  <ExternalLink size={11} /> עמוד הדגמה
-                </a>
-              )}
-              {item.report_url && (
-                <a href={item.report_url} target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-xs font-semibold text-violet-600 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-lg transition-colors">
-                  <BarChart2 size={11} /> דוח מחקר
-                </a>
-              )}
-            </div>
-          )}
-          {item.email_subject && (
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1">נושא</p>
-              <p className="text-sm font-medium text-gray-800">{item.email_subject}</p>
-            </div>
-          )}
-          {item.email_body && (
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-1">גוף המייל</p>
-              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{item.email_body}</p>
-            </div>
-          )}
-          <div className="pt-1 border-t border-gray-50">
-            <button
-              onClick={moveToApproval}
-              disabled={approving}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white text-xs font-semibold transition-colors"
-            >
-              {approving
-                ? <><Loader2 size={12} className="animate-spin" /> מעביר...</>
-                : <><ArrowRight size={12} /> שלח לאישור</>}
-            </button>
-          </div>
+        <div className="px-4 pb-4 border-t border-gray-100 pt-3">
+          <ClientCardContent data={toCardData(item)} />
         </div>
       )}
     </div>
@@ -116,14 +108,14 @@ function ContentCard({ item, onApproved }: { item: ContentItem; onApproved: (id:
 }
 
 export function ContentBoard() {
-  const [items, setItems]           = useState<ContentItem[]>([])
+  const [items, setItems]             = useState<ContentItem[]>([])
   const [loadingList, setLoadingList] = useState(true)
-  const [status, setStatus]         = useState<GenStatus>('idle')
-  const [statusStep, setStatusStep] = useState(0)
-  const [statusMsg, setStatusMsg]   = useState<string | null>(null)
-  const [lastName, setLastName]     = useState<string | null>(null)
-  const [errorMsg, setErrorMsg]     = useState<string | null>(null)
-  const [queueLeft, setQueueLeft]   = useState<number | null>(null)
+  const [status, setStatus]           = useState<GenStatus>('idle')
+  const [statusStep, setStatusStep]   = useState(0)
+  const [statusMsg, setStatusMsg]     = useState<string | null>(null)
+  const [lastName, setLastName]       = useState<string | null>(null)
+  const [errorMsg, setErrorMsg]       = useState<string | null>(null)
+  const [queueLeft, setQueueLeft]     = useState<number | null>(null)
   const abortRef = useRef<AbortController | null>(null)
 
   const loadContent = useCallback(async () => {
@@ -141,7 +133,6 @@ export function ContentBoard() {
 
   async function createNext() {
     if (status === 'loading') return
-
     abortRef.current?.abort()
     const ctrl = new AbortController()
     abortRef.current = ctrl
@@ -154,15 +145,11 @@ export function ContentBoard() {
 
     try {
       const res = await fetch('/api/generate-content/next?stream=true', {
-        method: 'POST',
-        signal: ctrl.signal,
+        method: 'POST', signal: ctrl.signal,
       })
-
       if (!res.ok || !res.body) {
         const data = await res.json().catch(() => ({}))
-        setErrorMsg(data.error === 'no_credits'
-          ? 'אין קרדיטים ב-Anthropic API'
-          : (data.error ?? 'שגיאה'))
+        setErrorMsg(data.error === 'no_credits' ? 'אין קרדיטים ב-Anthropic API' : (data.error ?? 'שגיאה'))
         setStatus('error')
         setTimeout(() => { setStatus('idle'); setErrorMsg(null) }, 5000)
         return
@@ -175,27 +162,22 @@ export function ContentBoard() {
       while (true) {
         const { done, value } = await reader.read()
         if (done) break
-
         buffer += decoder.decode(value, { stream: true })
         const parts = buffer.split('\n\n')
         buffer = parts.pop() ?? ''
 
         for (const part of parts) {
           if (!part.trim()) continue
-          let eventType = ''
-          let eventData = ''
+          let eventType = '', eventData = ''
           for (const line of part.split('\n')) {
             if (line.startsWith('event: ')) eventType = line.slice(7)
             else if (line.startsWith('data: ')) eventData = line.slice(6)
           }
           if (!eventType || !eventData) continue
-
           try {
             const payload = JSON.parse(eventData)
-
             if (eventType === 'progress') {
-              setStatusStep(payload.step ?? 0)
-              setStatusMsg(payload.message ?? null)
+              setStatusStep(payload.step ?? 0); setStatusMsg(payload.message ?? null)
             } else if (eventType === 'done') {
               if (payload.message === 'no_pending') {
                 setStatus('no_pending')
@@ -207,9 +189,7 @@ export function ContentBoard() {
               }
               setTimeout(() => { setStatus('idle'); setStatusMsg(null) }, 5000)
             } else if (eventType === 'error') {
-              setErrorMsg(payload.error === 'no_credits'
-                ? 'אין קרדיטים ב-Anthropic API'
-                : (payload.error ?? 'שגיאה'))
+              setErrorMsg(payload.error === 'no_credits' ? 'אין קרדיטים ב-Anthropic API' : (payload.error ?? 'שגיאה'))
               setStatus('error')
               setTimeout(() => { setStatus('idle'); setErrorMsg(null) }, 5000)
             }
@@ -225,14 +205,11 @@ export function ContentBoard() {
   }
 
   const TOTAL_STEPS = 4
-
   const btnLabel =
     status === 'loading'    ? 'יוצר...' :
     status === 'done'       ? '✓ נוצר' :
     status === 'no_pending' ? 'אין בתור' :
-    status === 'error'      ? 'שגיאה' :
-                              'Create'
-
+    status === 'error'      ? 'שגיאה' : 'Create'
   const btnClass =
     status === 'loading'    ? 'bg-indigo-400 cursor-wait' :
     status === 'done'       ? 'bg-emerald-500 cursor-default' :
@@ -242,23 +219,16 @@ export function ContentBoard() {
 
   return (
     <div className="px-10 pt-8 pb-12">
-
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Content Generation</h1>
-          <p className="text-sm text-gray-400 mt-1">
-            AI-generated email drafts for potential clients · in queue order
-          </p>
+          <p className="text-sm text-gray-400 mt-1">AI-generated email drafts for potential clients · in queue order</p>
         </div>
-
         <button
           onClick={createNext}
           disabled={status === 'loading' || status === 'done' || status === 'no_pending'}
-          className={cn(
-            'flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors',
-            btnClass
-          )}
+          className={cn('flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors', btnClass)}
         >
           {status === 'loading'
             ? <><Loader2 size={15} className="animate-spin" /> יוצר תוכן...</>
@@ -266,7 +236,7 @@ export function ContentBoard() {
         </button>
       </div>
 
-      {/* ── Progress panel (visible while loading) ── */}
+      {/* SSE Progress panel */}
       {status === 'loading' && (
         <div className="mt-5 border border-indigo-100 rounded-2xl bg-indigo-50/40 p-6">
           <div className="flex flex-col items-center justify-center gap-4">
@@ -274,36 +244,27 @@ export function ContentBoard() {
               <Loader2 size={20} className="animate-spin text-indigo-500" />
             </div>
             <div className="text-center">
-              <p className="text-sm font-semibold text-indigo-700 transition-all duration-300">
-                {statusMsg ?? 'מתחיל...'}
-              </p>
+              <p className="text-sm font-semibold text-indigo-700">{statusMsg ?? 'מתחיל...'}</p>
               <p className="text-xs text-gray-400 mt-1">הסוכן עובד, זה יכול לקחת כמה שניות</p>
             </div>
             <div className="flex items-center gap-1.5">
               {Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map(step => (
-                <div
-                  key={step}
-                  className={cn(
-                    'h-1.5 rounded-full transition-all duration-500',
-                    statusStep >= step ? 'w-5 bg-indigo-400' : 'w-1.5 bg-gray-200'
-                  )}
-                />
+                <div key={step} className={cn('h-1.5 rounded-full transition-all duration-500',
+                  statusStep >= step ? 'w-5 bg-indigo-400' : 'w-1.5 bg-gray-200')} />
               ))}
             </div>
           </div>
         </div>
       )}
 
-      {/* ── Status bar (done / error / no_pending) ── */}
+      {/* Status bar */}
       {status !== 'idle' && status !== 'loading' && (
-        <div className={cn(
-          'mt-4 flex items-start gap-2 rounded-xl px-4 py-3 text-sm',
+        <div className={cn('mt-4 flex items-start gap-2 rounded-xl px-4 py-3 text-sm',
           status === 'done'       ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
           status === 'no_pending' ? 'bg-gray-50 text-gray-500 border border-gray-100' :
-                                    'bg-red-50 text-red-600 border border-red-100'
-        )}>
-          {status === 'done'    && <CheckCircle2 size={15} className="shrink-0 mt-0.5" />}
-          {status === 'error'   && <AlertCircle  size={15} className="shrink-0 mt-0.5" />}
+                                    'bg-red-50 text-red-600 border border-red-100')}>
+          {status === 'done'  && <CheckCircle2 size={15} className="shrink-0 mt-0.5" />}
+          {status === 'error' && <AlertCircle  size={15} className="shrink-0 mt-0.5" />}
           <span>
             {status === 'done'       && <>נוצר תוכן עבור <strong>{lastName}</strong>{queueLeft != null && queueLeft > 0 ? ` · נשארו ${queueLeft} בתור` : ' · אין עוד בתור'}</>}
             {status === 'no_pending' && 'כל הלקוחות הפוטנציאליים כבר קיבלו תוכן'}
@@ -312,15 +273,11 @@ export function ContentBoard() {
         </div>
       )}
 
-      {/* ── Content list ── */}
+      {/* List */}
       <div className="mt-8">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold">
-            תוכן שנוצר
-            {items.length > 0 && <span className="text-indigo-500 ml-1">{items.length}</span>}
-          </p>
-        </div>
-
+        <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-3">
+          תוכן שנוצר{items.length > 0 && <span className="text-indigo-500 ml-1">{items.length}</span>}
+        </p>
         {loadingList ? (
           <div className="flex items-center justify-center gap-2 py-16 text-sm text-gray-400">
             <Loader2 size={16} className="animate-spin" /> טוען...
@@ -334,11 +291,7 @@ export function ContentBoard() {
         ) : (
           <div className="space-y-2">
             {items.map(item => (
-              <ContentCard
-                key={item.id}
-                item={item}
-                onApproved={(id) => setItems(prev => prev.filter(i => i.id !== id))}
-              />
+              <ContentRow key={item.id} item={item} onApproved={id => setItems(prev => prev.filter(i => i.id !== id))} />
             ))}
           </div>
         )}
