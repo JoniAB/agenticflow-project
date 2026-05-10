@@ -37,6 +37,22 @@ export async function POST(request: NextRequest) {
   if (!name) return NextResponse.json({ error: 'name is required' }, { status: 400 })
 
   const supabase = getSupabaseAdmin()
+
+  // Dedup: reject if same name already exists (case-insensitive)
+  const { data: existing } = await supabase
+    .from('companies')
+    .select('id, name, status')
+    .ilike('name', name.trim())
+    .limit(1)
+    .maybeSingle()
+
+  if (existing) {
+    return NextResponse.json(
+      { error: 'duplicate', message: `"${existing.name}" already exists`, existing },
+      { status: 409 },
+    )
+  }
+
   const { data, error } = await supabase
     .from('companies')
     .insert({
