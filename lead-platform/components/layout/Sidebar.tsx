@@ -8,7 +8,7 @@ import { Tooltip } from '@/components/ui/Tooltip'
 import {
   LayoutDashboard, Search, Users, FileText, Send, Inbox,
   Clock, Mail, Activity, BookOpen, MessageSquare,
-  Play, Loader2, CheckCircle2, XCircle,
+  Play, Loader2, CheckCircle2, XCircle, SlidersHorizontal, ShieldOff,
 } from 'lucide-react'
 
 const OVERVIEW_NAV = [
@@ -38,9 +38,11 @@ const PIPELINE_NAV = [
 ]
 
 const SYSTEM_NAV = [
-  { href: '/boards/emails',    label: 'Email Review',      hebrew: 'סקירת מיילים',    icon: Mail,          segment: 'emails'    },
-  { href: '/boards/activity',  label: 'Agent Activity',    hebrew: 'פעילות סוכנים',   icon: Activity,      segment: 'activity'  },
-  { href: '/boards/api-docs',  label: 'API Documentation', hebrew: 'תיעוד API',       icon: BookOpen,      segment: 'api-docs'  },
+  { href: '/boards/emails',     label: 'Email Review',        hebrew: 'סקירת מיילים',      icon: Mail,              segment: 'emails'     },
+  { href: '/boards/activity',   label: 'Agent Activity',      hebrew: 'פעילות סוכנים',     icon: Activity,          segment: 'activity'   },
+  { href: '/boards/settings',   label: 'Search Criteria',     hebrew: 'קריטריוני חיפוש',   icon: SlidersHorizontal, segment: 'settings'   },
+  { href: '/boards/blacklist',  label: 'Blacklist & Queries', hebrew: 'רשימה שחורה ושאילתות', icon: ShieldOff,      segment: 'blacklist'  },
+  { href: '/boards/api-docs',   label: 'API Documentation',   hebrew: 'תיעוד API',         icon: BookOpen,          segment: 'api-docs'   },
 ]
 
 const AGENTS_NAV = [

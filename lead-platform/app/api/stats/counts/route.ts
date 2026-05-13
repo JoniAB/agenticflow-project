@@ -8,7 +8,7 @@ export async function GET() {
     supabase
       .from('companies')
       .select('id', { count: 'exact', head: true })
-      .in('status', ['potential', 'high_score']),
+      .eq('status', 'potential'),
     supabase
       .from('companies')
       .select('id', { count: 'exact', head: true })

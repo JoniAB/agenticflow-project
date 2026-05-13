@@ -4,27 +4,76 @@ import { getSupabaseAdmin } from '@/lib/supabase'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-function buildSlug(name: string, id: string): string {
-  const raw = name
+type ProgressCb = (step: number, message: string) => void
+
+type GenResult =
+  | { ok: true;  company: Record<string,unknown>; content: Record<string,unknown>; queueRemaining: number }
+  | { ok: false; error: string; status: number }
+  | { ok: 'no_pending' }
+
+async function runGeneration(
+  companyId: string | null,
+  instructions: string | null,
+  onProgress: ProgressCb,
+): Promise<GenResult> {
+  const supabase = getSupabaseAdmin()
+  let company: Record<string, unknown>
+  let queueRemaining = 0
+
+  onProgress(1, 'מאתר חברה...')
+
+  if (companyId) {
+    const { data, error } = await supabase
+      .from('companies')
+      .select('*, content(*)')
+      .eq('id', companyId)
+      .single()
+    if (error || !data) return { ok: false, error: error?.message ?? 'not_found', status: 404 }
+    company = data
+  } else {
+    const { data: companies, error: fetchErr } = await supabase
+      .from('companies')
+      .select('*, content(*)')
+      .eq('status', 'high_score')
+      .order('created_at', { ascending: true })
+      .limit(20)
+
+    if (fetchErr) return { ok: false, error: fetchErr.message, status: 500 }
+
+    const queue = (companies ?? []).filter(
+      (c: { content?: unknown[] }) => !c.content || (c.content as unknown[]).length === 0
+    )
+    if (queue.length === 0) return { ok: 'no_pending' }
+
+    company        = queue[0]
+    queueRemaining = queue.length - 1
+  }
+
+  const name    = String(company.name ?? '')
+  const rawSlug = name
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-]/g, '')
     .replace(/^-+|-+$/, '')
     .replace(/-{2,}/g, '-')
     .slice(0, 40)
-  return raw || `lead-${String(id).slice(0, 8)}`
-}
+  const slug = rawSlug || `lead-${String(company.id).slice(0, 8)}`
 
-function buildPrompt(company: Record<string, unknown>): string {
-  return `אתה מומחה שיווק ו-AI לעסקים קטנים בישראל. שמך יוני אלוני.
+  onProgress(2, `בונה תוכן עבור ${name}...`)
+
+  const instructionsBlock = instructions?.trim()
+    ? `\n\n**הנחיות מיוחדות מהמשתמש — חשוב ליישם:**\n${instructions.trim()}\nיש לשקף הנחיות אלו בעיצוב, בנרטיב, ובכל היבט ויזואלי של העמוד.`
+    : ''
+
+  const prompt = `אתה מומחה שיווק ו-AI לעסקים קטנים בישראל. שמך יוני אלוני.
 המשימה: צור תוכן שיווקי מלא עבור עסק שאנחנו פונים אליו בcold outreach.
 
 פרטי העסק:
-- שם: ${company.name}
+- שם: ${name}
 - תחום: ${company.industry ?? 'לא ידוע'}
 - אתר: ${company.domain ?? 'לא ידוע'}
 - איש קשר: ${company.contact_name ?? 'לא ידוע'}
-- נתוני מחקר: ${company.notes ?? 'אין'}
+- נתוני מחקר: ${company.notes ?? 'אין'}${instructionsBlock}
 
 צור JSON בלבד (ללא markdown) עם המבנה הבא:
 
@@ -33,8 +82,8 @@ function buildPrompt(company: Record<string, unknown>): string {
   "email_body": "מייל cold outreach ב-3-4 משפטים. מתייחס לחולשה ספציפית של העסק. מסתיים בהצעה לשיחה של 10 דקות. אל תכלול לינקים — הם יתווספו אוטומטית בסוף.",
   "page": {
     "template_type": "בחר תבנית: hair-salon (מספרה/סלון שיער/ברבר), vet-clinic (וטרינר/מרפאה לחיות), beauty (ציפורניים/קוסמטיקה/ספא/מכון יופי), auto (מוסך/מכניקה/רכב/גרר/פחחות), photographer (צלם/צילום/וידאו/קמרמן/הפקה), generic (כל שאר התחומים)",
-    "brand_color": "צבע HEX ראשי שמתאים לתחום העסק ומרגיש מקצועי (לדוגמה: #1B6CA8 לקליניקה, #2D7D46 לטבע ובריאות, #C0392B לאוכל, #7B2D8B ליופי). אל תשתמש בגוונים בהירים מדי.",
-    "brand_light": "גרסה בהירה מאוד של brand_color לרקע (לדוגמה: #EEF6FF, #EDFBF3). חייב להיות בהיר מאוד, כמעט לבן.",
+    "brand_color": "צבע HEX ראשי שמתאים לתחום העסק ומרגיש מקצועי",
+    "brand_light": "גרסה בהירה מאוד של brand_color לרקע. חייב להיות בהיר מאוד, כמעט לבן.",
     "tagline": "משפט אחד חזק שמתייחס לבעיה העיקרית של העסק (בעברית)",
     "hero_description": "2-3 משפטים שמסבירים מה אנחנו מציעים לעסק הזה ספציפית",
     "pain_points": [
@@ -66,47 +115,36 @@ function buildPrompt(company: Record<string, unknown>): string {
     "potential_impact": "תיאור הפוטנציאל של העסק אם ישתפר דיגיטלית"
   }
 }`
-}
 
-async function resolveCompany(
-  supabase: ReturnType<typeof getSupabaseAdmin>,
-  companyId: string | null,
-): Promise<{ company: Record<string, unknown>; queueRemaining: number } | { error: string; status: number } | { noPending: true }> {
-  if (companyId) {
-    const { data, error } = await supabase
-      .from('companies')
-      .select('*, content(*)')
-      .eq('id', companyId)
-      .single()
-    if (error || !data) return { error: error?.message ?? 'not_found', status: 404 }
-    return { company: data, queueRemaining: 0 }
+  onProgress(3, 'מייצר תוכן עם Claude...')
+
+  const message = await client.messages.create({
+    model:      'claude-sonnet-4-6',
+    max_tokens: 4096,
+    system:     'You are a JSON API. Return only valid JSON, no markdown, no extra text.',
+    messages:   [{ role: 'user', content: prompt }],
+  })
+
+  onProgress(4, 'שומר תוכן...')
+
+  const raw   = (message.content[0] as { type: string; text: string }).text.trim()
+  const match = raw.match(/\{[\s\S]*\}/)
+  if (!match) return { ok: false, error: 'bad_response', status: 500 }
+
+  let jsonStr   = match[0]
+  let generated: Record<string, unknown>
+  try {
+    generated = JSON.parse(jsonStr)
+  } catch {
+    const lastBrace = jsonStr.lastIndexOf('}')
+    if (lastBrace < 0) return { ok: false, error: 'bad_json', status: 500 }
+    jsonStr = jsonStr.slice(0, lastBrace + 1)
+    try { generated = JSON.parse(jsonStr) }
+    catch { return { ok: false, error: 'bad_json', status: 500 } }
   }
 
-  const { data: companies, error: fetchErr } = await supabase
-    .from('companies')
-    .select('*, content(*)')
-    .eq('status', 'high_score')
-    .order('created_at', { ascending: true })
-    .limit(20)
-
-  if (fetchErr) return { error: fetchErr.message, status: 500 }
-
-  const queue = (companies ?? []).filter(
-    (c: { content?: unknown[] }) => !c.content || (c.content as unknown[]).length === 0
-  )
-  if (queue.length === 0) return { noPending: true }
-
-  return { company: queue[0], queueRemaining: queue.length - 1 }
-}
-
-async function saveContent(
-  supabase: ReturnType<typeof getSupabaseAdmin>,
-  company: Record<string, unknown>,
-  generated: Record<string, unknown>,
-) {
-  const slug = buildSlug(String(company.name ?? ''), String(company.id))
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://lead-platform-yoni.vercel.app'
-  const pageUrl = `${baseUrl}/leads/${slug}`
+  const baseUrl   = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://lead-platform-yoni.vercel.app'
+  const pageUrl   = `${baseUrl}/leads/${slug}`
   const reportUrl = `${baseUrl}/leads/${slug}/report`
 
   const emailBodyWithLinks = `${generated.email_body}
@@ -132,7 +170,7 @@ async function saveContent(
     .select()
     .single()
 
-  if (contentErr) throw new Error(contentErr.message)
+  if (contentErr) return { ok: false, error: contentErr.message, status: 500 }
 
   await supabase
     .from('companies')
@@ -147,12 +185,18 @@ async function saveContent(
     payload:    { email_subject: generated.email_subject, slug, content_id: content.id },
   })
 
-  return { content, slug, pageUrl, reportUrl, emailSubject: generated.email_subject }
+  return {
+    ok: true,
+    company: { id: company.id, name: company.name, industry: company.industry },
+    content: { email_subject: generated.email_subject, page_url: pageUrl, report_url: reportUrl },
+    queueRemaining,
+  }
 }
 
 // ── SSE streaming path ─────────────────────────────────────────────────────────
-async function handleStream(companyId: string | null): Promise<Response> {
+function handleStream(companyId: string | null, instructions: string | null): Response {
   const encoder = new TextEncoder()
+
   function sse(event: string, data: unknown): Uint8Array {
     return encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
   }
@@ -160,66 +204,20 @@ async function handleStream(companyId: string | null): Promise<Response> {
   const readable = new ReadableStream({
     async start(controller) {
       try {
-        const supabase = getSupabaseAdmin()
-
-        controller.enqueue(sse('progress', { step: 1, message: 'מאתר את הליד הבא בתור...' }))
-
-        const resolved = await resolveCompany(supabase, companyId)
-        if ('noPending' in resolved) {
-          controller.enqueue(sse('done', { message: 'no_pending', detail: 'אין לקוחות בתור' }))
-          controller.close()
-          return
-        }
-        if ('error' in resolved) {
-          controller.enqueue(sse('error', { error: resolved.error }))
-          controller.close()
-          return
-        }
-
-        const { company, queueRemaining } = resolved
-
-        controller.enqueue(sse('progress', {
-          step: 2,
-          message: `מייצר תוכן עבור ${String(company.name)}...`,
-          company_name: String(company.name),
-        }))
-
-        const prompt = buildPrompt(company)
-
-        controller.enqueue(sse('progress', { step: 3, message: 'בונה אימייל ועמוד נחיתה...' }))
-
-        const message = await client.messages.create({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 4096,
-          system: 'You are a JSON API. Return only valid JSON, no markdown, no extra text.',
-          messages: [{ role: 'user', content: prompt }],
+        const result = await runGeneration(companyId, instructions, (step, message) => {
+          controller.enqueue(sse('progress', { step, message }))
         })
-
-        controller.enqueue(sse('progress', { step: 4, message: 'שומר ומפרסם...' }))
-
-        const raw   = (message.content[0] as { type: string; text: string }).text.trim()
-        const match = raw.match(/\{[\s\S]*\}/)
-        if (!match) { controller.enqueue(sse('error', { error: 'bad_response' })); controller.close(); return }
-
-        let jsonStr = match[0]
-        let generated: Record<string, unknown>
-        try {
-          generated = JSON.parse(jsonStr)
-        } catch {
-          const lastBrace = jsonStr.lastIndexOf('}')
-          if (lastBrace < 0) { controller.enqueue(sse('error', { error: 'bad_json' })); controller.close(); return }
-          jsonStr = jsonStr.slice(0, lastBrace + 1)
-          try { generated = JSON.parse(jsonStr) }
-          catch { controller.enqueue(sse('error', { error: 'bad_json' })); controller.close(); return }
+        if (result.ok === 'no_pending') {
+          controller.enqueue(sse('done', { message: 'no_pending' }))
+        } else if (result.ok === true) {
+          controller.enqueue(sse('done', {
+            company:         result.company,
+            content:         result.content,
+            queue_remaining: result.queueRemaining,
+          }))
+        } else {
+          controller.enqueue(sse('error', { error: result.error }))
         }
-
-        const saved = await saveContent(supabase, company, generated)
-
-        controller.enqueue(sse('done', {
-          company:         { id: company.id, name: company.name, industry: company.industry },
-          content:         { email_subject: saved.emailSubject, page_url: saved.pageUrl, report_url: saved.reportUrl },
-          queue_remaining: queueRemaining,
-        }))
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : 'Unknown error'
         const isCredits = msg.includes('credit') || msg.includes('billing') || msg.includes('quota')
@@ -238,58 +236,29 @@ async function handleStream(companyId: string | null): Promise<Response> {
   })
 }
 
-// ── JSON path (used by cron) ───────────────────────────────────────────────────
+// ── Entry point ────────────────────────────────────────────────────────────────
 export async function POST(req: Request) {
-  const url       = new URL(req.url)
-  const companyId = url.searchParams.get('company_id')
+  const url        = new URL(req.url)
+  const companyId  = url.searchParams.get('company_id')
+  const wantStream = url.searchParams.get('stream') === 'true'
 
-  if (url.searchParams.get('stream') === 'true') {
-    return handleStream(companyId)
-  }
-
-  const supabase = getSupabaseAdmin()
-  const resolved = await resolveCompany(supabase, companyId)
-
-  if ('noPending' in resolved) {
-    return NextResponse.json({ message: 'no_pending', detail: 'אין לקוחות בתור' })
-  }
-  if ('error' in resolved) {
-    return NextResponse.json({ error: resolved.error }, { status: resolved.status })
-  }
-
-  const { company, queueRemaining } = resolved
-
+  let instructions: string | null = null
   try {
-    const prompt = buildPrompt(company)
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
-      system: 'You are a JSON API. Return only valid JSON, no markdown, no extra text.',
-      messages: [{ role: 'user', content: prompt }],
-    })
+    const body = await req.json()
+    instructions = (body?.instructions as string) ?? null
+  } catch { /* body may be empty */ }
 
-    const raw   = (message.content[0] as { type: string; text: string }).text.trim()
-    const match = raw.match(/\{[\s\S]*\}/)
-    if (!match) return NextResponse.json({ error: 'bad_response' }, { status: 500 })
+  if (wantStream) return handleStream(companyId, instructions)
 
-    let jsonStr = match[0]
-    let generated: Record<string, unknown>
-    try {
-      generated = JSON.parse(jsonStr)
-    } catch {
-      const lastBrace = jsonStr.lastIndexOf('}')
-      if (lastBrace < 0) return NextResponse.json({ error: 'bad_json' }, { status: 500 })
-      jsonStr = jsonStr.slice(0, lastBrace + 1)
-      try { generated = JSON.parse(jsonStr) }
-      catch { return NextResponse.json({ error: 'bad_json' }, { status: 500 }) }
-    }
-
-    const saved = await saveContent(supabase, company, generated)
-
+  // ── Legacy JSON path (used by cron) ─────────────────────────────────────────
+  try {
+    const result = await runGeneration(companyId, instructions, () => {})
+    if (result.ok === 'no_pending') return NextResponse.json({ message: 'no_pending' })
+    if (result.ok === false) return NextResponse.json({ error: result.error }, { status: result.status })
     return NextResponse.json({
-      company:         { id: company.id, name: company.name, industry: company.industry },
-      content:         { email_subject: saved.emailSubject, page_url: saved.pageUrl, report_url: saved.reportUrl },
-      queue_remaining: queueRemaining,
+      company:         result.company,
+      content:         result.content,
+      queue_remaining: result.queueRemaining,
     })
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Unknown error'

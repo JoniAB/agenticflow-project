@@ -47,6 +47,7 @@ function toCardData(c: OutreachRow): ClientCardData {
       reply_preview:    c.outreach.reply_preview,
       gmail_thread_id:  c.outreach.gmail_thread_id,
       replied_at:       c.outreach.replied_at,
+      recipient_email:  c.outreach.recipient_email,
     } : null,
   }
 }
@@ -137,7 +138,7 @@ export function OutreachTable({ companies }: { companies: OutreachRow[] }) {
                     </td>
                     <td className="px-4 py-3.5 max-w-[200px]">
                       {o?.reply_preview
-                        ? <span className="flex items-center gap-1 text-xs text-gray-500"><MessageCircle size={11} className="text-gray-300 shrink-0"/><span className="truncate">{o.reply_preview}</span></span>
+                        ? <span className="flex items-center gap-1 text-xs text-gray-500"><MessageCircle size={11} className="text-gray-300 shrink-0"/><span className="truncate" dir="rtl">{o.reply_preview}</span></span>
                         : o?.gmail_thread_id
                           ? <a href={`https://mail.google.com/mail/u/0/#inbox/${o.gmail_thread_id}`} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700"><ExternalLink size={11}/>Open thread</a>
                           : <span className="text-gray-400 text-xs">—</span>}

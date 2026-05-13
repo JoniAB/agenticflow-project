@@ -7,9 +7,10 @@ import { CheckCircle, Loader2 } from 'lucide-react'
 interface ApproveButtonProps {
   companyId: string
   companyName: string
+  onApproved?: () => void
 }
 
-export function ApproveButton({ companyId, companyName }: ApproveButtonProps) {
+export function ApproveButton({ companyId, companyName, onApproved }: ApproveButtonProps) {
   const [isPending, startTransition] = useTransition()
   const [done, setDone] = useState(false)
   const router = useRouter()
@@ -25,7 +26,10 @@ export function ApproveButton({ companyId, companyName }: ApproveButtonProps) {
         body: JSON.stringify({ status: 'approved' }),
       })
       setDone(true)
-      setTimeout(() => router.refresh(), 600)
+      setTimeout(() => {
+        onApproved?.()
+        router.refresh()
+      }, 500)
     })
   }
 

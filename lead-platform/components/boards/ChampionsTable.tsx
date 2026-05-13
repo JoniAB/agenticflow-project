@@ -7,11 +7,13 @@ import { ScoreBar } from '@/components/ui/ScoreBar'
 import { StatusDot } from '@/components/ui/StatusDot'
 import { Tooltip } from '@/components/ui/Tooltip'
 import { formatRelativeDate, cn } from '@/lib/utils'
+import { useFetchState } from '@/components/providers/FetchStateProvider'
+import type { FetchResult } from '@/components/providers/FetchStateProvider'
 import {
   ExternalLink, Globe, ChevronDown, ChevronRight,
   Phone, Mail, User, Globe2, MessageCircle, Star,
   CalendarCheck, Image, CheckCircle2, XCircle,
-  Search, Plus, Loader2, AlertCircle, Zap, Trash2,
+  Search, Plus, Loader2, AlertCircle, Zap, Trash2, ArrowRight,
 } from 'lucide-react'
 
 type Filter = 'all' | 'linkedin' | 'google_maps' | 'other'
@@ -59,8 +61,8 @@ function ExpandedRow({ company, colSpan }: { company: Company; colSpan: number }
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-2">למה נבחר</p>
             {company.notes
-              ? <p className="text-sm text-gray-700 leading-relaxed">{company.notes}</p>
-              : <p className="text-sm text-gray-400 italic">אין נתוני מחקר</p>}
+              ? <p className="text-sm text-gray-700 leading-relaxed" dir="rtl">{company.notes}</p>
+              : <p className="text-sm text-gray-400 italic" dir="rtl">אין נתוני מחקר</p>}
           </div>
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-2">פרטי קשר</p>
@@ -128,26 +130,21 @@ function ExpandedRow({ company, colSpan }: { company: Company; colSpan: number }
 
 // ─── Fetch result card ────────────────────────────────────────────────────────
 
-interface FetchResult {
-  name: string; domain?: string; industry?: string
-  contact_phone?: string; contact_email?: string
-  score?: number; weakness_summary?: string; city?: string
-}
-
 function ScoreChip({ score }: { score?: number }) {
   if (!score) return null
   const color = score <= 3 ? 'bg-red-100 text-red-600' : score <= 5 ? 'bg-orange-100 text-orange-600' : 'bg-amber-100 text-amber-600'
   return <span className={cn('text-[11px] font-semibold px-2 py-0.5 rounded-full', color)}>{score}/10</span>
 }
 
-function FetchResultCard({
-  biz, onAdd, adding, added,
-}: { biz: FetchResult; onAdd: () => void; adding: boolean; added: boolean }) {
+function FetchResultCard({ biz }: { biz: FetchResult }) {
+  const { addToDB, adding, added } = useFetchState()
+  const isAdding = adding === biz.name
+  const isAdded  = added.has(biz.name)
   return (
     <div className={cn(
       'border rounded-xl p-3.5 transition-all duration-300',
-      added ? 'opacity-40 scale-95 pointer-events-none border-gray-100 bg-gray-50'
-             : 'bg-white border-gray-200 hover:border-indigo-200 hover:shadow-sm'
+      isAdded ? 'opacity-40 scale-95 pointer-events-none border-gray-100 bg-gray-50'
+              : 'bg-white border-gray-200 hover:border-indigo-200 hover:shadow-sm'
     )}>
       <div className="flex items-start justify-between gap-2 mb-1.5">
         <div className="min-w-0">
@@ -160,16 +157,16 @@ function FetchResultCard({
           )}
         </div>
         <button
-          onClick={onAdd}
-          disabled={adding || added}
+          onClick={() => addToDB(biz)}
+          disabled={isAdding || isAdded}
           className={cn(
             'shrink-0 p-1.5 rounded-lg transition-colors',
-            added   ? 'bg-emerald-100 text-emerald-500 cursor-default'
-            : adding ? 'bg-gray-100 text-gray-400 cursor-wait'
-                     : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
+            isAdded  ? 'bg-emerald-100 text-emerald-500 cursor-default'
+            : isAdding ? 'bg-gray-100 text-gray-400 cursor-wait'
+                       : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'
           )}
         >
-          {added ? <CheckCircle2 size={14} /> : adding ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
+          {isAdded ? <CheckCircle2 size={14} /> : isAdding ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
         </button>
       </div>
       {biz.weakness_summary && (
@@ -185,46 +182,9 @@ function FetchResultCard({
 
 // ─── Fetch bar (controls only) ────────────────────────────────────────────────
 
-interface FetchBarProps {
-  onLoading: (loading: boolean, auto: boolean) => void
-  onResults: (results: FetchResult[], industry: string | null) => void
-  onError:   (msg: string | null) => void
-  loading:   boolean
-}
-
-function FetchBar({ onLoading, onResults, onError, loading }: FetchBarProps) {
-  const [query,    setQuery]    = useState('')
-  const [autoMode, setAutoMode] = useState(false)
-
-  async function run(mode: 'manual' | 'auto') {
-    if (loading) return
-    if (mode === 'manual' && !query.trim()) return
-    const isAuto = mode === 'auto'
-    setAutoMode(isAuto)
-    onLoading(true, isAuto)
-    onError(null)
-    onResults([], null)
-
-    try {
-      const res = await fetch('/api/fetch-businesses', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(isAuto ? { mode: 'auto' } : { query }),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        onError(data.error === 'no_credits'
-          ? 'אין קרדיטים ב-Anthropic API — הוסף כדי להפעיל את הסוכנים'
-          : (data.error ?? 'שגיאה'))
-        return
-      }
-      onResults(data.businesses ?? [], data.auto_industry ?? null)
-    } catch {
-      onError('שגיאת רשת — נסה שוב')
-    } finally {
-      onLoading(false, isAuto)
-    }
-  }
+function FetchBar() {
+  const { run, loading, autoMode } = useFetchState()
+  const [query, setQuery] = useState('')
 
   return (
     <div className="flex items-center gap-2">
@@ -232,14 +192,14 @@ function FetchBar({ onLoading, onResults, onError, loading }: FetchBarProps) {
         type="text"
         value={query}
         onChange={e => setQuery(e.target.value)}
-        onKeyDown={e => e.key === 'Enter' && run('manual')}
+        onKeyDown={e => e.key === 'Enter' && run('manual', query)}
         placeholder="שם עסק, תחום, מספר טלפון..."
         className="w-56 text-sm px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 placeholder:text-gray-300 text-right"
         dir="rtl"
       />
       <Tooltip text="חפש עסק לפי שאילתה">
         <button
-          onClick={() => run('manual')}
+          onClick={() => run('manual', query)}
           disabled={loading || !query.trim()}
           className={cn(
             'flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap',
@@ -275,9 +235,26 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
   const [filter,   setFilter]   = useState<Filter>('all')
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [search,   setSearch]   = useState('')
-  const [deleting, setDeleting] = useState<string | null>(null)
+  const [deleting,  setDeleting]  = useState<string | null>(null)
+  const [promoting, setPromoting] = useState<string | null>(null)
   const [localRows, setLocalRows] = useState<Company[]>(companies)
-  const router = useRouter()
+  const router  = useRouter()
+  const fetch$  = useFetchState()
+
+  async function promoteCompany(id: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    setPromoting(id)
+    try {
+      await fetch(`/api/companies/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'X-Agent-Key': 'yoni-agent-key-2025' },
+        body: JSON.stringify({ status: 'high_score' }),
+      })
+      setLocalRows(prev => prev.filter(c => c.id !== id))
+    } finally {
+      setPromoting(null)
+    }
+  }
 
   async function deleteCompany(id: string, name: string, e: React.MouseEvent) {
     e.stopPropagation()
@@ -288,45 +265,6 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
       setLocalRows(prev => prev.filter(c => c.id !== id))
     } finally {
       setDeleting(null)
-    }
-  }
-
-  // Fetch panel state — lifted here so panel renders full-width
-  const [fetchLoading,  setFetchLoading]  = useState(false)
-  const [fetchAutoMode, setFetchAutoMode] = useState(false)
-  const [fetchResults,  setFetchResults]  = useState<FetchResult[]>([])
-  const [fetchIndustry, setFetchIndustry] = useState<string | null>(null)
-  const [fetchError,    setFetchError]    = useState<string | null>(null)
-  const [fetchOpen,     setFetchOpen]     = useState(false)
-  const [added,  setAdded]  = useState<Set<string>>(new Set())
-  const [adding, setAdding] = useState<string | null>(null)
-
-  function handleLoading(loading: boolean, auto: boolean) {
-    setFetchLoading(loading)
-    setFetchAutoMode(auto)
-    if (loading) setFetchOpen(true)
-  }
-
-  async function addToDB(biz: FetchResult) {
-    if (adding === biz.name || added.has(biz.name)) return
-    setAdding(biz.name)
-    try {
-      const res = await fetch('/api/companies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Agent-Key': 'yoni-agent-key-2025' },
-        body: JSON.stringify({
-          name: biz.name, domain: biz.domain, industry: biz.industry,
-          contact_phone: biz.contact_phone, contact_email: biz.contact_email,
-          score: biz.score, notes: biz.weakness_summary,
-          source: 'google_maps', status: 'potential',
-        }),
-      })
-      if (res.ok) {
-        setAdded(prev => new Set([...prev, biz.name]))
-        router.refresh()
-      }
-    } finally {
-      setAdding(null)
     }
   }
 
@@ -366,52 +304,63 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
           </Tooltip>
         </div>
         <div className="shrink-0 pt-1">
-          <FetchBar
-            loading={fetchLoading}
-            onLoading={handleLoading}
-            onResults={(r, ind) => { setFetchResults(r); setFetchIndustry(ind); setAdded(new Set()) }}
-            onError={setFetchError}
-          />
+          <FetchBar />
         </div>
       </div>
 
       {/* ── Full-width fetch results panel ── */}
-      {fetchOpen && (
+      {fetch$.open && (
         <div className="mt-5 border border-indigo-100 rounded-2xl bg-indigo-50/40 p-4">
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-              {fetchLoading
-                ? (fetchAutoMode ? 'הסוכן מחפש עסקים...' : 'מחפש...')
-                : fetchIndustry
-                  ? `תוצאות: ${fetchIndustry}`
-                  : `נמצאו ${fetchResults.length} עסקים`}
+              {fetch$.loading
+                ? 'סוכן פעיל'
+                : fetch$.industry
+                  ? `תוצאות: ${fetch$.industry}`
+                  : `נמצאו ${fetch$.results.length} עסקים`}
             </p>
-            <button onClick={() => setFetchOpen(false)} className="text-xs text-gray-400 hover:text-gray-600">סגור ✕</button>
+            <button onClick={() => fetch$.setOpen(false)} className="text-xs text-gray-400 hover:text-gray-600">סגור ✕</button>
           </div>
 
-          {fetchLoading && (
-            <div className="flex items-center justify-center py-8 gap-2 text-sm text-indigo-400">
-              <Loader2 size={16} className="animate-spin" />
-              {fetchAutoMode ? 'הסוכן בוחר תעשייה ומחפש עסקים...' : 'מחפש עסקים רלוונטים...'}
+          {fetch$.loading && (
+            <div className="flex flex-col items-center justify-center py-10 gap-4">
+              <div className="relative">
+                <div className="w-12 h-12 rounded-full border-2 border-indigo-100 flex items-center justify-center">
+                  <Loader2 size={20} className="animate-spin text-indigo-500" />
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-semibold text-indigo-700 transition-all duration-300">
+                  {fetch$.statusMessage ?? 'מתחיל...'}
+                </p>
+                <p className="text-xs text-gray-400 mt-1">הסוכן עובד, זה יכול לקחת כמה שניות</p>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {[1, 2, 3, 4, 5].map(step => (
+                  <div
+                    key={step}
+                    className={cn(
+                      'h-1.5 rounded-full transition-all duration-500',
+                      fetch$.statusStep >= step
+                        ? 'w-5 bg-indigo-400'
+                        : 'w-1.5 bg-gray-200'
+                    )}
+                  />
+                ))}
+              </div>
             </div>
           )}
 
-          {fetchError && (
+          {fetch$.error && (
             <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-600">
-              <AlertCircle size={14} className="shrink-0 mt-0.5" />{fetchError}
+              <AlertCircle size={14} className="shrink-0 mt-0.5" />{fetch$.error}
             </div>
           )}
 
-          {!fetchLoading && fetchResults.length > 0 && (
+          {!fetch$.loading && fetch$.results.length > 0 && (
             <div className="grid grid-cols-3 gap-3">
-              {fetchResults.map(biz => (
-                <FetchResultCard
-                  key={biz.name}
-                  biz={biz}
-                  onAdd={() => addToDB(biz)}
-                  adding={adding === biz.name}
-                  added={added.has(biz.name)}
-                />
+              {fetch$.results.map(biz => (
+                <FetchResultCard key={biz.name} biz={biz} />
               ))}
             </div>
           )}
@@ -514,8 +463,13 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
                       {c.contact_name ?? '—'}
                       {c.contact_phone && <span className="block text-gray-400">{c.contact_phone}</span>}
                     </td>
-                    <td className="px-4 py-3.5 text-gray-400 text-xs whitespace-nowrap">
-                      {formatRelativeDate(c.created_at)}
+                    <td className="px-4 py-3.5 whitespace-nowrap">
+                      <span className="text-xs text-gray-500">{formatRelativeDate(c.created_at)}</span>
+                      {c.created_at && (
+                        <span className="block text-[10px] text-gray-300 mt-0.5">
+                          {new Date(c.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                        </span>
+                      )}
                     </td>
                     <td className="py-3.5 px-4">
                       <StatusDot status={c.status} />
@@ -537,6 +491,16 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
                             <Globe size={12} />
                           </a>
                         )}
+                        <button
+                          onClick={e => promoteCompany(c.id, e)}
+                          disabled={promoting === c.id}
+                          className="p-1 rounded text-gray-300 hover:text-indigo-500 transition-colors disabled:opacity-40"
+                          title="העבר ללקוחות פוטנציאליים"
+                        >
+                          {promoting === c.id
+                            ? <Loader2 size={12} className="animate-spin" />
+                            : <ArrowRight size={12} />}
+                        </button>
                         <button
                           onClick={e => deleteCompany(c.id, c.name, e)}
                           disabled={deleting === c.id}

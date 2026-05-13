@@ -30,6 +30,7 @@ function toCardData(c: HistoryRow): ClientCardData {
       reply_preview:   c.outreach.reply_preview,
       gmail_thread_id: c.outreach.gmail_thread_id,
       replied_at:      c.outreach.replied_at,
+      recipient_email: c.outreach.recipient_email,
     } : null,
   }
 }

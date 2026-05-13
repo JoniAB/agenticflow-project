@@ -32,6 +32,7 @@ export interface ClientCardData {
     reply_preview?: string | null
     gmail_thread_id?: string | null
     replied_at?: string | null
+    recipient_email?: string | null
   } | null
 }
 
@@ -64,8 +65,8 @@ function ResearchSection({ data }: { data: ClientCardData }) {
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-2">למה נבחר</p>
         {data.notes
-          ? <p className="text-sm text-gray-700 leading-relaxed">{data.notes}</p>
-          : <p className="text-sm text-gray-400 italic">אין נתוני מחקר</p>}
+          ? <p className="text-sm text-gray-700 leading-relaxed" dir="rtl">{data.notes}</p>
+          : <p className="text-sm text-gray-400 italic" dir="rtl">אין נתוני מחקר</p>}
       </div>
 
       {/* Contact */}
@@ -83,13 +84,15 @@ function ResearchSection({ data }: { data: ClientCardData }) {
               <a href={`tel:${data.contact_phone}`} className="hover:text-indigo-600">{data.contact_phone}</a>
             </div>
           )}
-          {data.contact_email && (
+          {(data.contact_email || data.outreach?.recipient_email) && (
             <div className="flex items-center gap-2 text-sm text-gray-700">
               <Mail size={13} className="text-gray-400 shrink-0" />
-              <a href={`mailto:${data.contact_email}`} className="hover:text-indigo-600 truncate">{data.contact_email}</a>
+              <a href={`mailto:${data.contact_email ?? data.outreach?.recipient_email}`} className="hover:text-indigo-600 truncate">
+                {data.contact_email ?? data.outreach?.recipient_email}
+              </a>
             </div>
           )}
-          {data.domain && (
+          {data.domain && !data.domain.includes('agenticflow-pages') && (
             <div className="flex items-center gap-2 text-sm text-gray-700">
               <Globe size={13} className="text-gray-400 shrink-0" />
               <a href={data.domain.startsWith('http') ? data.domain : `https://${data.domain}`}
@@ -99,7 +102,7 @@ function ResearchSection({ data }: { data: ClientCardData }) {
               </a>
             </div>
           )}
-          {!data.contact_name && !data.contact_phone && !data.contact_email && !data.domain && (
+          {!data.contact_name && !data.contact_phone && !data.contact_email && !data.outreach?.recipient_email && !data.domain && (
             <p className="text-sm text-gray-400 italic">אין פרטי קשר</p>
           )}
         </div>
@@ -174,12 +177,12 @@ function ContentSection({ content }: { content: NonNullable<ClientCardData['cont
         </div>
       </div>
       {content.email_subject && (
-        <p className="text-sm font-semibold text-gray-900 mb-1 flex items-center gap-1.5">
+        <p className="text-sm font-semibold text-gray-900 mb-1 flex items-center gap-1.5" dir="rtl">
           <Mail size={13} className="text-gray-400 shrink-0" />{content.email_subject}
         </p>
       )}
       {content.email_body && (
-        <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{content.email_body}</p>
+        <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap" dir="rtl">{content.email_body}</p>
       )}
     </div>
   )
@@ -198,9 +201,9 @@ function ReplySection({ outreach }: { outreach: NonNullable<ClientCardData['outr
         )}
       </div>
       {outreach.reply_body
-        ? <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{outreach.reply_body}</p>
+        ? <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap" dir="rtl">{outreach.reply_body}</p>
         : outreach.reply_preview
-          ? <p className="text-sm text-gray-800 leading-relaxed">{outreach.reply_preview}</p>
+          ? <p className="text-sm text-gray-800 leading-relaxed" dir="rtl">{outreach.reply_preview}</p>
           : outreach.gmail_thread_id
             ? <a href={`https://mail.google.com/mail/u/0/#inbox/${outreach.gmail_thread_id}`}
                 target="_blank" rel="noopener noreferrer"
@@ -219,7 +222,7 @@ export function ClientCardContent({ data }: { data: ClientCardData }) {
   const hasReply    = !!data.outreach?.replied
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-xl p-5">
+    <div className="bg-gray-50 border border-gray-200 rounded-xl p-5" dir="rtl">
       <ResearchSection data={data} />
       {hasContent  && <ContentSection content={data.content!} />}
       {hasReply    && <ReplySection outreach={data.outreach!} />}
