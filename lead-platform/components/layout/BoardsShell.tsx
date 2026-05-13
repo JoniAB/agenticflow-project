@@ -2,6 +2,7 @@
 
 import { Sidebar } from '@/components/layout/Sidebar'
 import { BulkActionBar } from '@/components/boards/BulkActionBar'
+import { AutoContentRunner } from '@/components/providers/AutoContentRunner'
 
 export function BoardsShell({ children }: { children: React.ReactNode }) {
   return (
@@ -11,6 +12,7 @@ export function BoardsShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <BulkActionBar />
+      <AutoContentRunner />
     </div>
   )
 }

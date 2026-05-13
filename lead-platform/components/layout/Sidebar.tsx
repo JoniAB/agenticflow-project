@@ -71,31 +71,44 @@ const AGENTS_NAV = [
   { href: '/boards/chat', label: 'Chat with Agents', hebrew: 'שיחה עם סוכנים', icon: MessageSquare, segment: 'chat' },
 ]
 
-type RunStatus = 'idle' | 'loading' | 'done' | 'no_pending' | 'error'
+type RunStatus = 'idle' | 'auto' | 'loading' | 'done' | 'no_pending' | 'error'
 
 function ContentGenButton() {
-  const [status, setStatus] = useState<RunStatus>('idle')
+  const [status,      setStatus]      = useState<RunStatus>('idle')
   const [lastCompany, setLastCompany] = useState<string | null>(null)
+
+  // Reflect AutoContentRunner state
+  useEffect(() => {
+    function onStart()  { setStatus('auto') }
+    function onDone(e: Event) {
+      const d = (e as CustomEvent<{ name?: string }>).detail
+      setLastCompany(d?.name ?? null)
+      setStatus('auto')
+    }
+    function onIdle()   { setStatus(prev => prev === 'auto' ? 'done' : prev); setTimeout(() => setStatus('idle'), 3000) }
+    window.addEventListener('auto-gen-start', onStart)
+    window.addEventListener('auto-gen-done',  onDone)
+    window.addEventListener('auto-gen-idle',  onIdle)
+    return () => {
+      window.removeEventListener('auto-gen-start', onStart)
+      window.removeEventListener('auto-gen-done',  onDone)
+      window.removeEventListener('auto-gen-idle',  onIdle)
+    }
+  }, [])
 
   async function run(e: React.MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
-    if (status === 'loading') return
+    if (status === 'loading' || status === 'auto') return
     setStatus('loading')
     setLastCompany(null)
 
     try {
       const res  = await fetch('/api/generate-content/next', { method: 'POST' })
       const data = await res.json()
-
-      if (!res.ok) {
-        setStatus('error')
-      } else if (data.message === 'no_pending') {
-        setStatus('no_pending')
-      } else {
-        setLastCompany(data.company?.name ?? null)
-        setStatus('done')
-      }
+      if (!res.ok)                      setStatus('error')
+      else if (data.message === 'no_pending') setStatus('no_pending')
+      else { setLastCompany(data.company?.name ?? null); setStatus('done') }
     } catch {
       setStatus('error')
     } finally {
@@ -104,6 +117,7 @@ function ContentGenButton() {
   }
 
   const icon =
+    status === 'auto'       ? <Loader2    size={11} className="animate-spin text-indigo-300" /> :
     status === 'loading'    ? <Loader2    size={11} className="animate-spin" /> :
     status === 'done'       ? <CheckCircle2 size={11} className="text-emerald-400" /> :
     status === 'no_pending' ? <CheckCircle2 size={11} className="text-gray-400" /> :
@@ -111,6 +125,7 @@ function ContentGenButton() {
                               <Play       size={11} />
 
   const tip =
+    status === 'auto'       ? (lastCompany ? `⚡ מייצר: ${lastCompany}` : '⚡ אוטומטי פעיל...') :
     status === 'loading'    ? 'מייצר תוכן...' :
     status === 'done'       ? (lastCompany ? `✓ ${lastCompany}` : 'נוצר בהצלחה') :
     status === 'no_pending' ? 'אין לקוחות בתור' :

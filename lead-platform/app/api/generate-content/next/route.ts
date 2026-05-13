@@ -240,7 +240,14 @@ function handleStream(companyId: string | null, instructions: string | null): Re
   })
 }
 
-// ── Entry point ────────────────────────────────────────────────────────────────
+// ── GET — used by EventSource (AutoContentRunner) ─────────────────────────────
+export async function GET(req: Request) {
+  const url       = new URL(req.url)
+  const companyId = url.searchParams.get('company_id')
+  return handleStream(companyId, null)
+}
+
+// ── POST ───────────────────────────────────────────────────────────────────────
 export async function POST(req: Request) {
   const url        = new URL(req.url)
   const companyId  = url.searchParams.get('company_id')

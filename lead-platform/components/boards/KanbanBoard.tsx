@@ -24,7 +24,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { cn } from '@/lib/utils'
 import { useSelection } from '@/components/providers/SelectionProvider'
 import type { Company, CompanyStatus } from '@/lib/types'
-import { Search, Users, FileText, Send, Mail, PauseCircle, GripVertical, Layers } from 'lucide-react'
+import { Users, FileText, Send, PauseCircle, GripVertical, Layers } from 'lucide-react'
 
 // ─── Column definitions ───────────────────────────────────────────────────────
 
@@ -40,12 +40,10 @@ type ColumnDef = {
 }
 
 const COLUMNS: ColumnDef[] = [
-  { id: 'prospects', label: 'Prospect Research',  icon: Search,       dropStatus: 'potential',         statuses: ['potential', 'research_incomplete'],                   border: 'border-blue-200',   header: 'bg-blue-50 text-blue-700',     over: 'bg-blue-50'    },
   { id: 'potential', label: 'Potential Clients',  icon: Users,        dropStatus: 'high_score',        statuses: ['high_score', 'in_research'],                          border: 'border-indigo-200', header: 'bg-indigo-50 text-indigo-700', over: 'bg-indigo-50'  },
   { id: 'content',   label: 'Content Generation', icon: FileText,     dropStatus: 'content_ready',     statuses: ['content_ready'],                                     border: 'border-violet-200', header: 'bg-violet-50 text-violet-700', over: 'bg-violet-50'  },
-  { id: 'approval',  label: 'Ready to Send',       icon: Send,         dropStatus: 'awaiting_approval', statuses: ['awaiting_approval', 'approved', 'edit_required'],     border: 'border-emerald-200',header: 'bg-emerald-50 text-emerald-700',over: 'bg-emerald-50' },
-  { id: 'mail',      label: 'Mail',                icon: Mail,         dropStatus: 'sent',              statuses: ['sent', 'replied', 'followup_sent', 'send_failed'],    border: 'border-orange-200', header: 'bg-orange-50 text-orange-700', over: 'bg-orange-50'  },
-  { id: 'standby',   label: 'Standby',             icon: PauseCircle,  dropStatus: 'standby',           statuses: ['standby'],                                           border: 'border-gray-200',   header: 'bg-gray-100 text-gray-600',    over: 'bg-gray-100'   },
+  { id: 'approval',  label: 'Ready to Send',      icon: Send,         dropStatus: 'awaiting_approval', statuses: ['awaiting_approval', 'approved', 'edit_required'],     border: 'border-emerald-200',header: 'bg-emerald-50 text-emerald-700',over: 'bg-emerald-50' },
+  { id: 'standby',   label: 'Standby',            icon: PauseCircle,  dropStatus: 'standby',           statuses: ['standby'],                                           border: 'border-gray-200',   header: 'bg-gray-100 text-gray-600',    over: 'bg-gray-100'   },
 ]
 
 function colForStatus(status: CompanyStatus): ColumnDef | undefined {
