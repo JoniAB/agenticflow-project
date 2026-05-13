@@ -205,12 +205,22 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Company[] }) {
   const [cols, setCols]         = useState<ColState>(() => buildColState(initialLeads))
   const [activeId, setActiveId] = useState<string | null>(null)
   const { selected, toggle, clear } = useSelection()
-  const router  = useRouter()
-  const saveRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const router     = useRouter()
+  const saveRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const latestCols = useRef<ColState>(buildColState(initialLeads))
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
   )
+
+  // Keep ref in sync so the save closure always reads latest state
+  const setCols2 = (fn: (prev: ColState) => ColState) => {
+    setCols(prev => {
+      const next = fn(prev)
+      latestCols.current = next
+      return next
+    })
+  }
 
   const activeCompany = activeId
     ? Object.values(cols).flat().find(c => c.id === activeId) ?? null
@@ -232,104 +242,80 @@ export function KanbanBoard({ initialLeads }: { initialLeads: Company[] }) {
     if (!over || active.id === over.id) return
 
     const activeColId = findColIdForItem(active.id as string)
-    // over.id can be a column id or an item id
     const overColId   = colForId(over.id as string)?.id ?? findColIdForItem(over.id as string)
-
     if (!activeColId || !overColId) return
 
-    setCols(prev => {
+    setCols2(prev => {
       const activeItems = [...prev[activeColId]]
       const overItems   = [...prev[overColId]]
       const activeIdx   = activeItems.findIndex(c => c.id === active.id)
       if (activeIdx === -1) return prev
 
       if (activeColId === overColId) {
-        // Reorder within column
         const overIdx = overItems.findIndex(c => c.id === over.id)
         if (overIdx === -1) return prev
         return { ...prev, [activeColId]: arrayMove(activeItems, activeIdx, overIdx) }
       }
 
-      // Move to new column — insert at hovered item position or end
-      const targetStatus = colForId(overColId)!.dropStatus
-      const movedItem    = { ...activeItems[activeIdx], status: targetStatus }
+      // Move to new column — keep original status (status update happens in onDragEnd save)
+      const movedItem = { ...activeItems[activeIdx] }
       activeItems.splice(activeIdx, 1)
       const overIdx = overItems.findIndex(c => c.id === over.id)
-      if (overIdx === -1) {
-        overItems.push(movedItem)
-      } else {
-        overItems.splice(overIdx, 0, movedItem)
-      }
+      if (overIdx === -1) overItems.push(movedItem)
+      else overItems.splice(overIdx, 0, movedItem)
       return { ...prev, [activeColId]: activeItems, [overColId]: overItems }
     })
   }
 
-  async function onDragEnd({ active, over }: DragEndEvent) {
+  function scheduleSave() {
+    if (saveRef.current) clearTimeout(saveRef.current)
+    saveRef.current = setTimeout(() => {
+      const current = latestCols.current
+      const updates: Array<{ id: string; kanban_position: number; status: string }> = []
+      for (const col of COLUMNS) {
+        current[col.id].forEach((c, i) => {
+          // Always set status = dropStatus of the column the item is currently in
+          updates.push({ id: c.id, kanban_position: i, status: col.dropStatus })
+        })
+      }
+      if (updates.length === 0) return
+      fetch('/api/companies/bulk', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ action: 'reorder', ids: updates.map(u => u.id), updates }),
+      }).then(() => {
+        window.dispatchEvent(new CustomEvent('boards-refresh'))
+        router.refresh()
+      }).catch(() => {})
+    }, 600)
+  }
+
+  function onDragEnd({ active, over }: DragEndEvent) {
     setActiveId(null)
     if (!over) return
 
-    // Final column of the dragged item
-    const activeColId = findColIdForItem(active.id as string)
-      ?? colForId(over.id as string)?.id
+    const activeColId = findColIdForItem(active.id as string) ?? colForId(over.id as string)?.id
     if (!activeColId) return
 
-    const targetCol    = colForId(activeColId)
-    if (!targetCol) return
-
-    // Multi-drag: if dragged item is selected, move all selected to this column
+    // Multi-drag: move all selected to target column
     if (selected.has(active.id as string) && dragIds.length > 1) {
-      const targetStatus = targetCol.dropStatus
-      // Remove all selected from wherever they are, append to target col
-      setCols(prev => {
+      const targetCol = colForId(activeColId)
+      if (!targetCol) return
+      setCols2(prev => {
         const next = { ...prev }
-        for (const col of COLUMNS) {
-          next[col.id] = prev[col.id].filter(c => !selected.has(c.id))
-        }
+        for (const col of COLUMNS) next[col.id] = prev[col.id].filter(c => !selected.has(c.id))
         const alreadyInCol = prev[activeColId].filter(c => selected.has(c.id))
         const extras = dragIds
           .filter(id => !alreadyInCol.some(c => c.id === id))
-          .map(id => {
-            const found = Object.values(prev).flat().find(c => c.id === id)
-            return found ? { ...found, status: targetStatus } : null
-          })
+          .map(id => Object.values(prev).flat().find(c => c.id === id))
           .filter(Boolean) as Company[]
-        next[activeColId] = [
-          ...alreadyInCol.map(c => ({ ...c, status: targetStatus })),
-          ...next[activeColId],
-          ...extras,
-        ]
+        next[activeColId] = [...alreadyInCol, ...next[activeColId], ...extras]
         return next
       })
       clear()
     }
 
-    // Debounce save so rapid reorders don't spam the API
-    if (saveRef.current) clearTimeout(saveRef.current)
-    saveRef.current = setTimeout(async () => {
-      // Build position updates for all columns (after state settles)
-      setCols(current => {
-        const updates: Array<{ id: string; kanban_position: number; status?: string }> = []
-        for (const col of COLUMNS) {
-          current[col.id].forEach((c, i) => {
-            const statusChanged = !col.statuses.includes(c.status as CompanyStatus)
-            updates.push({
-              id:               c.id,
-              kanban_position:  i,
-              ...(statusChanged ? { status: col.dropStatus } : {}),
-            })
-          })
-        }
-        fetch('/api/companies/bulk', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ action: 'reorder', ids: updates.map(u => u.id), updates }),
-        }).then(() => {
-          window.dispatchEvent(new CustomEvent('boards-refresh'))
-          router.refresh()
-        }).catch(() => {})
-        return current
-      })
-    }, 600)
+    scheduleSave()
   }
 
   return (
