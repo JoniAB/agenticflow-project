@@ -7,6 +7,7 @@ import {
   ExternalLink, BarChart2, Copy, Check,
 } from 'lucide-react'
 import { formatRelativeDate } from '@/lib/utils'
+import { PagePreview } from '@/components/ui/PagePreview'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -157,16 +158,16 @@ function ContentSection({ content }: { content: NonNullable<ClientCardData['cont
         <p className="text-[10px] font-semibold uppercase tracking-widest text-indigo-400">📄 תוכן שנוצר</p>
         <div className="flex items-center gap-3">
           {content.page_url && (
-            <a href={content.page_url} target="_blank" rel="noopener noreferrer"
+            <PagePreview href={content.page_url}
               className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700 font-medium">
               <ExternalLink size={11} /> עמוד נחיתה
-            </a>
+            </PagePreview>
           )}
           {content.report_url && (
-            <a href={content.report_url} target="_blank" rel="noopener noreferrer"
+            <PagePreview href={content.report_url}
               className="flex items-center gap-1 text-xs text-violet-600 hover:text-violet-700 font-medium">
               <BarChart2 size={11} /> דוח מחקר
-            </a>
+            </PagePreview>
           )}
           {content.email_body && (
             <button onClick={copy}

@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Company, Content } from '@/lib/types'
 import { StatusDot } from '@/components/ui/StatusDot'
 import { ApproveButton } from '@/components/boards/ApproveButton'
 import { ClientCardContent, type ClientCardData } from '@/components/boards/ClientCard'
 import { formatRelativeDate, cn } from '@/lib/utils'
 import { ChevronDown, ChevronRight, RefreshCw, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
+import { MoveToBoardMenu } from '@/components/ui/MoveToBoardMenu'
+import { useSelection } from '@/components/providers/SelectionProvider'
 
 type ApprovalRow = Company & { content: Content | null }
 type Filter = 'all' | 'deployed' | 'draft'
@@ -17,7 +19,7 @@ const TABS: { value: Filter; label: string }[] = [
   { value: 'draft',    label: 'Draft'     },
 ]
 
-const COLS = ['', 'Company', 'Email Subject', 'Added', 'Status', 'Action']
+const COLS = ['', '', 'Company', 'Email Subject', 'Added', 'Status', 'Action']
 
 function toCardData(c: ApprovalRow): ClientCardData {
   return {
@@ -41,53 +43,37 @@ function RegenPanel({ companyId, onDone }: { companyId: string; onDone: () => vo
   const [instructions, setInstructions] = useState('')
   const [status,       setStatus]       = useState<RegenStatus>('idle')
   const [msg,          setMsg]          = useState<string | null>(null)
-  const [step,         setStep]         = useState(0)
-  const abortRef = useRef<AbortController | null>(null)
 
-  async function regen() {
+  function regen() {
     if (status === 'loading') return
-    abortRef.current?.abort()
-    const ctrl = new AbortController()
-    abortRef.current = ctrl
-    setStatus('loading'); setStep(0); setMsg('מתחיל...')
-    try {
-      const res = await fetch(`/api/generate-content/next?company_id=${companyId}&stream=true`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ instructions: instructions || null }),
-        signal: ctrl.signal,
-      })
-      if (!res.ok || !res.body) { setStatus('error'); setMsg('שגיאה'); setTimeout(() => { setStatus('idle'); setMsg(null) }, 3000); return }
-      const reader = res.body.getReader()
-      const dec    = new TextDecoder()
-      let buf = ''
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        buf += dec.decode(value, { stream: true })
-        const parts = buf.split('\n\n'); buf = parts.pop() ?? ''
-        for (const part of parts) {
-          if (!part.trim()) continue
-          let ev = '', dat = ''
-          for (const line of part.split('\n')) {
-            if (line.startsWith('event: ')) ev  = line.slice(7)
-            else if (line.startsWith('data: '))  dat = line.slice(6)
-          }
-          if (!ev || !dat) continue
-          try {
-            const p = JSON.parse(dat)
-            if (ev === 'progress') { setStep(p.step ?? 0); setMsg(p.message) }
-            else if (ev === 'done')  { setStatus('done'); setTimeout(() => { setStatus('idle'); setMsg(null); onDone() }, 1500) }
-            else if (ev === 'error') { setStatus('error'); setMsg(p.error ?? 'שגיאה'); setTimeout(() => { setStatus('idle'); setMsg(null) }, 4000) }
-          } catch { /* ignore */ }
+    setStatus('loading')
+    setMsg('מייצר ברקע — אפשר לנווט לכל מקום')
+
+    // Non-streaming POST: runs server-side and completes even if user navigates away.
+    // The browser holds the request open until the server responds.
+    fetch(`/api/generate-content/next?company_id=${companyId}`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ instructions: instructions || null }),
+    })
+      .then(async res => {
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}))
+          setStatus('error')
+          setMsg((body as { error?: string }).error ?? 'שגיאה')
+          setTimeout(() => { setStatus('idle'); setMsg(null) }, 4000)
+          return
         }
-      }
-    } catch (e: unknown) {
-      if ((e as Error)?.name !== 'AbortError') { setStatus('error'); setMsg('שגיאת רשת'); setTimeout(() => { setStatus('idle'); setMsg(null) }, 3000) }
-    }
+        setStatus('done')
+        setTimeout(() => { setStatus('idle'); setMsg(null); onDone() }, 1500)
+      })
+      .catch(() => {
+        setStatus('error')
+        setMsg('שגיאת רשת')
+        setTimeout(() => { setStatus('idle'); setMsg(null) }, 3000)
+      })
   }
 
-  const STEPS = 4
   return (
     <div className="border border-dashed border-gray-200 rounded-xl p-4 bg-gray-50/50 mt-3">
       <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">✏️ הנחיות לעריכת האתר והמייל</p>
@@ -99,32 +85,23 @@ function RegenPanel({ companyId, onDone }: { companyId: string; onDone: () => vo
         dir="rtl"
         className="w-full text-sm px-3 py-2 rounded-lg border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 placeholder:text-gray-300 resize-none"
       />
-      {status === 'loading' && (
-        <div className="mt-2 flex flex-col items-center gap-2 py-1">
-          <div className="flex items-center gap-2 text-sm text-indigo-600 font-medium">
-            <Loader2 size={13} className="animate-spin" />{msg ?? 'מייצר...'}
-          </div>
-          <div className="flex gap-1">
-            {Array.from({ length: STEPS }, (_, i) => i + 1).map(s => (
-              <div key={s} className={cn('h-1 rounded-full transition-all duration-500', step >= s ? 'w-4 bg-indigo-400' : 'w-1 bg-gray-200')} />
-            ))}
-          </div>
-        </div>
-      )}
-      {status !== 'loading' && (
-        <div className="mt-2 flex items-center justify-between">
-          {status === 'done'  && <span className="text-xs text-emerald-600 flex items-center gap-1"><CheckCircle2 size={12} /> נוצר מחדש</span>}
-          {status === 'error' && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={12} /> {msg}</span>}
-          {status === 'idle'  && <span />}
-          <button
-            onClick={regen}
-            disabled={status !== 'idle'}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 disabled:opacity-40 text-white text-xs font-semibold transition-colors"
-          >
-            <RefreshCw size={11} /> צור מחדש
-          </button>
-        </div>
-      )}
+      <div className="mt-2 flex items-center justify-between">
+        {status === 'loading' && (
+          <span className="text-xs text-indigo-600 flex items-center gap-1.5">
+            <Loader2 size={12} className="animate-spin" />{msg}
+          </span>
+        )}
+        {status === 'done'  && <span className="text-xs text-emerald-600 flex items-center gap-1"><CheckCircle2 size={12} /> נוצר מחדש</span>}
+        {status === 'error' && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={12} /> {msg}</span>}
+        {status === 'idle'  && <span />}
+        <button
+          onClick={regen}
+          disabled={status === 'loading'}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 disabled:opacity-40 text-white text-xs font-semibold transition-colors"
+        >
+          <RefreshCw size={11} /> צור מחדש
+        </button>
+      </div>
     </div>
   )
 }
@@ -133,6 +110,18 @@ export function ApprovalTable({ companies }: { companies: ApprovalRow[] }) {
   const [filter,    setFilter]    = useState<Filter>('all')
   const [localRows, setLocalRows] = useState<ApprovalRow[]>(companies)
   const [expanded,  setExpanded]  = useState<Set<string>>(new Set())
+  const { selected, toggle: toggleSelect, selectAll, clear } = useSelection()
+
+  useEffect(() => { setLocalRows(companies) }, [companies])
+
+  useEffect(() => {
+    function onMoved(e: Event) {
+      const ids = new Set((e as CustomEvent<{ ids: string[] }>).detail.ids)
+      setLocalRows(prev => prev.filter(c => !ids.has(c.id)))
+    }
+    window.addEventListener('board-items-moved', onMoved)
+    return () => window.removeEventListener('board-items-moved', onMoved)
+  }, [])
 
   function handleApproved(id: string) {
     setLocalRows(prev => prev.filter(c => c.id !== id))
@@ -178,6 +167,14 @@ export function ApprovalTable({ companies }: { companies: ApprovalRow[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200">
+              <th className="w-7 pb-3 pl-0 pr-1">
+                <input
+                  type="checkbox"
+                  checked={rows.length > 0 && rows.every(c => selected.has(c.id))}
+                  onChange={e => e.target.checked ? selectAll(rows.map(c => c.id)) : clear()}
+                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-400"
+                />
+              </th>
               {COLS.map((h, i) => (
                 <th key={i} className="text-left pb-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider first:pl-0 last:pr-0 px-4">
                   {h}
@@ -188,7 +185,7 @@ export function ApprovalTable({ companies }: { companies: ApprovalRow[] }) {
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={COLS.length} className="py-16 text-center text-sm text-gray-400">
+                <td colSpan={COLS.length + 1} className="py-16 text-center text-sm text-gray-400">
                   No leads match this filter
                 </td>
               </tr>
@@ -204,6 +201,15 @@ export function ApprovalTable({ companies }: { companies: ApprovalRow[] }) {
                       !isExpanded && !isLast && 'border-b border-gray-100'
                     )}
                   >
+                    {/* Checkbox */}
+                    <td className="py-3.5 pl-0 pr-1 w-7">
+                      <input
+                        type="checkbox"
+                        checked={selected.has(c.id)}
+                        onChange={() => toggleSelect(c.id)}
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-400"
+                      />
+                    </td>
                     {/* Expand */}
                     <td className="py-3.5 pl-0 pr-2 w-6">
                       <button
@@ -237,12 +243,19 @@ export function ApprovalTable({ companies }: { companies: ApprovalRow[] }) {
                     <td className="px-4 py-3.5"><StatusDot status={c.status} /></td>
                     {/* Action */}
                     <td className="py-3.5 pl-4 pr-0">
-                      <ApproveButton companyId={c.id} companyName={c.name} onApproved={() => handleApproved(c.id)} />
+                      <div className="flex items-center gap-2">
+                        <ApproveButton companyId={c.id} companyName={c.name} onApproved={() => handleApproved(c.id)} />
+                        <MoveToBoardMenu
+                          companyId={c.id}
+                          currentStatus={c.status}
+                          onMoved={() => handleApproved(c.id)}
+                        />
+                      </div>
                     </td>
                   </tr>
                   {isExpanded && (
                     <tr key={`${c.id}-card`}>
-                      <td colSpan={COLS.length} className="px-4 pb-4 pt-1">
+                      <td colSpan={COLS.length + 1} className="px-4 pb-4 pt-1">
                         <ClientCardContent data={toCardData(c)} />
                         <RegenPanel
                           companyId={c.id}

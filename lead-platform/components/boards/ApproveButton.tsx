@@ -17,14 +17,15 @@ export function ApproveButton({ companyId, companyName, onApproved }: ApproveBut
 
   async function handleApprove() {
     startTransition(async () => {
-      await fetch(`/api/companies/${companyId}`, {
+      const res = await fetch(`/api/companies/${companyId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'X-Agent-Key': process.env.NEXT_PUBLIC_AGENT_KEY ?? '',
+          'X-Agent-Key': 'yoni-agent-key-2025',
         },
         body: JSON.stringify({ status: 'approved' }),
       })
+      if (!res.ok) return
       setDone(true)
       setTimeout(() => {
         onApproved?.()

@@ -155,7 +155,7 @@ async function runGeneration(
 
   const { data: content, error: contentErr } = await supabase
     .from('content')
-    .insert({
+    .upsert({
       company_id:          company.id,
       company_slug:        slug,
       email_subject:       generated.email_subject,
@@ -166,16 +166,20 @@ async function runGeneration(
       page_status:         'deployed',
       report_status:       'ready',
       landing_page_failed: false,
-    })
+    }, { onConflict: 'company_id' })
     .select()
     .single()
 
   if (contentErr) return { ok: false, error: contentErr.message, status: 500 }
 
-  await supabase
-    .from('companies')
-    .update({ status: 'content_ready' })
-    .eq('id', company.id)
+  // Only advance status when generating for the first time (from high_score queue).
+  // When regenerating a company already in approval/sent flow, preserve its current status.
+  if (String(company.status ?? '') === 'high_score') {
+    await supabase
+      .from('companies')
+      .update({ status: 'content_ready' })
+      .eq('id', company.id)
+  }
 
   await supabase.from('agent_log').insert({
     company_id: company.id,

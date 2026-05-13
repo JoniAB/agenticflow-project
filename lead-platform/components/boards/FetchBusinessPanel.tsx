@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react'
 import {
   Users, Loader2, Globe, Phone, Trash2, ChevronDown, ChevronRight,
   Mail, User, Globe2, MessageCircle, Star, CalendarCheck, Image,
-  CheckCircle2, XCircle,
+  CheckCircle2, XCircle, MapPin,
 } from 'lucide-react'
 import { Tooltip } from '@/components/ui/Tooltip'
 import { ScoreBar } from '@/components/ui/ScoreBar'
+import { MoveToBoardMenu } from '@/components/ui/MoveToBoardMenu'
+import { useSelection } from '@/components/providers/SelectionProvider'
 import { cn } from '@/lib/utils'
 
 interface PipelineCompany {
@@ -15,6 +17,7 @@ interface PipelineCompany {
   name: string
   domain?: string | null
   industry?: string | null
+  city?: string | null
   contact_phone?: string | null
   contact_email?: string | null
   contact_name?: string | null
@@ -65,6 +68,11 @@ function ExpandedRow({ company }: { company: PipelineCompany }) {
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-2">פרטי קשר</p>
         <div className="space-y-1.5">
+          {company.city && (
+            <div className="flex items-center gap-2 text-sm text-gray-700">
+              <MapPin size={13} className="text-gray-400 shrink-0" />{company.city}
+            </div>
+          )}
           {company.contact_name && (
             <div className="flex items-center gap-2 text-sm text-gray-700">
               <User size={13} className="text-gray-400 shrink-0" />{company.contact_name}
@@ -94,7 +102,7 @@ function ExpandedRow({ company }: { company: PipelineCompany }) {
               </a>
             </div>
           )}
-          {!company.contact_name && !company.contact_phone && !company.contact_email && !company.domain && (
+          {!company.city && !company.contact_name && !company.contact_phone && !company.contact_email && !company.domain && (
             <p className="text-sm text-gray-400 italic">אין פרטי קשר</p>
           )}
         </div>
@@ -132,14 +140,16 @@ function ExpandedRow({ company }: { company: PipelineCompany }) {
 // ─── Pipeline row ─────────────────────────────────────────────────────────────
 
 function PipelineRow({
-  company, onDelete, deleting, expanded, onToggle,
+  company, onDelete, deleting, expanded, onToggle, onMoved,
 }: {
   company: PipelineCompany
   onDelete: (id: string, name: string) => void
   deleting: boolean
   expanded: boolean
   onToggle: () => void
+  onMoved: (id: string) => void
 }) {
+  const { selected, toggle } = useSelection()
   const [visible, setVisible] = useState(!company.isNew)
 
   useEffect(() => {
@@ -162,6 +172,14 @@ function PipelineRow({
             ? 'ring-2 ring-indigo-200 border-indigo-100 bg-indigo-50/30'
             : 'border-gray-100 bg-white'
       )}>
+        {/* Checkbox */}
+        <input
+          type="checkbox"
+          checked={selected.has(company.id)}
+          onChange={() => toggle(company.id)}
+          onClick={e => e.stopPropagation()}
+          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-400 shrink-0"
+        />
         {/* Expand toggle */}
         <button
           onClick={onToggle}
@@ -179,7 +197,17 @@ function PipelineRow({
               </span>
             )}
           </div>
-          {company.industry && <p className="text-xs text-gray-400 mt-0.5">{company.industry}</p>}
+          <div className="flex items-center gap-2 mt-0.5">
+            {company.industry && <p className="text-xs text-gray-400">{company.industry}</p>}
+            {company.city && (
+              <>
+                {company.industry && <span className="text-gray-200 text-xs">·</span>}
+                <span className="flex items-center gap-0.5 text-xs text-gray-400">
+                  <MapPin size={10} className="shrink-0" />{company.city}
+                </span>
+              </>
+            )}
+          </div>
         </div>
 
         {company.score != null && (
@@ -202,14 +230,17 @@ function PipelineRow({
           )}
         </div>
 
-        <button
-          onClick={() => onDelete(company.id, company.name)}
-          disabled={deleting}
-          className="opacity-0 group-hover:opacity-100 p-1 rounded text-gray-300 hover:text-red-500 transition-colors disabled:opacity-40 shrink-0"
-          title="מחק ליד"
-        >
-          {deleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
-        </button>
+        <div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 transition-opacity">
+          <MoveToBoardMenu companyId={company.id} onMoved={() => onMoved(company.id)} />
+          <button
+            onClick={() => onDelete(company.id, company.name)}
+            disabled={deleting}
+            className="p-1 rounded text-gray-300 hover:text-red-500 transition-colors disabled:opacity-40 shrink-0"
+            title="מחק ליד"
+          >
+            {deleting ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
+          </button>
+        </div>
       </div>
 
       {expanded && (
@@ -228,12 +259,21 @@ export function FetchBusinessPanel() {
   const [loadingPipeline, setLoading] = useState(true)
   const [deleting, setDeleting]   = useState<string | null>(null)
   const [expanded, setExpanded]   = useState<Set<string>>(new Set())
+  const { selected, toggle, selectAll, clear } = useSelection()
 
-  useEffect(() => {
+  function load() {
+    setLoading(true)
     fetch('/api/companies?status=high_score&limit=100')
       .then(r => r.json())
       .then(data => setPipeline(Array.isArray(data) ? data : []))
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    load()
+    // Re-fetch when the panel performs a bulk action on this board
+    window.addEventListener('boards-refresh', load)
+    return () => window.removeEventListener('boards-refresh', load)
   }, [])
 
   function toggleExpand(id: string) {
@@ -280,18 +320,21 @@ export function FetchBusinessPanel() {
             <p className="text-xs mt-1 opacity-60">קדם עסקים מ-Prospect Research עם חץ ימינה</p>
           </div>
         ) : (
-          <div className="space-y-2">
-            {pipeline.map(company => (
-              <PipelineRow
-                key={company.id}
-                company={company}
-                onDelete={deleteCompany}
-                deleting={deleting === company.id}
-                expanded={expanded.has(company.id)}
-                onToggle={() => toggleExpand(company.id)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="space-y-2">
+              {pipeline.map(company => (
+                <PipelineRow
+                  key={company.id}
+                  company={company}
+                  onDelete={deleteCompany}
+                  deleting={deleting === company.id}
+                  expanded={expanded.has(company.id)}
+                  onToggle={() => toggleExpand(company.id)}
+                  onMoved={id => setPipeline(prev => prev.filter(c => c.id !== id))}
+                />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

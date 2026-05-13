@@ -30,6 +30,7 @@ export type CompanyStatus =
   | 'followup_sent'
   | 'exhausted'
   | 'rejected'
+  | 'standby'
 
 export type CompanySource = 'cowork_api' | 'cowork_webhook' | 'linkedin' | 'google_maps' | 'other'
 
@@ -53,6 +54,7 @@ export const STATUS_TO_BOARD: Record<CompanyStatus, BoardId> = {
   followup_sent:              'B-09',
   exhausted:                  'B-10',
   rejected:                   'B-10',
+  standby:                    'B-01',
 }
 
 export interface Company {
@@ -72,6 +74,8 @@ export interface Company {
   contact_email: string | null
   contact_phone: string | null
   contact_linkedin: string | null
+  // Location
+  city?: string | null
   // Legacy
   linkedin_url: string | null
   // Board state

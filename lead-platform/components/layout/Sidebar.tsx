@@ -8,17 +8,18 @@ import { Tooltip } from '@/components/ui/Tooltip'
 import {
   LayoutDashboard, Search, Users, FileText, Send, Inbox,
   Clock, Mail, Activity, BookOpen, MessageSquare,
-  Play, Loader2, CheckCircle2, XCircle, SlidersHorizontal, ShieldOff,
+  Play, Loader2, CheckCircle2, XCircle, SlidersHorizontal, ShieldOff, PauseCircle,
 } from 'lucide-react'
+import { BoardMoveDropdown } from '@/components/layout/BoardMoveDropdown'
 
 const OVERVIEW_NAV = [
   { href: '/boards/dashboard', label: 'Dashboard', hebrew: 'לוח מחוונים', icon: LayoutDashboard, segment: 'dashboard' },
 ]
 
-type PipelineCounts = { prospects: number; approval: number; outreach: number; content: number }
+type PipelineCounts = { prospects: number; approval: number; outreach: number; content: number; standby: number }
 
 function usePipelineCounts() {
-  const [counts, setCounts] = useState<PipelineCounts>({ prospects: 0, approval: 0, outreach: 0, content: 0 })
+  const [counts, setCounts] = useState<PipelineCounts>({ prospects: 0, approval: 0, outreach: 0, content: 0, standby: 0 })
   useEffect(() => {
     fetch('/api/stats/counts')
       .then(r => r.json())
@@ -33,8 +34,9 @@ const PIPELINE_NAV = [
   { href: '/boards/researching', label: 'Potential Clients',  hebrew: 'לקוחות פוטנציאליים',   icon: Users,    segment: 'researching', countKey: null },
   { href: '/boards/content',     label: 'Content Generation', hebrew: 'יצירת תוכן',            icon: FileText, segment: 'content',     countKey: 'content'   as const },
   { href: '/boards/approval',    label: 'Ready to Send',      hebrew: 'מוכן לשליחה',           icon: Send,     segment: 'approval',    countKey: 'approval'  as const },
-  { href: '/boards/outreach',    label: 'Inbox',              hebrew: 'דואר נכנס',             icon: Inbox,    segment: 'outreach',    countKey: 'outreach'  as const },
-  { href: '/boards/history',     label: 'Client History',     hebrew: 'היסטוריית לקוחות',      icon: Clock,    segment: 'history',     countKey: null },
+  { href: '/boards/outreach',    label: 'Mail',               hebrew: 'דואר',                  icon: Mail,     segment: 'outreach',    countKey: 'outreach'  as const },
+  { href: '/boards/history',     label: 'Client History',     hebrew: 'היסטוריית לקוחות',      icon: Clock,       segment: 'history',  countKey: null },
+  { href: '/boards/standby',     label: 'Standby',            hebrew: 'המתנה',                 icon: PauseCircle, segment: 'standby',  countKey: 'standby' as const },
 ]
 
 const SYSTEM_NAV = [
@@ -175,6 +177,11 @@ export function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+        {/* Move-to-board action */}
+        <div className="px-0">
+          <BoardMoveDropdown />
+        </div>
+
         <div>
           <SectionLabel label="Overview" hebrew="סקירה כללית" />
           <div className="space-y-0.5">

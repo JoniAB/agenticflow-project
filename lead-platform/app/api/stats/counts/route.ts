@@ -4,7 +4,7 @@ import { getSupabaseAdmin } from '@/lib/supabase'
 export async function GET() {
   const supabase = getSupabaseAdmin()
 
-  const [prospects, approval, outreach, content] = await Promise.all([
+  const [prospects, approval, outreach, content, standby] = await Promise.all([
     supabase
       .from('companies')
       .select('id', { count: 'exact', head: true })
@@ -21,6 +21,10 @@ export async function GET() {
       .from('companies')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'content_ready'),
+    supabase
+      .from('companies')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'standby'),
   ])
 
   return NextResponse.json({
@@ -28,5 +32,6 @@ export async function GET() {
     approval:  approval.count  ?? 0,
     outreach:  outreach.count  ?? 0,
     content:   content.count   ?? 0,
+    standby:   standby.count   ?? 0,
   })
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Company } from '@/lib/types'
 import { ScoreBar } from '@/components/ui/ScoreBar'
@@ -15,6 +15,8 @@ import {
   CalendarCheck, Image, CheckCircle2, XCircle,
   Search, Plus, Loader2, AlertCircle, Zap, Trash2, ArrowRight,
 } from 'lucide-react'
+import { useSelection } from '@/components/providers/SelectionProvider'
+import { MoveToBoardMenu } from '@/components/ui/MoveToBoardMenu'
 
 type Filter = 'all' | 'linkedin' | 'google_maps' | 'other'
 
@@ -238,7 +240,20 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
   const [deleting,  setDeleting]  = useState<string | null>(null)
   const [promoting, setPromoting] = useState<string | null>(null)
   const [localRows, setLocalRows] = useState<Company[]>(companies)
+  const { selected, toggle, selectAll, clear } = useSelection()
   const router  = useRouter()
+
+  useEffect(() => { setLocalRows(companies) }, [companies])
+
+  useEffect(() => {
+    function onMoved(e: Event) {
+      const ids = new Set((e as CustomEvent<{ ids: string[] }>).detail.ids)
+      setLocalRows(prev => prev.filter(c => !ids.has(c.id)))
+    }
+    window.addEventListener('board-items-moved', onMoved)
+    return () => window.removeEventListener('board-items-moved', onMoved)
+  }, [])
+
   const fetch$  = useFetchState()
 
   async function promoteCompany(id: string, e: React.MouseEvent) {
@@ -268,13 +283,18 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
     }
   }
 
-  function toggle(id: string, e: React.MouseEvent) {
+  function toggleExpand(id: string, e: React.MouseEvent) {
     e.stopPropagation()
     setExpanded(prev => {
       const next = new Set(prev)
       next.has(id) ? next.delete(id) : next.add(id)
       return next
     })
+  }
+
+  function toggleSelect(id: string, e: React.MouseEvent) {
+    e.stopPropagation()
+    toggle(id)
   }
 
   const bySource = filter === 'all' ? localRows : localRows.filter(c => c.source === filter)
@@ -408,6 +428,14 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200">
+              <th className="w-7 pb-3 pl-0 pr-1">
+                <input
+                  type="checkbox"
+                  checked={rows.length > 0 && rows.every(c => selected.has(c.id))}
+                  onChange={e => e.target.checked ? selectAll(rows.map(c => c.id)) : clear()}
+                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-400"
+                />
+              </th>
               <th className="w-8 pb-3" />
               {([
                 ['Company',  'חברה'],
@@ -427,7 +455,7 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={8} className="py-16 text-center text-sm text-gray-400">
+                <td colSpan={9} className="py-16 text-center text-sm text-gray-400">
                   {search ? `אין תוצאות עבור "${search}"` : 'No leads match this filter'}
                 </td>
               </tr>
@@ -444,9 +472,18 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
                       !isExpanded && !isLast && 'border-b border-gray-100'
                     )}
                   >
+                    <td className="py-3.5 pl-0 pr-1 w-7" onClick={e => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        checked={selected.has(c.id)}
+                        onChange={() => toggle(c.id)}
+                        onClick={e => e.stopPropagation()}
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-400"
+                      />
+                    </td>
                     <td className="py-3.5 pr-1 pl-0 w-8">
                       <button
-                        onClick={e => toggle(c.id, e)}
+                        onClick={e => toggleExpand(c.id, e)}
                         className="p-1 rounded hover:bg-gray-200 text-gray-400 hover:text-gray-600 transition-colors"
                       >
                         {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
@@ -511,10 +548,15 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
                             ? <Loader2 size={12} className="animate-spin" />
                             : <Trash2 size={12} />}
                         </button>
+                        <MoveToBoardMenu
+                          companyId={c.id}
+                          currentStatus={c.status}
+                          onMoved={() => setLocalRows(prev => prev.filter(r => r.id !== c.id))}
+                        />
                       </div>
                     </td>
                   </tr>
-                  {isExpanded && <ExpandedRow key={`${c.id}-exp`} company={c} colSpan={8} />}
+                  {isExpanded && <ExpandedRow key={`${c.id}-exp`} company={c} colSpan={9} />}
                 </>
               )
             })}

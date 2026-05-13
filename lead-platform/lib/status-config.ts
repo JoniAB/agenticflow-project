@@ -135,4 +135,11 @@ export const STATUS_CONFIG: Record<CompanyStatus, StatusConfig> = {
     dot: 'bg-red-400',
     ring: 'ring-red-100',
   },
+  standby: {
+    label: 'Standby',
+    bg: 'bg-amber-50',
+    text: 'text-amber-700',
+    dot: 'bg-amber-400',
+    ring: 'ring-amber-100',
+  },
 }
