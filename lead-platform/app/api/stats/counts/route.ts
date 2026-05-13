@@ -4,11 +4,19 @@ import { getSupabaseAdmin } from '@/lib/supabase'
 export async function GET() {
   const supabase = getSupabaseAdmin()
 
-  const [prospects, approval, outreach, content, standby] = await Promise.all([
+  const [prospects, potential, content, approval, outreach, history, standby] = await Promise.all([
     supabase
       .from('companies')
       .select('id', { count: 'exact', head: true })
-      .eq('status', 'potential'),
+      .in('status', ['potential', 'research_incomplete']),
+    supabase
+      .from('companies')
+      .select('id', { count: 'exact', head: true })
+      .in('status', ['high_score', 'in_research']),
+    supabase
+      .from('companies')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'content_ready'),
     supabase
       .from('companies')
       .select('id', { count: 'exact', head: true })
@@ -16,11 +24,11 @@ export async function GET() {
     supabase
       .from('companies')
       .select('id', { count: 'exact', head: true })
-      .in('status', ['sent', 'replied', 'followup_sent']),
+      .in('status', ['sent', 'replied', 'followup_sent', 'send_failed']),
     supabase
       .from('companies')
       .select('id', { count: 'exact', head: true })
-      .eq('status', 'content_ready'),
+      .in('status', ['exhausted', 'rejected']),
     supabase
       .from('companies')
       .select('id', { count: 'exact', head: true })
@@ -29,9 +37,11 @@ export async function GET() {
 
   return NextResponse.json({
     prospects: prospects.count ?? 0,
+    potential: potential.count ?? 0,
+    content:   content.count   ?? 0,
     approval:  approval.count  ?? 0,
     outreach:  outreach.count  ?? 0,
-    content:   content.count   ?? 0,
+    history:   history.count   ?? 0,
     standby:   standby.count   ?? 0,
   })
 }

@@ -17,27 +17,46 @@ const OVERVIEW_NAV = [
   { href: '/boards/kanban',    label: 'Kanban Board',  hebrew: 'לוח קנבן',    icon: Layers,          segment: 'kanban'    },
 ]
 
-type PipelineCounts = { prospects: number; approval: number; outreach: number; content: number; standby: number }
+type PipelineCounts = {
+  prospects: number; potential: number; content: number
+  approval: number;  outreach: number; history: number; standby: number
+}
+
+const ZERO_COUNTS: PipelineCounts = {
+  prospects: 0, potential: 0, content: 0,
+  approval: 0,  outreach: 0, history: 0, standby: 0,
+}
 
 function usePipelineCounts() {
-  const [counts, setCounts] = useState<PipelineCounts>({ prospects: 0, approval: 0, outreach: 0, content: 0, standby: 0 })
+  const [counts, setCounts] = useState<PipelineCounts>(ZERO_COUNTS)
+
   useEffect(() => {
-    fetch('/api/stats/counts')
-      .then(r => r.json())
-      .then(setCounts)
-      .catch(() => {})
+    function refresh() {
+      fetch('/api/stats/counts')
+        .then(r => r.json())
+        .then(setCounts)
+        .catch(() => {})
+    }
+    refresh()
+    window.addEventListener('boards-refresh',    refresh)
+    window.addEventListener('board-items-moved', refresh)
+    return () => {
+      window.removeEventListener('boards-refresh',    refresh)
+      window.removeEventListener('board-items-moved', refresh)
+    }
   }, [])
+
   return counts
 }
 
 const PIPELINE_NAV = [
-  { href: '/boards/champions',   label: 'Prospect Research',  hebrew: 'מחקר לידים',           icon: Search,   segment: 'champions',   countKey: 'prospects' as const },
-  { href: '/boards/researching', label: 'Potential Clients',  hebrew: 'לקוחות פוטנציאליים',   icon: Users,    segment: 'researching', countKey: null },
-  { href: '/boards/content',     label: 'Content Generation', hebrew: 'יצירת תוכן',            icon: FileText, segment: 'content',     countKey: 'content'   as const },
-  { href: '/boards/approval',    label: 'Ready to Send',      hebrew: 'מוכן לשליחה',           icon: Send,     segment: 'approval',    countKey: 'approval'  as const },
-  { href: '/boards/outreach',    label: 'Mail',               hebrew: 'דואר',                  icon: Mail,     segment: 'outreach',    countKey: 'outreach'  as const },
-  { href: '/boards/history',     label: 'Client History',     hebrew: 'היסטוריית לקוחות',      icon: Clock,       segment: 'history',  countKey: null },
-  { href: '/boards/standby',     label: 'Standby',            hebrew: 'המתנה',                 icon: PauseCircle, segment: 'standby',  countKey: 'standby' as const },
+  { href: '/boards/champions',   label: 'Prospect Research',  hebrew: 'מחקר לידים',              icon: Search,      segment: 'champions',   countKey: 'prospects' as const },
+  { href: '/boards/researching', label: 'Potential Clients',  hebrew: 'לקוחות פוטנציאליים',      icon: Users,       segment: 'researching', countKey: 'potential' as const },
+  { href: '/boards/content',     label: 'Content Generation', hebrew: 'יצירת תוכן',              icon: FileText,    segment: 'content',     countKey: 'content'   as const },
+  { href: '/boards/approval',    label: 'Ready to Send',      hebrew: 'מוכן לשליחה',             icon: Send,        segment: 'approval',    countKey: 'approval'  as const },
+  { href: '/boards/outreach',    label: 'Mail',               hebrew: 'דואר',                    icon: Mail,        segment: 'outreach',    countKey: 'outreach'  as const },
+  { href: '/boards/history',     label: 'Client History',     hebrew: 'היסטוריית לקוחות',        icon: Clock,       segment: 'history',     countKey: 'history'   as const },
+  { href: '/boards/standby',     label: 'Standby',            hebrew: 'המתנה',                   icon: PauseCircle, segment: 'standby',     countKey: 'standby'   as const },
 ]
 
 const SYSTEM_NAV = [
