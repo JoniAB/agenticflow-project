@@ -8,12 +8,13 @@ import { Tooltip } from '@/components/ui/Tooltip'
 import {
   LayoutDashboard, Search, Users, FileText, Send, Inbox,
   Clock, Mail, Activity, BookOpen, MessageSquare,
-  Play, Loader2, CheckCircle2, XCircle, SlidersHorizontal, ShieldOff, PauseCircle,
+  Play, Loader2, CheckCircle2, XCircle, SlidersHorizontal, ShieldOff, PauseCircle, Layers,
 } from 'lucide-react'
 import { BoardMoveDropdown } from '@/components/layout/BoardMoveDropdown'
 
 const OVERVIEW_NAV = [
-  { href: '/boards/dashboard', label: 'Dashboard', hebrew: 'לוח מחוונים', icon: LayoutDashboard, segment: 'dashboard' },
+  { href: '/boards/dashboard', label: 'Dashboard',     hebrew: 'לוח מחוונים', icon: LayoutDashboard, segment: 'dashboard' },
+  { href: '/boards/kanban',    label: 'Kanban Board',  hebrew: 'לוח קנבן',    icon: Layers,          segment: 'kanban'    },
 ]
 
 type PipelineCounts = { prospects: number; approval: number; outreach: number; content: number; standby: number }
