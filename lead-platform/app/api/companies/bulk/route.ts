@@ -4,11 +4,12 @@ import { STATUS_TO_BOARD, type CompanyStatus } from '@/lib/types'
 
 export async function POST(req: Request) {
   const body = await req.json()
-  const { action, ids, keep_id, status } = body as {
-    action: 'delete' | 'standby' | 'merge' | 'set_status'
+  const { action, ids, keep_id, status, updates } = body as {
+    action: 'delete' | 'standby' | 'merge' | 'set_status' | 'reorder'
     ids: string[]
     keep_id?: string
     status?: string
+    updates?: Array<{ id: string; kanban_position: number; status?: string }>
   }
 
   if (!Array.isArray(ids) || ids.length === 0) {
@@ -68,6 +69,26 @@ export async function POST(req: Request) {
     const { error } = await supabase.from('companies').update(patch).in('id', ids)
     if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     return NextResponse.json({ ok: true, updated: ids.length, status })
+  }
+
+  if (action === 'reorder') {
+    if (!Array.isArray(updates) || updates.length === 0) {
+      return NextResponse.json({ error: 'updates required' }, { status: 400 })
+    }
+    const results = await Promise.all(
+      updates.map(({ id, kanban_position, status: s }) => {
+        const patch: Record<string, unknown> = { kanban_position }
+        if (s) {
+          patch.status = s
+          const board = STATUS_TO_BOARD[s as CompanyStatus]
+          if (board) patch.current_board = board
+        }
+        return supabase.from('companies').update(patch).eq('id', id)
+      }),
+    )
+    const err = results.find(r => r.error)
+    if (err?.error) return NextResponse.json({ error: err.error.message }, { status: 500 })
+    return NextResponse.json({ ok: true, updated: updates.length })
   }
 
   return NextResponse.json({ error: 'unknown action' }, { status: 400 })
