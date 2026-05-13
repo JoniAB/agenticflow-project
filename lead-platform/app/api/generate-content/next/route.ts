@@ -31,21 +31,40 @@ async function runGeneration(
     if (error || !data) return { ok: false, error: error?.message ?? 'not_found', status: 404 }
     company = data
   } else {
-    const { data: companies, error: fetchErr } = await supabase
-      .from('companies')
-      .select('*, content(*)')
-      .eq('status', 'high_score')
-      .order('created_at', { ascending: true })
-      .limit(20)
+    // Priority 1: content_ready leads without content (user explicitly moved them here)
+    // Priority 2: high_score leads without content (auto-discovery flow)
+    const [contentReadyRes, highScoreRes] = await Promise.all([
+      supabase
+        .from('companies')
+        .select('*, content(*)')
+        .eq('status', 'content_ready')
+        .order('kanban_position', { ascending: true })
+        .order('created_at',      { ascending: true })
+        .limit(50),
+      supabase
+        .from('companies')
+        .select('*, content(*)')
+        .eq('status', 'high_score')
+        .order('created_at', { ascending: true })
+        .limit(50),
+    ])
 
-    if (fetchErr) return { ok: false, error: fetchErr.message, status: 500 }
+    if (contentReadyRes.error) return { ok: false, error: contentReadyRes.error.message, status: 500 }
+    if (highScoreRes.error)    return { ok: false, error: highScoreRes.error.message,    status: 500 }
 
-    const queue = (companies ?? []).filter(
-      (c: { content?: unknown[] }) => !c.content || (c.content as unknown[]).length === 0
-    )
+    const withoutContent = (arr: unknown[]) =>
+      arr.filter((c: unknown) => {
+        const company = c as { content?: unknown[] }
+        return !company.content || (company.content as unknown[]).length === 0
+      })
+
+    const contentReadyQueue = withoutContent(contentReadyRes.data ?? [])
+    const highScoreQueue    = withoutContent(highScoreRes.data    ?? [])
+    const queue = [...contentReadyQueue, ...highScoreQueue]
+
     if (queue.length === 0) return { ok: 'no_pending' }
 
-    company        = queue[0]
+    company        = queue[0] as Record<string, unknown>
     queueRemaining = queue.length - 1
   }
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { FileText, Loader2, Mail, CheckCircle2, AlertCircle, ChevronDown, ChevronRight, Building2, RefreshCw } from 'lucide-react'
+// Building2 kept for ContentRow usage
 import { ClientCardContent, type ClientCardData } from '@/components/boards/ClientCard'
 import { MoveToBoardMenu } from '@/components/ui/MoveToBoardMenu'
 import { useSelection } from '@/components/providers/SelectionProvider'
@@ -241,11 +242,8 @@ function ContentRow({ item, onApproved, onRegenerated, onMoved }: {
   )
 }
 
-interface PendingCompany { id: string; name: string; industry: string | null }
-
 export function ContentBoard() {
   const [items, setItems]             = useState<ContentItem[]>([])
-  const [pending, setPending]         = useState<PendingCompany[]>([])
   const [loadingList, setLoadingList] = useState(true)
   const { selected, toggle, selectAll, clear } = useSelection()
   const [status, setStatus]           = useState<GenStatus>('idle')
@@ -254,68 +252,31 @@ export function ContentBoard() {
   const [lastName, setLastName]       = useState<string | null>(null)
   const [errorMsg, setErrorMsg]       = useState<string | null>(null)
   const [queueLeft, setQueueLeft]     = useState<number | null>(null)
-  const [generatingId, setGeneratingId] = useState<string | null>(null)
   const abortRef = useRef<AbortController | null>(null)
 
   const loadContent = useCallback(async () => {
     setLoadingList(true)
     try {
-      const [listRes, pendingRes] = await Promise.all([
-        fetch('/api/generate-content/list'),
-        fetch('/api/companies?status=content_ready&limit=100'),
-      ])
-      const listData    = await listRes.json()
-      const pendingData = await pendingRes.json()
-
-      const generated: ContentItem[] = Array.isArray(listData) ? listData : []
-      const generatedIds = new Set(generated.map(i => i.company_id))
-
-      const allContentReady: PendingCompany[] = Array.isArray(pendingData)
-        ? pendingData.map((c: { id: string; name: string; industry: string | null }) => ({
-            id: c.id, name: c.name, industry: c.industry,
-          }))
-        : []
-
-      setItems(generated)
-      setPending(allContentReady.filter(c => !generatedIds.has(c.id)))
+      const res  = await fetch('/api/generate-content/list')
+      const data = await res.json()
+      setItems(Array.isArray(data) ? data : [])
     } finally {
       setLoadingList(false)
     }
   }, [])
 
-  async function generateForCompany(companyId: string) {
-    if (generatingId) return
-    setGeneratingId(companyId)
-    try {
-      const res = await fetch(`/api/generate-content/next?company_id=${companyId}&stream=true`, {
-        method: 'POST',
-      })
-      if (!res.ok || !res.body) { setGeneratingId(null); return }
-      const reader  = res.body.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ''
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-        buffer += decoder.decode(value, { stream: true })
-        const parts = buffer.split('\n\n')
-        buffer = parts.pop() ?? ''
-        for (const part of parts) {
-          let eventType = ''
-          for (const line of part.split('\n')) {
-            if (line.startsWith('event: ')) eventType = line.slice(7)
-          }
-          if (eventType === 'done' || eventType === 'error') {
-            await loadContent()
-          }
-        }
-      }
-    } finally {
-      setGeneratingId(null)
-    }
-  }
-
   useEffect(() => { loadContent() }, [loadContent])
+
+  // Reload when auto-gen completes
+  useEffect(() => {
+    function onDone() { loadContent() }
+    window.addEventListener('auto-gen-done', onDone)
+    window.addEventListener('auto-gen-idle', onDone)
+    return () => {
+      window.removeEventListener('auto-gen-done', onDone)
+      window.removeEventListener('auto-gen-idle', onDone)
+    }
+  }, [loadContent])
 
   async function createNext() {
     if (status === 'loading') return
@@ -465,65 +426,24 @@ export function ContentBoard() {
           <div className="flex items-center justify-center gap-2 py-16 text-sm text-gray-400">
             <Loader2 size={16} className="animate-spin" /> טוען...
           </div>
+        ) : items.length === 0 ? (
+          <div className="flex flex-col items-center text-center text-gray-400 py-20">
+            <Mail size={32} className="mb-3 opacity-20" />
+            <p className="text-sm">עוד לא נוצר תוכן</p>
+            <p className="text-xs mt-1 opacity-60">הסוכן יוצר תוכן אוטומטית לכל הלידים בבורד</p>
+          </div>
         ) : (
-          <>
-            {/* Pending generation */}
-            {pending.length > 0 && (
-              <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-3">
-                  ממתינים לייצור <span className="text-amber-500 ml-1">{pending.length}</span>
-                </p>
-                <div className="space-y-2">
-                  {pending.map(c => (
-                    <div key={c.id} className="border border-amber-100 rounded-xl bg-amber-50/40 px-4 py-3 flex items-center gap-3">
-                      <Building2 size={14} className="text-amber-400 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 text-sm truncate">{c.name}</p>
-                        {c.industry && <p className="text-xs text-gray-400 mt-0.5">{c.industry}</p>}
-                      </div>
-                      <button
-                        onClick={() => generateForCompany(c.id)}
-                        disabled={!!generatingId}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white text-xs font-semibold transition-colors shrink-0"
-                      >
-                        {generatingId === c.id
-                          ? <><Loader2 size={11} className="animate-spin" /> יוצר...</>
-                          : <><FileText size={11} /> Generate</>}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Generated content */}
-            <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-3">
-                תוכן שנוצר{items.length > 0 && <span className="text-indigo-500 ml-1">{items.length}</span>}
-              </p>
-              {items.length === 0 && pending.length === 0 ? (
-                <div className="flex flex-col items-center text-center text-gray-400 py-20">
-                  <Mail size={32} className="mb-3 opacity-20" />
-                  <p className="text-sm">עוד לא נוצר תוכן</p>
-                  <p className="text-xs mt-1 opacity-60">לחץ Create כדי לייצר את האימייל הראשון</p>
-                </div>
-              ) : items.length === 0 ? (
-                <p className="text-sm text-gray-400 py-4">תוכן יופיע כאן אחרי הייצור</p>
-              ) : (
-                <div className="space-y-2">
-                  {items.map(item => (
-                    <ContentRow
-                      key={item.id}
-                      item={item}
-                      onApproved={id => setItems(prev => prev.filter(i => i.id !== id))}
-                      onRegenerated={loadContent}
-                      onMoved={id => setItems(prev => prev.filter(i => i.id !== id))}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
+          <div className="space-y-2">
+            {items.map(item => (
+              <ContentRow
+                key={item.id}
+                item={item}
+                onApproved={id => setItems(prev => prev.filter(i => i.id !== id))}
+                onRegenerated={loadContent}
+                onMoved={id => setItems(prev => prev.filter(i => i.id !== id))}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>
