@@ -6,36 +6,29 @@ import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { Tooltip } from '@/components/ui/Tooltip'
 import {
-  LayoutDashboard, Search, Users, FileText, Send, Inbox,
-  Clock, Mail, Activity, BookOpen, MessageSquare,
-  Play, Loader2, CheckCircle2, XCircle, SlidersHorizontal, ShieldOff, PauseCircle, Layers,
+  LayoutDashboard, Search, Users, FileText, Send, Mail,
+  Clock, Activity, BookOpen, MessageSquare, Layers,
+  Play, Loader2, CheckCircle2, XCircle, SlidersHorizontal, ShieldOff, PauseCircle,
 } from 'lucide-react'
 import { BoardMoveDropdown } from '@/components/layout/BoardMoveDropdown'
 
-const OVERVIEW_NAV = [
-  { href: '/boards/dashboard', label: 'Dashboard',     hebrew: 'לוח מחוונים', icon: LayoutDashboard, segment: 'dashboard' },
-  { href: '/boards/kanban',    label: 'Kanban Board',  hebrew: 'לוח קנבן',    icon: Layers,          segment: 'kanban'    },
-]
+// ─── Counts hook ──────────────────────────────────────────────────────────────
 
 type PipelineCounts = {
   prospects: number; potential: number; content: number
   approval: number;  outreach: number; history: number; standby: number
 }
 
-const ZERO_COUNTS: PipelineCounts = {
+const ZERO: PipelineCounts = {
   prospects: 0, potential: 0, content: 0,
   approval: 0,  outreach: 0, history: 0, standby: 0,
 }
 
 function usePipelineCounts() {
-  const [counts, setCounts] = useState<PipelineCounts>(ZERO_COUNTS)
-
+  const [counts, setCounts] = useState<PipelineCounts>(ZERO)
   useEffect(() => {
     function refresh() {
-      fetch('/api/stats/counts')
-        .then(r => r.json())
-        .then(setCounts)
-        .catch(() => {})
+      fetch('/api/stats/counts').then(r => r.json()).then(setCounts).catch(() => {})
     }
     refresh()
     window.addEventListener('boards-refresh',    refresh)
@@ -45,31 +38,32 @@ function usePipelineCounts() {
       window.removeEventListener('board-items-moved', refresh)
     }
   }, [])
-
   return counts
 }
 
-const PIPELINE_NAV = [
-  { href: '/boards/champions',   label: 'Prospect Research',  hebrew: 'מחקר לידים',              icon: Search,      segment: 'champions',   countKey: 'prospects' as const },
-  { href: '/boards/researching', label: 'Potential Clients',  hebrew: 'לקוחות פוטנציאליים',      icon: Users,       segment: 'researching', countKey: 'potential' as const },
-  { href: '/boards/content',     label: 'Content Generation', hebrew: 'יצירת תוכן',              icon: FileText,    segment: 'content',     countKey: 'content'   as const },
-  { href: '/boards/approval',    label: 'Ready to Send',      hebrew: 'מוכן לשליחה',             icon: Send,        segment: 'approval',    countKey: 'approval'  as const },
-  { href: '/boards/outreach',    label: 'Mail',               hebrew: 'דואר',                    icon: Mail,        segment: 'outreach',    countKey: 'outreach'  as const },
-  { href: '/boards/history',     label: 'Client History',     hebrew: 'היסטוריית לקוחות',        icon: Clock,       segment: 'history',     countKey: 'history'   as const },
-  { href: '/boards/standby',     label: 'Standby',            hebrew: 'המתנה',                   icon: PauseCircle, segment: 'standby',     countKey: 'standby'   as const },
+// ─── Stage color tokens ────────────────────────────────────────────────────────
+
+type StageColor = 'violet' | 'blue' | 'amber' | 'emerald' | 'sky'
+
+const STAGE_STYLE: Record<StageColor, { dot: string; badge: string; border: string; activeBg: string }> = {
+  violet:  { dot: 'bg-violet-500',  badge: 'bg-violet-500/20 text-violet-300',  border: 'border-l-violet-500',  activeBg: 'bg-violet-600/10'  },
+  blue:    { dot: 'bg-blue-500',    badge: 'bg-blue-500/20 text-blue-300',      border: 'border-l-blue-500',    activeBg: 'bg-blue-600/10'    },
+  amber:   { dot: 'bg-amber-500',   badge: 'bg-amber-500/20 text-amber-300',    border: 'border-l-amber-500',   activeBg: 'bg-amber-600/10'   },
+  emerald: { dot: 'bg-emerald-500', badge: 'bg-emerald-500/20 text-emerald-300',border: 'border-l-emerald-500', activeBg: 'bg-emerald-600/10' },
+  sky:     { dot: 'bg-sky-500',     badge: 'bg-sky-500/20 text-sky-300',        border: 'border-l-sky-500',     activeBg: 'bg-sky-600/10'     },
+}
+
+// ─── Pipeline stages ──────────────────────────────────────────────────────────
+
+const PIPELINE = [
+  { href: '/boards/champions',  segment: 'champions',  label: 'Find Leads',    icon: Search,   ck: 'prospects' as keyof PipelineCounts, color: 'violet'  as StageColor, gen: false },
+  { href: '/boards/researching',segment: 'researching',label: 'Potential',     icon: Users,    ck: 'potential' as keyof PipelineCounts, color: 'blue'    as StageColor, gen: false },
+  { href: '/boards/content',    segment: 'content',    label: 'Content',       icon: FileText, ck: 'content'   as keyof PipelineCounts, color: 'amber'   as StageColor, gen: true  },
+  { href: '/boards/approval',   segment: 'approval',   label: 'Ready to Send', icon: Send,     ck: 'approval'  as keyof PipelineCounts, color: 'emerald' as StageColor, gen: false },
+  { href: '/boards/outreach',   segment: 'outreach',   label: 'Sent',          icon: Mail,     ck: 'outreach'  as keyof PipelineCounts, color: 'sky'     as StageColor, gen: false },
 ]
 
-const SYSTEM_NAV = [
-  { href: '/boards/emails',     label: 'Email Review',        hebrew: 'סקירת מיילים',      icon: Mail,              segment: 'emails'     },
-  { href: '/boards/activity',   label: 'Agent Activity',      hebrew: 'פעילות סוכנים',     icon: Activity,          segment: 'activity'   },
-  { href: '/boards/settings',   label: 'Search Criteria',     hebrew: 'קריטריוני חיפוש',   icon: SlidersHorizontal, segment: 'settings'   },
-  { href: '/boards/blacklist',  label: 'Blacklist & Queries', hebrew: 'רשימה שחורה ושאילתות', icon: ShieldOff,      segment: 'blacklist'  },
-  { href: '/boards/api-docs',   label: 'API Documentation',   hebrew: 'תיעוד API',         icon: BookOpen,          segment: 'api-docs'   },
-]
-
-const AGENTS_NAV = [
-  { href: '/boards/chat', label: 'Chat with Agents', hebrew: 'שיחה עם סוכנים', icon: MessageSquare, segment: 'chat' },
-]
+// ─── Content gen button ───────────────────────────────────────────────────────
 
 type RunStatus = 'idle' | 'auto' | 'loading' | 'done' | 'no_pending' | 'error'
 
@@ -77,15 +71,16 @@ function ContentGenButton() {
   const [status,      setStatus]      = useState<RunStatus>('idle')
   const [lastCompany, setLastCompany] = useState<string | null>(null)
 
-  // Reflect AutoContentRunner state
   useEffect(() => {
     function onStart()  { setStatus('auto') }
     function onDone(e: Event) {
-      const d = (e as CustomEvent<{ name?: string }>).detail
-      setLastCompany(d?.name ?? null)
+      setLastCompany((e as CustomEvent<{ name?: string }>).detail?.name ?? null)
       setStatus('auto')
     }
-    function onIdle()   { setStatus(prev => prev === 'auto' ? 'done' : prev); setTimeout(() => setStatus('idle'), 3000) }
+    function onIdle() {
+      setStatus(prev => prev === 'auto' ? 'done' : prev)
+      setTimeout(() => setStatus('idle'), 3000)
+    }
     window.addEventListener('auto-gen-start', onStart)
     window.addEventListener('auto-gen-done',  onDone)
     window.addEventListener('auto-gen-idle',  onIdle)
@@ -97,171 +92,192 @@ function ContentGenButton() {
   }, [])
 
   async function run(e: React.MouseEvent) {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault(); e.stopPropagation()
     if (status === 'loading' || status === 'auto') return
-    setStatus('loading')
-    setLastCompany(null)
-
+    setStatus('loading'); setLastCompany(null)
     try {
       const res  = await fetch('/api/generate-content/next', { method: 'POST' })
       const data = await res.json()
-      if (!res.ok)                      setStatus('error')
+      if (!res.ok)                            setStatus('error')
       else if (data.message === 'no_pending') setStatus('no_pending')
       else { setLastCompany(data.company?.name ?? null); setStatus('done') }
-    } catch {
-      setStatus('error')
-    } finally {
-      setTimeout(() => setStatus('idle'), 4000)
-    }
+    } catch { setStatus('error') }
+    finally  { setTimeout(() => setStatus('idle'), 4000) }
   }
 
-  const icon =
-    status === 'auto'       ? <Loader2    size={11} className="animate-spin text-indigo-300" /> :
-    status === 'loading'    ? <Loader2    size={11} className="animate-spin" /> :
-    status === 'done'       ? <CheckCircle2 size={11} className="text-emerald-400" /> :
-    status === 'no_pending' ? <CheckCircle2 size={11} className="text-gray-400" /> :
-    status === 'error'      ? <XCircle    size={11} className="text-red-400" /> :
-                              <Play       size={11} />
-
+  const spinning = status === 'auto' || status === 'loading'
   const tip =
-    status === 'auto'       ? (lastCompany ? `⚡ מייצר: ${lastCompany}` : '⚡ אוטומטי פעיל...') :
+    status === 'auto'       ? (lastCompany ? `מייצר: ${lastCompany}` : 'אוטומטי פעיל...') :
     status === 'loading'    ? 'מייצר תוכן...' :
-    status === 'done'       ? (lastCompany ? `✓ ${lastCompany}` : 'נוצר בהצלחה') :
-    status === 'no_pending' ? 'אין לקוחות בתור' :
-    status === 'error'      ? 'שגיאה — נסה שוב' :
-                              'הפעל יצירת תוכן לפי סדר'
+    status === 'done'       ? (lastCompany ? `✓ ${lastCompany}` : 'נוצר') :
+    status === 'no_pending' ? 'אין בתור' :
+    status === 'error'      ? 'שגיאה' : 'הפעל יצירת תוכן'
 
   return (
     <Tooltip text={tip}>
-      <button
-        onClick={run}
-        className={cn(
-          'p-1 rounded transition-colors shrink-0',
-          status === 'loading'    ? 'text-indigo-300 cursor-wait' :
-          status === 'done'       ? 'text-emerald-400' :
-          status === 'no_pending' ? 'text-gray-500' :
-          status === 'error'      ? 'text-red-400' :
-                                    'text-[#5B6080] hover:text-white hover:bg-white/10'
-        )}
-      >
-        {icon}
+      <button onClick={run} className={cn(
+        'p-1.5 rounded transition-colors shrink-0',
+        spinning                ? 'text-amber-400 cursor-wait' :
+        status === 'done'       ? 'text-emerald-400' :
+        status === 'error'      ? 'text-red-400' :
+        status === 'no_pending' ? 'text-[#374151]' :
+                                  'text-[#4B5563] hover:text-white hover:bg-white/10'
+      )}>
+        {spinning            ? <Loader2      size={10} className="animate-spin" /> :
+         status === 'done'   ? <CheckCircle2 size={10} /> :
+         status === 'error'  ? <XCircle      size={10} /> :
+                               <Play         size={10} />}
       </button>
     </Tooltip>
   )
 }
 
-function SectionLabel({ label, hebrew }: { label: string; hebrew: string }) {
-  return (
-    <Tooltip text={hebrew} className="px-3 mb-1">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-[#3D4060] cursor-default">
-        {label}
-      </p>
-    </Tooltip>
-  )
-}
+// ─── Other nav items ──────────────────────────────────────────────────────────
 
-function NavItem({ href, label, hebrew, icon: Icon, segment, count, isActive, action }: {
-  href: string; label: string; hebrew?: string; icon: React.ElementType
-  segment: string; count?: number; isActive: boolean; action?: React.ReactNode
-}) {
-  return (
-    <div className="flex items-center gap-0.5">
-      <Link
-        href={href}
-        className={cn(
-          'flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] font-medium transition-colors flex-1 min-w-0',
-          isActive
-            ? 'bg-indigo-600 text-white'
-            : 'text-[#8B90B0] hover:text-white hover:bg-white/[0.06]'
-        )}
-      >
-        <Icon size={15} strokeWidth={1.8} className="shrink-0" />
-        <Tooltip text={hebrew ?? label} className="flex-1 min-w-0">
-          <span className="truncate w-full">{label}</span>
-        </Tooltip>
-        {count != null && count > 0 && (
-          <span className={cn(
-            'text-[11px] font-semibold rounded-full px-1.5 min-w-[20px] text-center tabular-nums',
-            isActive ? 'bg-white/20 text-white' : 'text-[#5B6080]'
-          )}>
-          {count}
-        </span>
-      )}
-    </Link>
-    {action}
-    </div>
-  )
-}
+const VIEWS = [
+  { href: '/boards/dashboard', segment: 'dashboard', label: 'Dashboard',    icon: LayoutDashboard },
+  { href: '/boards/kanban',    segment: 'kanban',    label: 'Kanban Board', icon: Layers          },
+]
+
+const ARCHIVE = [
+  { href: '/boards/history', segment: 'history', label: 'Client History', icon: Clock,       ck: 'history' as keyof PipelineCounts },
+  { href: '/boards/standby', segment: 'standby', label: 'Standby',        icon: PauseCircle, ck: 'standby' as keyof PipelineCounts },
+]
+
+const TOOLS = [
+  { href: '/boards/activity',  segment: 'activity',  label: 'Agent Activity',      icon: Activity          },
+  { href: '/boards/settings',  segment: 'settings',  label: 'Search Criteria',     icon: SlidersHorizontal },
+  { href: '/boards/blacklist', segment: 'blacklist', label: 'Blacklist & Queries',  icon: ShieldOff         },
+  { href: '/boards/api-docs',  segment: 'api-docs',  label: 'API Documentation',   icon: BookOpen          },
+  { href: '/boards/chat',      segment: 'chat',      label: 'Chat with Agents',    icon: MessageSquare     },
+]
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
 
 export function Sidebar() {
   const pathname = usePathname()
   const counts   = usePipelineCounts()
+
   return (
-    <aside className="flex flex-col w-[256px] shrink-0 h-full bg-[#1C1D2E]">
+    <aside className="flex flex-col w-[232px] shrink-0 h-full bg-[#111827]">
+
       {/* Brand */}
-      <div className="flex items-center gap-2.5 px-4 h-[60px] border-b border-white/[0.06]">
+      <div className="flex items-center gap-2.5 px-4 h-[60px] border-b border-white/[0.05] shrink-0">
         <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 shrink-0 text-white font-bold text-sm">
           YA
         </div>
         <div className="min-w-0">
-          <p className="text-white font-semibold text-[13px] leading-tight truncate">Yoni Aloni's</p>
-          <p className="text-[#5B6080] text-[11px] leading-tight">Agents</p>
+          <p className="text-white font-semibold text-[13px] leading-tight">AgenticFlow</p>
+          <p className="text-[#374151] text-[10px] leading-tight">Cold Outreach</p>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
-        {/* Move-to-board action */}
-        <div className="px-0">
+      <nav className="flex-1 overflow-y-auto py-3 space-y-4">
+
+        <div className="px-3">
           <BoardMoveDropdown />
         </div>
 
+        {/* Views */}
+        <div className="px-3 space-y-0.5">
+          {VIEWS.map(item => {
+            const active = pathname.startsWith(`/boards/${item.segment}`)
+            return (
+              <Link key={item.href} href={item.href} className={cn(
+                'flex items-center gap-2.5 px-3 py-[6px] rounded-lg text-[12px] font-medium transition-colors',
+                active ? 'bg-white/[0.08] text-white' : 'text-[#6B7280] hover:text-[#D1D5DB] hover:bg-white/[0.04]'
+              )}>
+                <item.icon size={13} strokeWidth={1.8} className="shrink-0" />
+                {item.label}
+              </Link>
+            )
+          })}
+        </div>
+
+        {/* Pipeline */}
         <div>
-          <SectionLabel label="Overview" hebrew="סקירה כללית" />
+          <p className="px-6 pb-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-[#374151]">
+            Pipeline
+          </p>
+          {PIPELINE.map((stage, i) => {
+            const active = pathname.startsWith(`/boards/${stage.segment}`)
+            const c      = STAGE_STYLE[stage.color]
+            const count  = counts[stage.ck]
+            return (
+              <div key={stage.href} className="flex items-center gap-0.5 pr-2">
+                <Link href={stage.href} className={cn(
+                  'flex items-center gap-2.5 flex-1 min-w-0 pl-5 pr-2 py-[8px] text-[12px] font-medium transition-all border-l-2',
+                  active
+                    ? cn('text-white', c.border, c.activeBg)
+                    : 'border-l-transparent text-[#6B7280] hover:text-[#D1D5DB] hover:bg-white/[0.04] hover:border-l-white/[0.12]'
+                )}>
+                  <span className={cn(
+                    'w-[18px] h-[18px] rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 transition-colors',
+                    active ? cn(c.dot, 'text-white') : 'bg-[#1F2937] text-[#4B5563]'
+                  )}>
+                    {i + 1}
+                  </span>
+                  <span className="flex-1 truncate">{stage.label}</span>
+                  {count > 0 && (
+                    <span className={cn(
+                      'text-[10px] font-bold px-1.5 py-0.5 rounded-full tabular-nums shrink-0',
+                      active ? c.badge : 'text-[#374151]'
+                    )}>
+                      {count}
+                    </span>
+                  )}
+                </Link>
+                {stage.gen && <ContentGenButton />}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Archive */}
+        <div className="px-3">
+          <p className="px-3 pb-1.5 text-[9px] font-bold uppercase tracking-[0.14em] text-[#374151]">
+            Archive
+          </p>
           <div className="space-y-0.5">
-            {OVERVIEW_NAV.map(item => (
-              <NavItem key={item.href} {...item} count={0}
-                isActive={pathname.startsWith(`/boards/${item.segment}`)} />
-            ))}
+            {ARCHIVE.map(item => {
+              const active = pathname.startsWith(`/boards/${item.segment}`)
+              const count  = counts[item.ck]
+              return (
+                <Link key={item.href} href={item.href} className={cn(
+                  'flex items-center gap-2.5 px-3 py-[6px] rounded-lg text-[12px] font-medium transition-colors',
+                  active ? 'bg-white/[0.08] text-white' : 'text-[#6B7280] hover:text-[#D1D5DB] hover:bg-white/[0.04]'
+                )}>
+                  <item.icon size={13} strokeWidth={1.8} className="shrink-0" />
+                  <span className="flex-1 truncate">{item.label}</span>
+                  {count > 0 && <span className="text-[10px] text-[#374151] tabular-nums">{count}</span>}
+                </Link>
+              )
+            })}
           </div>
         </div>
 
-        <div>
-          <SectionLabel label="Pipeline" hebrew="צנרת מכירות" />
-          <div className="space-y-0.5">
-            {PIPELINE_NAV.map(item => (
-              <NavItem key={item.href} {...item}
-                count={item.countKey ? counts[item.countKey] : undefined}
-                isActive={pathname.startsWith(`/boards/${item.segment}`)} />
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <SectionLabel label="System" hebrew="מערכת" />
-          <div className="space-y-0.5">
-            {SYSTEM_NAV.map(item => (
-              <NavItem key={item.href} {...item} count={0}
-                isActive={pathname.startsWith(`/boards/${item.segment}`)} />
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <SectionLabel label="Agents" hebrew="סוכנים" />
-          <div className="space-y-0.5">
-            {AGENTS_NAV.map(item => (
-              <NavItem key={item.href} {...item} count={0}
-                isActive={pathname.startsWith(`/boards/${item.segment}`)} />
-            ))}
-          </div>
-        </div>
       </nav>
 
-      <div className="px-4 py-3 border-t border-white/[0.06]">
-        <p className="text-[11px] text-[#3D4060]">Yoni Automation · v1.0</p>
+      {/* Tools — icon row */}
+      <div className="px-3 py-2 border-t border-white/[0.05] flex items-center gap-0.5">
+        {TOOLS.map(item => {
+          const active = pathname.startsWith(`/boards/${item.segment}`)
+          return (
+            <Tooltip key={item.href} text={item.label}>
+              <Link href={item.href} className={cn(
+                'p-1.5 rounded-md transition-colors',
+                active ? 'text-white bg-white/10' : 'text-[#374151] hover:text-[#9CA3AF] hover:bg-white/[0.06]'
+              )}>
+                <item.icon size={13} strokeWidth={1.8} />
+              </Link>
+            </Tooltip>
+          )
+        })}
+        <span className="flex-1" />
+        <span className="text-[9px] text-[#1F2937] font-medium">v1.0</span>
       </div>
+
     </aside>
   )
 }

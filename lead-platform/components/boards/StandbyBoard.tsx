@@ -5,6 +5,7 @@ import { PauseCircle, ChevronDown, ChevronRight, Loader2, ArrowRight } from 'luc
 import { StatusDot } from '@/components/ui/StatusDot'
 import { formatRelativeDate, cn } from '@/lib/utils'
 import { useSelection } from '@/components/providers/SelectionProvider'
+import { ClientCardTableRow } from '@/components/boards/ClientCard'
 import type { CompanyStatus } from '@/lib/types'
 
 interface StandbyCompany {
@@ -150,13 +151,17 @@ export function StandbyBoard({ companies }: { companies: StandbyCompany[] }) {
                     </td>
                   </tr>
                   {isExpanded && (
-                    <tr key={`${c.id}-exp`}>
-                      <td colSpan={COLS.length + 1} className="px-4 pb-4 pt-1">
-                        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm text-gray-700 leading-relaxed" dir="rtl">
-                          {c.notes ?? <span className="text-gray-400 italic">אין הערות</span>}
-                        </div>
-                      </td>
-                    </tr>
+                    <ClientCardTableRow
+                      key={`${c.id}-exp`}
+                      colSpan={COLS.length + 1}
+                      data={{
+                        notes:         c.notes,
+                        contact_name:  c.contact_name,
+                        contact_email: c.contact_email,
+                        contact_phone: c.contact_phone,
+                        domain:        c.domain,
+                      }}
+                    />
                   )}
                 </>
               )

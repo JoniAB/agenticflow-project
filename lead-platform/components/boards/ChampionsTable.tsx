@@ -11,12 +11,12 @@ import { useFetchState } from '@/components/providers/FetchStateProvider'
 import type { FetchResult } from '@/components/providers/FetchStateProvider'
 import {
   ExternalLink, Globe, ChevronDown, ChevronRight,
-  Phone, Mail, User, Globe2, MessageCircle, Star,
-  CalendarCheck, Image, CheckCircle2, XCircle,
+  Phone, CheckCircle2,
   Search, Plus, Loader2, AlertCircle, Zap, Trash2, ArrowRight,
 } from 'lucide-react'
 import { useSelection } from '@/components/providers/SelectionProvider'
 import { MoveToBoardMenu } from '@/components/ui/MoveToBoardMenu'
+import { ClientCardTableRow } from '@/components/boards/ClientCard'
 
 type Filter = 'all' | 'linkedin' | 'google_maps' | 'other'
 
@@ -27,108 +27,6 @@ const TABS: { value: Filter; label: string; hebrew: string }[] = [
   { value: 'other',       label: 'Other',    hebrew: 'אחר'        },
 ]
 
-// ─── Digital asset detection ──────────────────────────────────────────────────
-
-interface AssetStatus { label: string; present: boolean; icon: React.ElementType }
-
-function detectAssets(notes: string | null, domain: string | null): AssetStatus[] {
-  const t = (notes ?? '').toLowerCase()
-  const hasWebsite  = !!domain
-  const hasWhatsApp = !t.includes('חסר whatsapp') && !t.includes('אין whatsapp') && !t.includes('ללא whatsapp') && !t.includes('אין כפתור whatsapp')
-  const hasBooking  = !t.includes('אין תורים') && !t.includes('אין הזמנת') && !t.includes('לא ניתן לקבוע') && !t.includes('אין אפשרות לקבוע')
-  const hasReviews  = (t.includes('ביקורות') || t.includes('כוכבים') || t.includes('stars')) && !t.includes('אין ביקורות') && !t.includes('אפס ביקורות')
-  const hasSocial   = t.includes('אינסטגרם') || t.includes('פייסבוק') || t.includes('instagram') || t.includes('facebook') || t.includes('linkedin')
-  const hasGallery  = !t.includes('אין גלריה') && !t.includes('אין תמונות') && !t.includes('מעט תמונות')
-  return [
-    { label: 'אתר',      present: hasWebsite,  icon: Globe2        },
-    { label: 'WhatsApp', present: hasWhatsApp, icon: MessageCircle },
-    { label: 'ביקורות', present: hasReviews,  icon: Star          },
-    { label: 'הזמנה',   present: hasBooking,  icon: CalendarCheck },
-    { label: 'סושיאל',  present: hasSocial,   icon: Image         },
-    { label: 'גלריה',   present: hasGallery,  icon: Image         },
-  ]
-}
-
-// ─── Expanded row ─────────────────────────────────────────────────────────────
-
-function ExpandedRow({ company, colSpan }: { company: Company; colSpan: number }) {
-  const assets  = detectAssets(company.notes ?? null, company.domain ?? null)
-  const missing = assets.filter(a => !a.present)
-  const present = assets.filter(a => a.present)
-
-  return (
-    <tr>
-      <td colSpan={colSpan} className="px-0 pb-0">
-        <div className="mx-0 mb-3 bg-gray-50 border border-gray-200 rounded-xl p-5 grid grid-cols-3 gap-6">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-2">למה נבחר</p>
-            {company.notes
-              ? <p className="text-sm text-gray-700 leading-relaxed" dir="rtl">{company.notes}</p>
-              : <p className="text-sm text-gray-400 italic" dir="rtl">אין נתוני מחקר</p>}
-          </div>
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-2">פרטי קשר</p>
-            <div className="space-y-1.5">
-              {company.contact_name && (
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <User size={13} className="text-gray-400 shrink-0" />{company.contact_name}
-                </div>
-              )}
-              {company.contact_phone && (
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <Phone size={13} className="text-gray-400 shrink-0" />
-                  <a href={`tel:${company.contact_phone}`} className="hover:text-indigo-600">{company.contact_phone}</a>
-                </div>
-              )}
-              {company.contact_email && (
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <Mail size={13} className="text-gray-400 shrink-0" />
-                  <a href={`mailto:${company.contact_email}`} className="hover:text-indigo-600 truncate">{company.contact_email}</a>
-                </div>
-              )}
-              {company.domain && (
-                <div className="flex items-center gap-2 text-sm text-gray-700">
-                  <Globe size={13} className="text-gray-400 shrink-0" />
-                  <a href={company.domain.startsWith('http') ? company.domain : `https://${company.domain}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="hover:text-indigo-600 truncate flex items-center gap-1">
-                    {company.domain.replace(/^https?:\/\//, '').split('/')[0]}
-                    <ExternalLink size={10} />
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-2">נכסים דיגיטליים</p>
-            <div className="space-y-1.5">
-              {missing.length > 0 && (
-                <div className="space-y-1">
-                  <p className="text-[10px] text-red-400 font-medium">חסר:</p>
-                  {missing.map(a => (
-                    <div key={a.label} className="flex items-center gap-1.5 text-xs text-red-500">
-                      <XCircle size={12} className="shrink-0" />{a.label}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {present.length > 0 && (
-                <div className="space-y-1 mt-1">
-                  <p className="text-[10px] text-emerald-500 font-medium">קיים:</p>
-                  {present.map(a => (
-                    <div key={a.label} className="flex items-center gap-1.5 text-xs text-emerald-600">
-                      <CheckCircle2 size={12} className="shrink-0" />{a.label}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </td>
-    </tr>
-  )
-}
 
 // ─── Fetch result card ────────────────────────────────────────────────────────
 
@@ -556,7 +454,19 @@ export function ChampionsTable({ companies }: { companies: Company[] }) {
                       </div>
                     </td>
                   </tr>
-                  {isExpanded && <ExpandedRow key={`${c.id}-exp`} company={c} colSpan={9} />}
+                  {isExpanded && (
+                    <ClientCardTableRow
+                      key={`${c.id}-exp`}
+                      colSpan={9}
+                      data={{
+                        notes:         c.notes,
+                        contact_name:  c.contact_name,
+                        contact_email: c.contact_email,
+                        contact_phone: c.contact_phone,
+                        domain:        c.domain,
+                      }}
+                    />
+                  )}
                 </>
               )
             })}

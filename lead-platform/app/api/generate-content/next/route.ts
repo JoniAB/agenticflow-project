@@ -137,6 +137,15 @@ async function runGeneration(
 
   onProgress(3, 'מייצר תוכן עם Claude...')
 
+  // Guard against concurrent generation: re-check that no content was saved
+  // between our initial query and now (e.g. cron + AutoContentRunner overlap).
+  const { data: alreadyExists } = await supabase
+    .from('content')
+    .select('id')
+    .eq('company_id', company.id)
+    .maybeSingle()
+  if (alreadyExists) return { ok: 'no_pending' }
+
   const message = await client.messages.create({
     model:      'claude-sonnet-4-6',
     max_tokens: 4096,
