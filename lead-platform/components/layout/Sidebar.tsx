@@ -159,11 +159,11 @@ export function Sidebar() {
   const counts   = usePipelineCounts()
 
   return (
-    <aside className="flex flex-col w-[232px] shrink-0 h-full bg-[#111827]">
+    <aside className="flex flex-col w-[232px] shrink-0 h-full bg-[#111827] border-r border-white/[0.04]" style={{ background: 'linear-gradient(180deg, #0f1929 0%, #111827 60%)' }}>
 
       {/* Brand */}
       <div className="flex items-center gap-2.5 px-4 h-[60px] border-b border-white/[0.05] shrink-0">
-        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 shrink-0 text-white font-bold text-sm">
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-600 shrink-0 text-white font-bold text-sm ring-1 ring-indigo-400/40 shadow-lg shadow-indigo-900/40">
           YA
         </div>
         <div className="min-w-0">
@@ -260,7 +260,7 @@ export function Sidebar() {
       </nav>
 
       {/* Tools — icon row */}
-      <div className="px-3 py-2 border-t border-white/[0.05] flex items-center gap-0.5">
+      <div className="px-3 py-2 border-t border-white/[0.08] flex items-center gap-0.5">
         {TOOLS.map(item => {
           const active = pathname.startsWith(`/boards/${item.segment}`)
           return (

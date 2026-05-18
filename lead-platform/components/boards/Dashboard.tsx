@@ -108,11 +108,11 @@ function PipelineFlow() {
 
 // ─── KPI card ─────────────────────────────────────────────────────────────────
 
-function KpiCard({ label, value, sub, color, icon: Icon }: {
-  label: string; value: string; sub: string; color: string; icon: React.ElementType
+function KpiCard({ label, value, sub, color, icon: Icon, accent = 'border-l-gray-200' }: {
+  label: string; value: string; sub: string; color: string; icon: React.ElementType; accent?: string
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
+    <div className={cn('bg-white rounded-xl border border-gray-200 border-l-[3px] p-4', accent)}>
       <div className="flex items-center justify-between mb-2">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">{label}</p>
         <Icon size={13} className="text-gray-300" strokeWidth={1.5} />
@@ -425,6 +425,7 @@ export function Dashboard({ stats }: { stats: WeeklyStats }) {
           sub={`${totals.potentials} scored as potential`}
           color="text-indigo-600"
           icon={Users}
+          accent="border-l-indigo-500"
         />
         <KpiCard
           label="Emails Sent (7d)"
@@ -432,6 +433,7 @@ export function Dashboard({ stats }: { stats: WeeklyStats }) {
           sub={`${sentTotal} total in pipeline`}
           color="text-amber-500"
           icon={Send}
+          accent="border-l-amber-400"
         />
         <KpiCard
           label="Replies (7d)"
@@ -439,6 +441,7 @@ export function Dashboard({ stats }: { stats: WeeklyStats }) {
           sub={`${replyRate}% reply rate overall`}
           color="text-emerald-500"
           icon={MessageSquare}
+          accent="border-l-emerald-500"
         />
         <KpiCard
           label="Active in Pipeline"
@@ -446,6 +449,7 @@ export function Dashboard({ stats }: { stats: WeeklyStats }) {
           sub={`${health.awaiting_approval} waiting for approval`}
           color={health.awaiting_approval > 0 ? 'text-orange-500' : 'text-gray-700'}
           icon={TrendingUp}
+          accent={health.awaiting_approval > 0 ? 'border-l-orange-400' : 'border-l-gray-300'}
         />
       </div>
 

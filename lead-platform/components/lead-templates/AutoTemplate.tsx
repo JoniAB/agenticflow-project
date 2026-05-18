@@ -160,7 +160,7 @@ export function AutoTemplate({ companyName, contactName, reportUrl, brand, page 
           <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(-45deg, transparent, transparent 14px, rgba(0,0,0,0.06) 14px, rgba(0,0,0,0.06) 28px)' }} />
           <div className="at" style={{ padding: '36px 28px', position: 'relative' }}>
             <p style={{ fontFamily: 'Barlow Condensed,sans-serif', fontSize: 22, fontWeight: 800, color: '#fff', letterSpacing: '.06em', textTransform: 'uppercase' }}>
-              🔧 {page.result_promise}
+              {page.result_promise}
             </p>
           </div>
         </section>
