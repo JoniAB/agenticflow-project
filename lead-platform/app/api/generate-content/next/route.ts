@@ -84,26 +84,48 @@ async function runGeneration(
     ? `\n\n**הנחיות מיוחדות מהמשתמש — חשוב ליישם:**\n${instructions.trim()}\nיש לשקף הנחיות אלו בעיצוב, בנרטיב, ובכל היבט ויזואלי של העמוד.`
     : ''
 
-  const prompt = `אתה מומחה שיווק ו-AI לעסקים קטנים בישראל. שמך יוני אלוני.
-המשימה: צור תוכן שיווקי מלא עבור עסק שאנחנו פונים אליו בcold outreach.
-
-פרטי העסק:
+  // Static schema moved to system prompt (cached) — only dynamic company data goes here
+  const prompt = `פרטי העסק:
 - שם: ${name}
 - תחום: ${company.industry ?? 'לא ידוע'}
 - אתר: ${company.domain ?? 'לא ידוע'}
 - איש קשר: ${company.contact_name ?? 'לא ידוע'}
-- נתוני מחקר: ${company.notes ?? 'אין'}${instructionsBlock}
+- נתוני מחקר: ${company.notes ?? 'אין'}
+- ציון נוכחי: ${(company.score as number) ?? 4}${instructionsBlock}
 
-צור JSON בלבד (ללא markdown) עם המבנה הבא:
+צור JSON עם המבנה שקיבלת בהוראות המערכת.`
 
+  onProgress(3, 'מייצר תוכן עם Claude...')
+
+  // Guard against concurrent generation: re-check that no content was saved
+  // between our initial query and now (e.g. cron + AutoContentRunner overlap).
+  const { data: alreadyExists } = await supabase
+    .from('content')
+    .select('id')
+    .eq('company_id', company.id)
+    .maybeSingle()
+  if (alreadyExists) return { ok: 'no_pending' }
+
+  const message = await client.messages.create({
+    model:      'claude-sonnet-4-6',
+    max_tokens: 2048,
+    system: [
+      {
+        type: 'text',
+        // Static schema is cached — saves ~90% on input tokens for this block on repeated calls
+        text: `אתה מומחה שיווק ו-AI לעסקים קטנים בישראל. שמך יוני אלוני. אתה JSON API — החזר JSON בלבד, ללא markdown.
+
+המשימה: צור תוכן שיווקי מלא עבור עסק שאנחנו פונים אליו בcold outreach.
+
+החזר JSON עם המבנה הבא בדיוק:
 {
   "email_subject": "נושא מייל קצר וספציפי (עד 8 מילים)",
   "email_body": "מייל cold outreach ב-3-4 משפטים. מתייחס לחולשה ספציפית של העסק. מסתיים בהצעה לשיחה של 10 דקות. אל תכלול לינקים — הם יתווספו אוטומטית בסוף.",
   "page": {
     "template_type": "בחר תבנית: hair-salon (מספרה/סלון שיער/ברבר), vet-clinic (וטרינר/מרפאה לחיות), beauty (ציפורניים/קוסמטיקה/ספא/מכון יופי), auto (מוסך/מכניקה/רכב/גרר/פחחות), photographer (צלם/צילום/וידאו/קמרמן/הפקה), generic (כל שאר התחומים)",
-    "brand_color": "צבע HEX ראשי שמתאים לתחום העסק ומרגיש מקצועי",
-    "brand_light": "גרסה בהירה מאוד של brand_color לרקע. חייב להיות בהיר מאוד, כמעט לבן.",
-    "tagline": "משפט אחד חזק שמתייחס לבעיה העיקרית של העסק (בעברית)",
+    "brand_color": "צבע HEX ראשי שמתאים לתחום העסק",
+    "brand_light": "גרסה בהירה מאוד של brand_color לרקע — כמעט לבן",
+    "tagline": "משפט אחד חזק שמתייחס לבעיה העיקרית של העסק",
     "hero_description": "2-3 משפטים שמסבירים מה אנחנו מציעים לעסק הזה ספציפית",
     "pain_points": [
       {"title": "כותרת חוסר 1", "description": "הסבר קצר"},
@@ -119,7 +141,7 @@ async function runGeneration(
   },
   "report": {
     "executive_summary": "פסקה קצרה — מצב העסק הדיגיטלי היום",
-    "score": ${(company.score as number) ?? 4},
+    "score": <השתמש בציון שקיבלת>,
     "findings": [
       {"title": "ממצא 1", "severity": "high", "details": "הסבר מפורט"},
       {"title": "ממצא 2", "severity": "medium", "details": "הסבר מפורט"},
@@ -133,23 +155,10 @@ async function runGeneration(
     "quick_wins": ["פעולה מהירה 1", "פעולה מהירה 2", "פעולה מהירה 3"],
     "potential_impact": "תיאור הפוטנציאל של העסק אם ישתפר דיגיטלית"
   }
-}`
-
-  onProgress(3, 'מייצר תוכן עם Claude...')
-
-  // Guard against concurrent generation: re-check that no content was saved
-  // between our initial query and now (e.g. cron + AutoContentRunner overlap).
-  const { data: alreadyExists } = await supabase
-    .from('content')
-    .select('id')
-    .eq('company_id', company.id)
-    .maybeSingle()
-  if (alreadyExists) return { ok: 'no_pending' }
-
-  const message = await client.messages.create({
-    model:      'claude-sonnet-4-6',
-    max_tokens: 4096,
-    system:     'You are a JSON API. Return only valid JSON, no markdown, no extra text.',
+}`,
+        cache_control: { type: 'ephemeral' },
+      },
+    ],
     messages:   [{ role: 'user', content: prompt }],
   })
 

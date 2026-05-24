@@ -138,7 +138,7 @@ async function handleStream(isAuto: boolean, query: string | null): Promise<Resp
 
         const message = await client.messages.create({
           model: 'claude-haiku-4-5-20251001',
-          max_tokens: 2000,
+          max_tokens: 1200,
           system: 'You are a JSON API. Respond with valid JSON only. No markdown, no explanations, no warnings, no extra text — just the raw JSON object.',
           messages: [{ role: 'user', content: prompt }],
         })
@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
   try {
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 2000,
+      max_tokens: 1200,
       system: 'You are a JSON API. Respond with valid JSON only. No markdown, no explanations, no warnings, no extra text — just the raw JSON object.',
       messages: [{ role: 'user', content: prompt }],
     })

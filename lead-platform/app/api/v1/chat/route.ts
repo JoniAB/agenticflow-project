@@ -27,11 +27,14 @@ export async function POST(request: NextRequest) {
   const stream = new ReadableStream({
     async start(controller) {
       try {
+        // Keep only the last 10 messages to prevent unbounded token growth
+  const trimmedMessages = messages.slice(-10)
+
         const anthropicStream = await client.messages.stream({
           model: 'claude-sonnet-4-6',
           max_tokens: 1024,
           system: agent.system,
-          messages,
+          messages: trimmedMessages,
         })
 
         for await (const chunk of anthropicStream) {
