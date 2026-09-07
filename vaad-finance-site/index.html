@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%8F%A2</text></svg>">
+<title>שקיפות כספית לוועד הבית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="page-style">
+:root{
+  --ink:#1B2321; --paper:#EDEFEC; --surface:#FFFFFF; --surface-2:#F5F6F3; --line:#D8DCD6;
+  --brand:#1F4B43; --brand-ink:#16362F; --brand-soft:#E1EEE9;
+  --gold:#8A6A22; --gold-soft:#F1E7CF;
+  --paid:#3F7D5C; --paid-soft:#E3EFE7;
+  --debt:#B23A2E; --debt-soft:#F6E4E1;
+  --admin:#6B4FA0; --admin-soft:#EAE3F5;
+  --cat-1:#1F4B43; --cat-2:#8A6A22; --cat-3:#6B4FA0; --cat-4:#3E6B8C; --cat-5:#8C5A3E;
+  --shadow:0 1px 2px rgba(27,35,33,.07),0 10px 28px -14px rgba(27,35,33,.22);
+  --font-display:"Frank Ruhl Libre",Georgia,"Times New Roman",serif;
+  --font-body:"Heebo","Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#ECEEE9; --paper:#14181A; --surface:#1B2023; --surface-2:#20262A; --line:#2B3236;
+    --brand:#4FA893; --brand-ink:#BFE7DB; --brand-soft:#1E3833;
+    --gold:#D6B460; --gold-soft:#33291A;
+    --paid:#6FBF95; --paid-soft:#1E3327;
+    --debt:#E2685A; --debt-soft:#3A211E;
+    --admin:#B29BDD; --admin-soft:#2C2440;
+    --cat-1:#4FA893; --cat-2:#D6B460; --cat-3:#B29BDD; --cat-4:#6FA0C7; --cat-5:#C08A63;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#ECEEE9; --paper:#14181A; --surface:#1B2023; --surface-2:#20262A; --line:#2B3236;
+  --brand:#4FA893; --brand-ink:#BFE7DB; --brand-soft:#1E3833;
+  --gold:#D6B460; --gold-soft:#33291A;
+  --paid:#6FBF95; --paid-soft:#1E3327;
+  --debt:#E2685A; --debt-soft:#3A211E;
+  --admin:#B29BDD; --admin-soft:#2C2440;
+  --cat-1:#4FA893; --cat-2:#D6B460; --cat-3:#B29BDD; --cat-4:#6FA0C7; --cat-5:#C08A63;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;}
+html{color-scheme:light dark;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);}
+#app{min-height:100vh;}
+.app-shell{max-width:960px;margin:0 auto;padding:0 20px 56px;}
+h1,h2{font-family:var(--font-display);text-wrap:balance;margin:0;}
+button{font-family:inherit;}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){*{transition-duration:.001ms !important;animation-duration:.001ms !important;}}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:22px;}
+.topbar-id{display:flex;align-items:baseline;gap:10px;}
+.topbar-mark{font-family:var(--font-display);font-weight:700;font-size:1.2rem;color:var(--brand-ink);}
+.topbar-name{font-size:.85rem;color:var(--ink);opacity:.65;}
+.topbar-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.sync-pill{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--surface-2);color:var(--ink);opacity:.75;}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.sync-pill.is-live{color:var(--brand);opacity:1;background:var(--brand-soft);}
+.sync-pill.is-readonly{color:var(--debt);opacity:1;background:var(--debt-soft);}
+.role-chip{font-size:.78rem;font-weight:600;padding:5px 12px;border-radius:99px;background:var(--brand-soft);color:var(--brand-ink);}
+.role-chip.role-admin{background:var(--admin-soft);color:var(--admin);}
+
+.btn{border:1px solid transparent;border-radius:8px;padding:9px 16px;font-size:.86rem;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);}
+.btn-primary{background:var(--brand);color:#fff;}
+.btn-primary:hover{background:var(--brand-ink);}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink);}
+.btn-ghost:hover{background:var(--surface-2);}
+.btn-danger{background:transparent;border-color:var(--debt);color:var(--debt);}
+.btn-danger:hover{background:var(--debt-soft);}
+.btn-link{background:none;border:none;color:var(--brand);font-weight:700;cursor:pointer;padding:4px 0;}
+.btn-sm{padding:6px 12px;font-size:.78rem;}
+.btn[disabled]{opacity:.45;cursor:not-allowed;}
+
+.notice{display:flex;gap:10px;align-items:flex-start;background:var(--gold-soft);color:var(--ink);border:1px solid var(--gold);border-radius:10px;padding:12px 14px;margin-bottom:20px;font-size:.85rem;line-height:1.5;}
+.notice strong{color:var(--gold);}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:24px;margin-bottom:20px;}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.panel-head h2{font-size:1.15rem;font-weight:700;}
+.eyebrow{font-size:.78rem;letter-spacing:.04em;color:var(--ink);opacity:.6;margin:0 0 6px;}
+
+.balance-panel{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.balance-figure{font-family:var(--font-display);font-weight:900;font-size:clamp(2.4rem,6vw,3.6rem);line-height:1;margin:2px 0 12px;font-variant-numeric:tabular-nums;}
+.gold-rule{width:120px;height:3px;background:var(--gold);border-radius:2px;margin-bottom:10px;}
+.balance-meta{font-size:.82rem;color:var(--ink);opacity:.6;margin:0;}
+
+.cat-row{display:flex;gap:22px;overflow-x:auto;padding-bottom:6px;}
+.cat-col{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:78px;}
+.cat-bar-track{height:150px;width:44px;border-radius:8px;background:var(--surface-2);display:flex;align-items:flex-end;overflow:hidden;border:1px solid var(--line);}
+.cat-bar-fill{width:100%;border:none;border-radius:6px 6px 0 0;cursor:pointer;min-height:8px;transition:opacity .15s;}
+.cat-bar-fill:hover:not([disabled]){opacity:.82;}
+.cat-bar-fill[disabled]{cursor:default;}
+.cat-1{background:var(--cat-1);} .cat-2{background:var(--cat-2);} .cat-3{background:var(--cat-3);} .cat-4{background:var(--cat-4);} .cat-5{background:var(--cat-5);}
+.cat-amount{font-weight:700;font-size:.86rem;font-variant-numeric:tabular-nums;margin:0;}
+.cat-name{font-size:.76rem;color:var(--ink);opacity:.68;text-align:center;margin:0;}
+.cat-remove{background:none;border:none;color:var(--debt);font-size:.68rem;cursor:pointer;padding:0;}
+
+.table-scroll{overflow-x:auto;}
+table.apt-table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:560px;}
+.apt-table thead th{text-align:right;font-weight:600;color:var(--ink);opacity:.55;font-size:.74rem;letter-spacing:.02em;padding:0 12px 10px;border-bottom:1px solid var(--line);}
+.apt-table tbody tr.apt-row{cursor:pointer;border-bottom:1px solid var(--line);}
+.apt-table tbody tr.apt-row:hover{background:var(--surface-2);}
+.apt-table td{padding:11px 12px;vertical-align:middle;}
+.apt-num{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 6px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);font-weight:700;font-variant-numeric:tabular-nums;font-size:.8rem;}
+.apt-phone,.apt-debt{font-variant-numeric:tabular-nums;}
+.status-chip{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:99px;}
+.status-chip.paid{background:var(--paid-soft);color:var(--paid);}
+.status-chip.debt{background:var(--debt-soft);color:var(--debt);}
+.caret{display:inline-block;opacity:.45;transition:transform .15s;}
+.apt-row.is-open .caret{transform:rotate(180deg);}
+.apt-detail-row td{padding:0;border-bottom:1px solid var(--line);}
+.apt-detail{background:var(--surface-2);padding:16px 18px 20px;}
+.apt-detail-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+.apt-detail-email{font-size:.8rem;color:var(--ink);opacity:.6;}
+.apt-detail-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.ledger{list-style:none;margin:0;padding:0;}
+.ledger li{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:.84rem;}
+.ledger li:last-child{border-bottom:none;}
+.ledger-date{color:var(--ink);opacity:.6;min-width:78px;font-variant-numeric:tabular-nums;}
+.ledger-note{flex:1;color:var(--ink);opacity:.75;}
+.ledger-fill{flex:1;border-bottom:1px dotted var(--line);margin:0 4px 3px;min-width:12px;}
+.ledger-amount{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.empty-note{font-size:.82rem;color:var(--ink);opacity:.55;}
+.search-input{border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:.82rem;background:var(--surface);color:var(--ink);font-family:inherit;min-width:200px;}
+
+.login-mark-inline{display:flex;flex-direction:column;gap:2px;}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(20,24,22,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;}
+.modal-card{width:100%;max-width:400px;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:22px;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.modal-head h3{font-size:1.05rem;font-weight:700;font-family:var(--font-display);}
+.modal-close{background:none;border:none;font-size:1.3rem;line-height:1;cursor:pointer;color:var(--ink);opacity:.5;}
+.modal-close:hover{opacity:1;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:.78rem;color:var(--ink);opacity:.7;margin-bottom:5px;}
+.field input{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:.9rem;background:var(--surface);color:var(--ink);font-family:inherit;}
+.field input:focus{border-color:var(--brand);}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px;}
+.account-list{display:flex;flex-direction:column;gap:8px;}
+.account-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface);cursor:pointer;text-align:right;width:100%;font-family:inherit;}
+.account-btn:hover{border-color:var(--brand);background:var(--brand-soft);}
+.account-name{font-weight:600;font-size:.9rem;}
+
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:99px;font-size:.82rem;box-shadow:var(--shadow);z-index:60;}
+
+.login-screen{padding:60px 0;}
+.login-card{max-width:420px;margin:0 auto;text-align:center;}
+.login-card h1{font-size:1.6rem;margin:6px 0 10px;}
+.login-sub{font-size:.86rem;color:var(--ink);opacity:.65;line-height:1.6;margin:0 0 22px;}
+
+@media (max-width:640px){.balance-panel{align-items:flex-start;}.panel{padding:18px;}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="text/plain" id="app-source">
+var STATE = null;
+
+var APP_USERS = [
+  { id: "u-committee-1", name: "ועד הבית", role: "committee", password: "Vaad2026!" },
+  { id: "u-admin-1", name: "יוני אלוני", role: "admin", password: "Admin2026!" }
+];
+
+var currentUser = null;
+var expandedApartmentId = null;
+var modal = null;
+var toastMessage = null;
+var toastTimer = null;
+var artifactApi = null;
+var syncMode = "checking";
+var writeDisabled = false;
+var apartmentQuery = "";
+
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function isoDaysAgo(days) {
+  var d = new Date();
+  d.setDate(d.getDate() - days);
+  return d.toISOString().slice(0, 10);
+}
+
+function seededRandom(seed) {
+  var value = seed;
+  return function () {
+    value = (value * 9301 + 49297) % 233280;
+    return value / 233280;
+  };
+}
+
+function buildSeedState() {
+  var firstNames = ["יוסי","דנה","משה","רותם","אבי","מיכל","עידן","שירה","רון","טל","אורית","גיל","נועה","עומר","ליאת","אלון","הדר","אריאל","יעל","דור","שרה","יעקב","רבקה","דוד","רחל","בני","אסתר","צבי","חנה","שמעון","מירי","אלי","תמר","גדעון","אפרת","נדב","קרן","עידו","מאיה","רועי","אביגיל","יונתן","שני","אורי","נטע","אמיר","ליאור","שלומית","בועז","אנה"];
+  var lastNames = ["כהן","לוי","מזרחי","פרץ","ביטון","אברהם","פרידמן","אזולאי","דהן","חדד","וייס","גבאי","עמר","מלכה","בן דוד","שפירא","רוזן","אוחיון","טל","נחום"];
+  var apartments = [];
+  for (var id = 1; id <= 50; id++) {
+    var rand = seededRandom(id * 7919 + 13);
+    var first = firstNames[id % firstNames.length];
+    var last = lastNames[(id * 3) % lastNames.length];
+    var name = first + " " + last;
+    var history = [];
+    var monthlyFee = 350;
+    var numPayments = 2 + Math.floor(rand() * 4);
+    var daysAgo = 170;
+    for (var i = 0; i < numPayments; i++) {
+      daysAgo -= Math.floor(rand() * 30) + 15;
+      if (daysAgo < 0) break;
+      history.push({
+        id: "p-" + id + "-" + i,
+        date: isoDaysAgo(daysAgo),
+        amount: monthlyFee,
+        note: i === 0 ? "ועד בית - תשלום חודשי" : "ועד בית"
+      });
+    }
+    var owesDebt = rand() < 0.28;
+    var debt = owesDebt ? Math.round((Math.floor(rand() * 3) + 1) * monthlyFee) : 0;
+    var phoneNum = Math.floor(rand() * 9000000) + 1000000;
+    apartments.push({
+      id: id,
+      residentName: name,
+      phone: "050-" + phoneNum,
+      email: (first + "." + last + id + "@example.com").replace(/\s/g, ""),
+      status: debt > 0 ? "חוב" : "שולם",
+      debtAmount: debt,
+      paymentHistory: history
+    });
+  }
+  return {
+    balance: { amount: 42300, lastUpdated: isoDaysAgo(2) },
+    categories: [
+      { id: "insurance", name: "ביטוחים", totalSpent: 3200 },
+      { id: "fixed", name: "תשלומים קבועים", totalSpent: 5400 },
+      { id: "repairs", name: "תיקונים ותחזוקה", totalSpent: 1800 },
+      { id: "gardening", name: "גינון", totalSpent: 900 },
+      { id: "other", name: "אחר", totalSpent: 450 }
+    ],
+    apartments: apartments
+  };
+}
+
+STATE = STATE || buildSeedState();
+
+function escapeHtml(str) {
+  return String(str == null ? "" : str).replace(/[&<>"']/g, function (ch) {
+    var map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+    return map[ch];
+  });
+}
+
+function formatCurrency(amount) {
+  try {
+    return new Intl.NumberFormat("he-IL", { style: "currency", currency: "ILS", maximumFractionDigits: 0 }).format(amount || 0);
+  } catch (e) {
+    return "₪" + Math.round(amount || 0);
+  }
+}
+
+function formatDate(iso) {
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("he-IL", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function canEdit() {
+  return !writeDisabled && !!currentUser && (currentUser.role === "committee" || currentUser.role === "admin");
+}
+function roleLabel(role) {
+  return role === "admin" ? "אדמין" : "ועד בית";
+}
+
+function toast(msg) {
+  toastMessage = msg;
+  render();
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () {
+    toastMessage = null;
+    render();
+  }, 3200);
+}
+
+function findApartment(id) {
+  for (var i = 0; i < STATE.apartments.length; i++) {
+    if (STATE.apartments[i].id === id) return STATE.apartments[i];
+  }
+  return null;
+}
+function findCategory(id) {
+  for (var i = 0; i < STATE.categories.length; i++) {
+    if (STATE.categories[i].id === id) return STATE.categories[i];
+  }
+  return null;
+}
+
+function openModal(type, payload) {
+  modal = { type: type, payload: payload || {} };
+  render();
+}
+function closeModal() {
+  modal = null;
+  render();
+}
+
+function persist() {
+  render();
+  publishState();
+}
+
+function publishState() {
+  if (!artifactApi) return;
+  var html = buildFullDocument(STATE);
+  artifactApi.publish(html).then(function () {
+    /* view reloads automatically on success */
+  }).catch(function (err) {
+    if (err && (err.code === "not_writer" || err.code === "not_granted")) {
+      writeDisabled = true;
+      toast("הקישור הזה בתצוגה בלבד — אין הרשאת עריכה");
+    } else if (err && err.code === "conflict") {
+      /* the view is being reloaded to the newer version */
+    } else {
+      toast("השמירה נכשלה, נסו שוב בעוד רגע");
+    }
+  });
+}
+
+/* ---------- actions ---------- */
+
+function findUser(userId) {
+  for (var i = 0; i < APP_USERS.length; i++) if (APP_USERS[i].id === userId) return APP_USERS[i];
+  return null;
+}
+function selectAccount(userId) {
+  if (!modal || modal.type !== "login") return;
+  modal.payload.selectedUserId = userId;
+  modal.payload.error = null;
+  render();
+  var pw = document.getElementById("f-password");
+  if (pw) pw.focus();
+}
+function backToAccountList() {
+  if (!modal || modal.type !== "login") return;
+  modal.payload.selectedUserId = null;
+  modal.payload.error = null;
+  render();
+}
+function attemptLogin() {
+  if (!modal || modal.type !== "login" || !modal.payload.selectedUserId) return;
+  var u = findUser(modal.payload.selectedUserId);
+  var entered = readVal("f-password");
+  if (!u || entered !== u.password) {
+    modal.payload.error = "סיסמה שגויה, נסו שוב";
+    render();
+    var pw = document.getElementById("f-password");
+    if (pw) pw.focus();
+    return;
+  }
+  currentUser = u;
+  writeDisabled = false;
+  try { localStorage.setItem("vaad-current-user", u.id); } catch (e) {}
+  modal = null;
+  render();
+}
+function logout() {
+  currentUser = null;
+  try { localStorage.removeItem("vaad-current-user"); } catch (e) {}
+  render();
+}
+function restoreSession() {
+  try {
+    var saved = localStorage.getItem("vaad-current-user");
+    if (!saved) return;
+    for (var i = 0; i < APP_USERS.length; i++) {
+      if (APP_USERS[i].id === saved) { currentUser = APP_USERS[i]; return; }
+    }
+  } catch (e) {}
+}
+
+function saveBalance(amount) {
+  if (isNaN(amount)) return;
+  STATE.balance = { amount: amount, lastUpdated: todayIso() };
+  modal = null;
+  persist();
+}
+
+function saveCategory(catId, name, amount) {
+  name = (name || "").trim();
+  if (!name || isNaN(amount) || amount < 0) return;
+  var c = findCategory(catId);
+  if (!c) return;
+  c.name = name;
+  c.totalSpent = amount;
+  modal = null;
+  persist();
+}
+function addCategory(name) {
+  name = (name || "").trim();
+  if (!name) return;
+  STATE.categories.push({ id: "cat-" + Date.now(), name: name, totalSpent: 0 });
+  modal = null;
+  persist();
+}
+function removeCategory(catId) {
+  STATE.categories = STATE.categories.filter(function (c) { return c.id !== catId; });
+  modal = null;
+  persist();
+}
+
+function addPayment(aptId, amount, date, note) {
+  if (isNaN(amount) || amount <= 0 || !date) return;
+  var apt = findApartment(aptId);
+  if (!apt) return;
+  apt.paymentHistory.push({ id: "p-" + aptId + "-" + Date.now(), date: date, amount: amount, note: note || "תשלום" });
+  apt.paymentHistory.sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+  apt.debtAmount = Math.max(0, apt.debtAmount - amount);
+  apt.status = apt.debtAmount <= 0 ? "שולם" : "חוב";
+  modal = null;
+  persist();
+}
+function saveResident(aptId, name, phone, email) {
+  var apt = findApartment(aptId);
+  if (!apt) return;
+  apt.residentName = name; apt.phone = phone; apt.email = email;
+  modal = null;
+  persist();
+}
+function addApartment() {
+  var nextId = 1;
+  for (var i = 0; i < STATE.apartments.length; i++) if (STATE.apartments[i].id >= nextId) nextId = STATE.apartments[i].id + 1;
+  STATE.apartments.push({ id: nextId, residentName: "", phone: "", email: "", status: "שולם", debtAmount: 0, paymentHistory: [] });
+  persist();
+}
+function removeApartment(aptId) {
+  STATE.apartments = STATE.apartments.filter(function (a) { return a.id !== aptId; });
+  if (expandedApartmentId === aptId) expandedApartmentId = null;
+  modal = null;
+  persist();
+}
+
+/* ---------- rendering ---------- */
+
+function renderSyncPill() {
+  var cls = "sync-pill", label = "מתחבר…";
+  if (syncMode === "unavailable") { cls += ""; label = "מצב תצוגה מקומי"; }
+  else if (writeDisabled) { cls += " is-readonly"; label = "תצוגה בלבד"; }
+  else if (syncMode === "ready") { cls += " is-live"; label = "משותף בזמן אמת"; }
+  return '<span class="' + cls + '"><span class="sync-dot"></span>' + label + '</span>';
+}
+
+function renderTopbar() {
+  var right;
+  if (currentUser) {
+    right = '<span class="role-chip role-' + currentUser.role + '">' + escapeHtml(currentUser.name) + " · " + roleLabel(currentUser.role) + '</span>' +
+      '<button class="btn btn-ghost btn-sm" data-action="logout">יציאה</button>';
+  } else {
+    right = '<button class="btn btn-primary btn-sm" data-action="open-login">כניסת ועד בית / אדמין</button>';
+  }
+  return '' +
+    '<header class="topbar">' +
+      '<div class="topbar-id">' +
+        '<span class="topbar-mark">ועד הבית</span>' +
+        '<span class="topbar-name">שקיפות כספית לדיירים</span>' +
+      '</div>' +
+      '<div class="topbar-actions">' + renderSyncPill() + right + '</div>' +
+    '</header>';
+}
+
+function renderNotice() {
+  if (!currentUser) {
+    return '<div class="notice">כל דייר יכול לצפות כאן בכל עת. עדכון נתונים פתוח לחברי ועד הבית ולאדמין בלבד דרך "כניסת ועד בית / אדמין".</div>';
+  }
+  if (writeDisabled) {
+    return '<div class="notice"><strong>תצוגה בלבד:</strong> לקישור שפתחתם אין הרשאת עריכה בפועל. פנו לבעל/ת האתר לקבלת הרשאת כתיבה, או צפו בנתונים כרגיל.</div>';
+  }
+  if (syncMode === "unavailable") {
+    return '<div class="notice">השינויים כאן נשמרים באופן מקומי בלבד ולא ישותפו עם דיירים אחרים בעמוד זה.</div>';
+  }
+  return "";
+}
+
+function renderBalance() {
+  var b = STATE.balance;
+  return '' +
+    '<section class="panel balance-panel">' +
+      '<div>' +
+        '<p class="eyebrow">יתרת קופת הוועד הנוכחית</p>' +
+        '<p class="balance-figure">' + formatCurrency(b.amount) + '</p>' +
+        '<div class="gold-rule"></div>' +
+        '<p class="balance-meta">עודכן לאחרונה: ' + formatDate(b.lastUpdated) + '</p>' +
+      '</div>' +
+      (canEdit() ? '<button class="btn btn-primary" data-action="open-balance">עדכון יתרה</button>' : '') +
+    '</section>';
+}
+
+function renderCategories() {
+  var max = 1;
+  STATE.categories.forEach(function (c) { if (c.totalSpent > max) max = c.totalSpent; });
+  var cols = STATE.categories.map(function (c, i) {
+    var pct = Math.max(6, Math.round((c.totalSpent / max) * 100));
+    var colorClass = "cat-" + ((i % 5) + 1);
+    return '' +
+      '<div class="cat-col">' +
+        '<div class="cat-bar-track">' +
+          '<button class="cat-bar-fill ' + colorClass + '" style="height:' + pct + '%" data-action="open-category" data-id="' + c.id + '" ' + (canEdit() ? "" : "disabled") + '></button>' +
+        '</div>' +
+        '<p class="cat-amount">' + formatCurrency(c.totalSpent) + '</p>' +
+        '<p class="cat-name">' + escapeHtml(c.name) + '</p>' +
+        (canEdit() ? '<button class="cat-remove" data-action="remove-category" data-id="' + c.id + '">הסרת קטגוריה</button>' : '') +
+      '</div>';
+  }).join("");
+  return '' +
+    '<section class="panel">' +
+      '<div class="panel-head"><h2>הוצאות לפי קטגוריה</h2>' +
+      (canEdit() ? '<button class="btn-link" data-action="open-add-category">+ קטגוריה חדשה</button>' : '') +
+      '</div>' +
+      '<div class="cat-row">' + cols + '</div>' +
+    '</section>';
+}
+
+function renderLedger(apt) {
+  if (!apt.paymentHistory.length) return '<p class="empty-note">אין עדיין היסטוריית תשלומים</p>';
+  var rows = apt.paymentHistory.map(function (p) {
+    return '<li><span class="ledger-date">' + formatDate(p.date) + '</span><span class="ledger-note">' + escapeHtml(p.note) + '</span><span class="ledger-fill"></span><span class="ledger-amount">' + formatCurrency(p.amount) + '</span></li>';
+  }).join("");
+  return '<ul class="ledger">' + rows + '</ul>';
+}
+
+function renderApartmentRow(apt) {
+  var open = expandedApartmentId === apt.id;
+  var statusClass = apt.status === "שולם" ? "paid" : "debt";
+  var row = '' +
+    '<tr class="apt-row' + (open ? " is-open" : "") + '" data-action="toggle-apartment" data-id="' + apt.id + '">' +
+      '<td><span class="apt-num">' + apt.id + '</span></td>' +
+      '<td>' + (escapeHtml(apt.residentName) || "—") + '</td>' +
+      '<td class="apt-phone">' + (escapeHtml(apt.phone) || "—") + '</td>' +
+      '<td><span class="status-chip ' + statusClass + '">' + apt.status + '</span></td>' +
+      '<td class="apt-debt">' + (apt.debtAmount > 0 ? formatCurrency(apt.debtAmount) : "₪0") + '</td>' +
+      '<td><span class="caret">▾</span></td>' +
+    '</tr>';
+  if (!open) return row;
+  var actions = "";
+  if (canEdit()) {
+    actions += '<button class="btn btn-primary btn-sm" data-action="open-payment" data-id="' + apt.id + '">+ הוספת תשלום</button>';
+    actions += '<button class="btn btn-ghost btn-sm" data-action="open-resident" data-id="' + apt.id + '">עריכת פרטי דייר</button>';
+    actions += '<button class="btn btn-danger btn-sm" data-action="open-remove-apartment" data-id="' + apt.id + '">הסרת דירה</button>';
+  }
+  var detail = '' +
+    '<tr class="apt-detail-row"><td colspan="6"><div class="apt-detail">' +
+      '<div class="apt-detail-head">' +
+        '<span class="apt-detail-email">' + (escapeHtml(apt.email) || "") + '</span>' +
+        '<div class="apt-detail-actions">' + actions + '</div>' +
+      '</div>' +
+      renderLedger(apt) +
+    '</div></td></tr>';
+  return row + detail;
+}
+
+function filteredApartments() {
+  var q = apartmentQuery.trim().toLowerCase();
+  if (!q) return STATE.apartments;
+  return STATE.apartments.filter(function (a) {
+    return String(a.id).indexOf(q) !== -1 || a.residentName.toLowerCase().indexOf(q) !== -1;
+  });
+}
+
+function renderApartmentRows() {
+  var list = filteredApartments();
+  if (!list.length) return '<tr><td colspan="6" class="empty-note" style="padding:20px 12px;">לא נמצאו דירות תואמות</td></tr>';
+  return list.map(renderApartmentRow).join("");
+}
+
+function renderApartments() {
+  return '' +
+    '<section class="panel">' +
+      '<div class="panel-head">' +
+        '<h2>טבלת דירות</h2>' +
+        '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">' +
+          '<input type="text" id="apt-search" class="search-input" placeholder="חיפוש לפי מספר דירה או שם" value="' + escapeHtml(apartmentQuery) + '">' +
+          (canEdit() ? '<button class="btn-link" data-action="add-apartment">+ הוספת דירה</button>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="table-scroll"><table class="apt-table">' +
+        '<thead><tr><th>מס&#39; דירה</th><th>דייר</th><th>טלפון</th><th>סטטוס</th><th>חוב</th><th></th></tr></thead>' +
+        '<tbody id="apt-rows">' + renderApartmentRows() + '</tbody>' +
+      '</table></div>' +
+    '</section>';
+}
+
+function renderModal() {
+  if (!modal) return "";
+  var body = "", title = "";
+  if (modal.type === "login") {
+    var selUser = modal.payload.selectedUserId ? findUser(modal.payload.selectedUserId) : null;
+    if (!selUser) {
+      title = "כניסת ועד בית / אדמין";
+      body = '<div class="account-list">' + APP_USERS.map(function (u) {
+        return '<button class="account-btn" data-action="select-account" data-id="' + u.id + '">' +
+          '<span class="account-name">' + escapeHtml(u.name) + '</span>' +
+          '<span class="role-chip role-' + u.role + '">' + roleLabel(u.role) + '</span></button>';
+      }).join("") + '</div>' +
+      '<p style="font-size:.76rem;color:var(--ink);opacity:.55;margin:14px 0 0;">לכל חשבון תפקיד וסיסמה קבועים מראש.</p>';
+    } else {
+      title = escapeHtml(selUser.name) + " · " + roleLabel(selUser.role);
+      body = '<div class="field"><label>סיסמה</label><input type="password" id="f-password" autofocus></div>' +
+        (modal.payload.error ? '<p style="color:var(--debt);font-size:.8rem;margin:-8px 0 14px;">' + escapeHtml(modal.payload.error) + '</p>' : "") +
+        '<div class="modal-actions"><button class="btn btn-ghost" data-action="back-to-accounts">חזרה</button><button class="btn btn-primary" data-action="submit-login">כניסה</button></div>';
+    }
+  } else if (modal.type === "balance") {
+    title = "עדכון יתרת קופה";
+    body = '<div class="field"><label>סכום חדש (₪)</label><input type="number" id="f-amount" value="' + STATE.balance.amount + '" autofocus></div>' +
+      '<div class="modal-actions"><button class="btn btn-ghost" data-action="close-modal">ביטול</button><button class="btn btn-primary" data-action="submit-balance">שמירה</button></div>';
+  } else if (modal.type === "category") {
+    var c = findCategory(modal.payload.categoryId);
+    title = "עריכת קטגוריה";
+    body = '<div class="field"><label>שם הקטגוריה</label><input type="text" id="f-name" value="' + escapeHtml(c ? c.name : "") + '" autofocus></div>' +
+      '<div class="field"><label>סכום שהוצא (₪)</label><input type="number" id="f-amount" value="' + (c ? c.totalSpent : 0) + '"></div>' +
+      '<div class="modal-actions"><button class="btn btn-ghost" data-action="close-modal">ביטול</button><button class="btn btn-primary" data-action="submit-category" data-id="' + modal.payload.categoryId + '">שמירה</button></div>';
+  } else if (modal.type === "add-category") {
+    title = "קטגוריית הוצאה חדשה";
+    body = '<div class="field"><label>שם הקטגוריה</label><input type="text" id="f-name" autofocus></div>' +
+      '<div class="modal-actions"><button class="btn btn-ghost" data-action="close-modal">ביטול</button><button class="btn btn-primary" data-action="submit-add-category">הוספה</button></div>';
+  } else if (modal.type === "payment") {
+    var apt = findApartment(modal.payload.apartmentId);
+    title = "הוספת תשלום — דירה " + modal.payload.apartmentId;
+    body = '<div class="field"><label>תאריך</label><input type="date" id="f-date" value="' + todayIso() + '"></div>' +
+      '<div class="field"><label>סכום (₪)</label><input type="number" id="f-amount" value="350" autofocus></div>' +
+      '<div class="field"><label>הערה / אמצעי תשלום</label><input type="text" id="f-note" placeholder="לדוגמה: העברה בנקאית"></div>' +
+      '<div class="modal-actions"><button class="btn btn-ghost" data-action="close-modal">ביטול</button><button class="btn btn-primary" data-action="submit-payment" data-id="' + modal.payload.apartmentId + '">שמירה</button></div>';
+  } else if (modal.type === "resident") {
+    var apt2 = findApartment(modal.payload.apartmentId);
+    title = "עריכת פרטי דייר — דירה " + modal.payload.apartmentId;
+    body = '<div class="field"><label>שם</label><input type="text" id="f-name" value="' + escapeHtml(apt2 ? apt2.residentName : "") + '" autofocus></div>' +
+      '<div class="field"><label>טלפון</label><input type="text" id="f-phone" value="' + escapeHtml(apt2 ? apt2.phone : "") + '"></div>' +
+      '<div class="field"><label>מייל</label><input type="email" id="f-email" value="' + escapeHtml(apt2 ? apt2.email : "") + '"></div>' +
+      '<div class="modal-actions"><button class="btn btn-ghost" data-action="close-modal">ביטול</button><button class="btn btn-primary" data-action="submit-resident" data-id="' + modal.payload.apartmentId + '">שמירה</button></div>';
+  } else if (modal.type === "remove-apartment") {
+    title = "הסרת דירה";
+    body = '<p style="font-size:.85rem;line-height:1.6;">להסיר את דירה ' + modal.payload.apartmentId + ' מהטבלה? הפעולה אינה הפיכה.</p>' +
+      '<div class="modal-actions"><button class="btn btn-ghost" data-action="close-modal">ביטול</button><button class="btn btn-danger" data-action="submit-remove-apartment" data-id="' + modal.payload.apartmentId + '">הסרה</button></div>';
+  }
+  return '' +
+    '<div class="modal-backdrop" data-action="close-modal">' +
+      '<div class="modal-card" data-stop="1">' +
+        '<div class="modal-head"><h3>' + title + '</h3><button class="modal-close" data-action="close-modal">×</button></div>' +
+        body +
+      '</div>' +
+    '</div>';
+}
+
+function render() {
+  var html = '' +
+    '<div class="app-shell">' +
+      renderTopbar() +
+      renderNotice() +
+      renderBalance() +
+      renderCategories() +
+      renderApartments() +
+    '</div>' +
+    renderModal() +
+    (toastMessage ? '<div class="toast">' + escapeHtml(toastMessage) + '</div>' : '');
+  document.getElementById("app").innerHTML = html;
+}
+
+/* ---------- events ---------- */
+
+function readNum(id) {
+  var el = document.getElementById(id);
+  return el ? parseFloat(el.value) : NaN;
+}
+function readVal(id) {
+  var el = document.getElementById(id);
+  return el ? el.value : "";
+}
+
+function handleClick(ev) {
+  var stopEl = ev.target.closest("[data-stop]");
+  var backdrop = ev.target.closest(".modal-backdrop");
+  if (backdrop && !stopEl) { closeModal(); return; }
+  var el = ev.target.closest("[data-action]");
+  if (!el) return;
+  var action = el.getAttribute("data-action");
+  var id = el.getAttribute("data-id");
+  switch (action) {
+    case "open-login": openModal("login", { selectedUserId: null }); break;
+    case "select-account": selectAccount(id); break;
+    case "back-to-accounts": backToAccountList(); break;
+    case "submit-login": attemptLogin(); break;
+    case "logout": logout(); break;
+    case "close-modal": closeModal(); break;
+    case "open-balance": openModal("balance"); break;
+    case "submit-balance": saveBalance(readNum("f-amount")); break;
+    case "open-category": if (canEdit()) openModal("category", { categoryId: id }); break;
+    case "submit-category": saveCategory(id, readVal("f-name"), readNum("f-amount")); break;
+    case "open-add-category": openModal("add-category"); break;
+    case "submit-add-category": addCategory(readVal("f-name")); break;
+    case "remove-category": removeCategory(id); break;
+    case "toggle-apartment": expandedApartmentId = (expandedApartmentId === Number(id)) ? null : Number(id); render(); break;
+    case "open-payment": openModal("payment", { apartmentId: Number(id) }); break;
+    case "submit-payment": addPayment(Number(id), readNum("f-amount"), readVal("f-date"), readVal("f-note")); break;
+    case "open-resident": openModal("resident", { apartmentId: Number(id) }); break;
+    case "submit-resident": saveResident(Number(id), readVal("f-name"), readVal("f-phone"), readVal("f-email")); break;
+    case "add-apartment": addApartment(); break;
+    case "open-remove-apartment": openModal("remove-apartment", { apartmentId: Number(id) }); break;
+    case "submit-remove-apartment": removeApartment(Number(id)); break;
+  }
+}
+
+function handleInput(ev) {
+  if (ev.target && ev.target.id === "apt-search") {
+    apartmentQuery = ev.target.value;
+    document.getElementById("apt-rows").innerHTML = renderApartmentRows();
+  }
+}
+
+function handleKeydown(ev) {
+  if (ev.key === "Enter" && ev.target && ev.target.id === "f-password") {
+    ev.preventDefault();
+    attemptLogin();
+  }
+}
+
+function attachGlobalListeners() {
+  var app = document.getElementById("app");
+  app.addEventListener("click", handleClick);
+  app.addEventListener("input", handleInput);
+  app.addEventListener("keydown", handleKeydown);
+}
+
+function connectArtifact() {
+  if (!(window.claude && window.claude.use)) { syncMode = "unavailable"; render(); return; }
+  window.claude.use("artifact").then(function (api) {
+    artifactApi = api;
+    syncMode = api ? "ready" : "unavailable";
+    render();
+  }).catch(function () { syncMode = "unavailable"; render(); });
+}
+
+function buildFullDocument(state) {
+  var styleText = document.getElementById("page-style").textContent;
+  var appSourceFull = document.getElementById("app-source").textContent;
+  var idx = appSourceFull.indexOf("\n");
+  var staticTail = idx === -1 ? "" : appSourceFull.slice(idx + 1);
+  var stateJson = JSON.stringify(state).replace(/<\/script/gi, "<\\/script");
+  var newAppSource = "var STATE = " + stateJson + ";\n" + staticTail;
+  var parts = [];
+  parts.push("<!doctype html>");
+  parts.push('<html lang="he" dir="rtl">');
+  parts.push("<head>");
+  parts.push('<meta charset="UTF-8">');
+  parts.push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
+  parts.push('<link rel="preconnect" href="https://fonts.googleapis.com">');
+  parts.push('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>');
+  parts.push('<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">');
+  parts.push("<title>שקיפות כספית לוועד הבית</title>");
+  parts.push('<style id="page-style">' + styleText + "</style>");
+  parts.push("</head>");
+  parts.push("<body>");
+  parts.push('<div id="app"></div>');
+  parts.push('<script type="text/plain" id="app-source">' + newAppSource + "<" + "/script>");
+  parts.push('<script>(function(){var s=document.getElementById("app-source").textContent;(new Function(s))();})();<' + "/script>");
+  parts.push("</body>");
+  parts.push("</html>");
+  return parts.join("\n");
+}
+
+function init() {
+  restoreSession();
+  attachGlobalListeners();
+  render();
+  connectArtifact();
+}
+
+init();
+</script>
+<script>(function(){var s=document.getElementById("app-source").textContent;(new Function(s))();})();</script>
+</body>
+</html>
