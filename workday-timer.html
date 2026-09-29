@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>טיימר יום עבודה</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #181b22;
+    --text: #e8eaf0;
+    --muted: #8b91a1;
+    --elapsed: #4f9dff;
+    --remaining: #2a2f3a;
+    --accent: #7ee0a8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", "Rubik", "Heebo", system-ui, -apple-system, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  main { width: 100%; max-width: 720px; }
+  header { text-align: center; margin-bottom: 24px; }
+  h1 { font-size: 1.1rem; font-weight: 500; color: var(--muted); margin: 0 0 6px; }
+  #status { font-size: 1.3rem; min-height: 1.6em; }
+  #status.done { color: var(--accent); }
+  .timers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .timer {
+    background: var(--panel);
+    border-radius: 14px;
+    padding: 20px 12px;
+    text-align: center;
+  }
+  .label { color: var(--muted); font-size: 1rem; margin-bottom: 8px; }
+  .value {
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(2rem, 8vw, 3.4rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    direction: ltr;
+  }
+  .timer.elapsed .value { color: var(--elapsed); }
+  .bar-wrap { background: var(--panel); border-radius: 14px; padding: 16px; }
+  .bar {
+    position: relative;
+    height: 28px;
+    background: var(--remaining);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  /* Fills from the right (RTL: day starts on the right) */
+  .fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 0%;
+    background: var(--elapsed);
+    transition: width 0.4s linear;
+  }
+  .bar-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+  #pct { color: var(--text); font-weight: 600; }
+  @media (max-width: 420px) {
+    .timers { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>יום עבודה <bdi dir="ltr">10:00–19:00</bdi></h1>
+    <div id="status">&nbsp;</div>
+  </header>
+
+  <section class="timers">
+    <div class="timer elapsed">
+      <div class="label">עבר</div>
+      <div class="value" id="elapsed">00:00:00</div>
+    </div>
+    <div class="timer remaining">
+      <div class="label">נשאר</div>
+      <div class="value" id="remaining">09:00:00</div>
+    </div>
+  </section>
+
+  <section class="bar-wrap">
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar">
+      <div class="fill" id="fill"></div>
+    </div>
+    <div class="bar-meta">
+      <span>10:00</span>
+      <span id="pct">0%</span>
+      <span>19:00</span>
+    </div>
+  </section>
+</main>
+
+<script>
+  const START_HOUR = 10;
+  const END_HOUR = 19;
+  const TOTAL = (END_HOUR - START_HOUR) * 3600; // 32,400 שניות
+  const WORKDAYS = [0, 1, 2, 3, 4];             // א׳–ה׳
+  const DAY_NAMES = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+
+  const $ = (id) => document.getElementById(id);
+  const pad = (n) => String(n).padStart(2, "0");
+  const hms = (s) => `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s / 60) % 60)}:${pad(s % 60)}`;
+
+  function at(date, hour) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour, 0, 0, 0);
+  }
+
+  // תחילת יום העבודה הבא (אחרי now)
+  function nextStart(now) {
+    for (let i = 0; i < 8; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+      const s = at(d, START_HOUR);
+      if (WORKDAYS.includes(d.getDay()) && s > now) return s;
+    }
+  }
+
+
+  function render() {
+    // הכל מחושב מול השעון בכל טיק — אין ספירה מצטברת
+    const now = new Date();
+    const isWorkday = WORKDAYS.includes(now.getDay());
+    const start = at(now, START_HOUR);
+    const end = at(now, END_HOUR);
+
+    let elapsed, status, done = false;
+
+    if (!isWorkday) {
+      elapsed = 0;
+      const ns = nextStart(now);
+      status = `אין עבודה היום · היום הבא: יום ${DAY_NAMES[ns.getDay()]} ב-10:00`;
+    } else if (now < start) {
+      elapsed = 0;
+      status = `היום מתחיל בעוד ${hms(Math.ceil((start - now) / 1000))}`;
+    } else if (now >= end) {
+      elapsed = TOTAL;
+      status = "היום הסתיים";
+      done = true;
+    } else {
+      elapsed = Math.floor((now - start) / 1000);
+      status = "יום עבודה פעיל";
+    }
+
+    elapsed = Math.min(TOTAL, Math.max(0, elapsed));
+    const remaining = TOTAL - elapsed; // הסכום תמיד 9:00:00
+    const pct = (elapsed / TOTAL) * 100;
+    const pctText = (Math.floor(pct * 10) / 10).toFixed(1) + "%";
+
+    $("elapsed").textContent = hms(elapsed);
+    $("remaining").textContent = hms(remaining);
+    $("fill").style.width = pct + "%";
+    $("pct").textContent = pctText;
+    $("bar").setAttribute("aria-valuenow", pct.toFixed(1));
+    $("status").textContent = status;
+    $("status").classList.toggle("done", done);
+
+    document.title = isWorkday && now >= start && now < end
+      ? `${hms(remaining)} נשאר · ${pctText}`
+      : "טיימר יום עבודה";
+  }
+
+  // טיק מיושר לתחילת כל שנייה; כשהטאב חוזר מהרקע — חישוב מיידי
+  function tick() {
+    render();
+    setTimeout(tick, 1000 - (Date.now() % 1000) + 5);
+  }
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+  tick();
+</script>
+</body>
+</html>
