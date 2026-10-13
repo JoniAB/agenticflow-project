@@ -195,14 +195,10 @@ function seededRandom(seed) {
 }
 
 function buildSeedState() {
-  var firstNames = ["יוסי","דנה","משה","רותם","אבי","מיכל","עידן","שירה","רון","טל","אורית","גיל","נועה","עומר","ליאת","אלון","הדר","אריאל","יעל","דור","שרה","יעקב","רבקה","דוד","רחל","בני","אסתר","צבי","חנה","שמעון","מירי","אלי","תמר","גדעון","אפרת","נדב","קרן","עידו","מאיה","רועי","אביגיל","יונתן","שני","אורי","נטע","אמיר","ליאור","שלומית","בועז","אנה"];
-  var lastNames = ["כהן","לוי","מזרחי","פרץ","ביטון","אברהם","פרידמן","אזולאי","דהן","חדד","וייס","גבאי","עמר","מלכה","בן דוד","שפירא","רוזן","אוחיון","טל","נחום"];
   var apartments = [];
   for (var id = 1; id <= 50; id++) {
     var rand = seededRandom(id * 7919 + 13);
-    var first = firstNames[id % firstNames.length];
-    var last = lastNames[(id * 3) % lastNames.length];
-    var name = first + " " + last;
+    var name = "דירה מס' " + id;
     var history = [];
     var monthlyFee = 350;
     var numPayments = 2 + Math.floor(rand() * 4);
@@ -219,12 +215,11 @@ function buildSeedState() {
     }
     var owesDebt = rand() < 0.28;
     var debt = owesDebt ? Math.round((Math.floor(rand() * 3) + 1) * monthlyFee) : 0;
-    var phoneNum = Math.floor(rand() * 9000000) + 1000000;
     apartments.push({
       id: id,
       residentName: name,
-      phone: "050-" + phoneNum,
-      email: (first + "." + last + id + "@example.com").replace(/\s/g, ""),
+      phone: "",
+      email: "",
       status: debt > 0 ? "חוב" : "שולם",
       debtAmount: debt,
       paymentHistory: history
@@ -430,7 +425,7 @@ function saveResident(aptId, name, phone, email) {
 function addApartment() {
   var nextId = 1;
   for (var i = 0; i < STATE.apartments.length; i++) if (STATE.apartments[i].id >= nextId) nextId = STATE.apartments[i].id + 1;
-  STATE.apartments.push({ id: nextId, residentName: "", phone: "", email: "", status: "שולם", debtAmount: 0, paymentHistory: [] });
+  STATE.apartments.push({ id: nextId, residentName: "דירה מס' " + nextId, phone: "", email: "", status: "שולם", debtAmount: 0, paymentHistory: [] });
   persist();
 }
 function removeApartment(aptId) {
